@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "130955796594",
+    "firebase_url": "https://nowcabs.firebaseio.com",
+    "project_id": "nowcabs",
+    "storage_bucket": "nowcabs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130955796594:android:e41ed4a5059de655",
+        "android_client_info": {
+          "package_name": "com.rootmind.nowcabs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130955796594-ie5c4sglb2ffeajdoprnjqq3d3ib4cb1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rootmind.nowcabs",
+            "certificate_hash": "e8d29346d890dcaff99b31e0a60d32bc3cd9a632"
+          }
+        },
+        {
+          "client_id": "130955796594-oj8497a9caij8hr615otamgjqv6qpv72.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtP9LTlpYKh1cLeJ8krT5ubQ_F52kaqvM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130955796594-oj8497a9caij8hr615otamgjqv6qpv72.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "130955796594-qt1e8f71tfmdk8rp04c9sc34avjr21nm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rootmind.onboardapp"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

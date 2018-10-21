@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+    <RelativeLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/nowcabs"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/nowcabs"
+
+            />
+
+
+
+            <TextView
+                android:id="@+id/txt_rider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="@string/rider"
+                android:textColor="@color/colorGrey"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="left"
+                android:layout_below="@id/nowcabs"/>
+
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rider_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="top"
+                android:layout_below="@id/txt_rider"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                card_view:cardCornerRadius="10dp"
+                card_view:cardElevation="10dp"
+                >
+
+
+                <Button
+                    android:id="@+id/btn_rider"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_below="@id/txt_rider"
+                    android:background="@drawable/rider"
+                    android:textColor="#ffffff"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:imeOptions="actionNext"
+                    />
+
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:id="@+id/txt_driver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rider_card_view"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:text="@string/driver"
+                android:textColor="@color/colorGrey"
+                android:textSize="20sp"
+                android:layout_gravity="left"/>
+
+
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/driver_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom"
+                android:layout_below="@id/txt_driver"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                card_view:cardCornerRadius="10dp"
+                card_view:cardElevation="10dp"
+                >
+
+
+            <Button
+                android:id="@+id/btn_driver"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_below="@id/txt_driver"
+                android:background="@drawable/driver_select"
+                android:textColor="#ffffff"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:imeOptions="actionNext"
+                />
+
+            </android.support.v7.widget.CardView>
+
+
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/driver_card_view"
+            android:background="@drawable/button"
+            android:layout_alignLeft="@id/rider_card_view"
+            android:layout_alignRight="@id/driver_card_view"
+            android:text="@string/next"
+            android:textColor="#ffffff"
+            android:imeOptions="actionDone"
+
+            />
+
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

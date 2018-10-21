@@ -1,0 +1,406 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".RiderLoginActivity"
+    android:focusable="true"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="130dp"
+        android:id="@+id/nowcabs"
+        android:src="@drawable/nowcabs"
+        android:layout_centerHorizontal = "true" />
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nowcabs"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/rider"
+        android:textColor="@color/colorGrey"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"/>
+
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/textView"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerInParent="true"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="10dp"
+        >
+
+        <EditText
+            android:id="@+id/txt_mobileNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nowcabs"
+            android:digits="0123456789"
+            android:drawableLeft="@drawable/phone_24px"
+            android:focusable="true"
+            android:hint="@string/enter_mobile_no"
+            android:imeOptions="actionNext"
+            android:inputType="number|none"
+            android:maxLength="20"
+            android:maxLines="1"
+            android:nextFocusForward="@+id/btn_login"
+            android:textColorHighlight="#ff7eff15"
+            android:textColorHint="#7e7e7e"
+            android:textSize="20sp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:gravity="left"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerInParent="true"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:id="@+id/txt_name"
+            android:maxLength="50"
+            android:maxLines="1"
+            android:layout_below="@+id/txt_mobileNo"
+            android:textColorHint="#7e7e7e"
+            android:hint="@string/enter_name"
+            android:textSize="20sp"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@+id/btn_login"
+            android:drawableLeft="@drawable/person_24px"
+            android:gravity="left"
+            android:layout_centerInParent="true"
+            android:layout_alignLeft="@+id/txt_mobileNo"
+            />
+
+
+
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        android:id="@+id/btn_login"
+        android:layout_below="@+id/card_view"
+        android:layout_alignStart="@id/card_view"
+        android:layout_alignLeft="@id/card_view"
+        android:layout_alignRight="@+id/card_view"
+        android:layout_alignEnd="@+id/card_view"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:imeOptions="actionDone"
+        />
+
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:layout_centerInParent="true"
+        />
+
+
+</RelativeLayout>
+
+
+
+        <!--<EditText-->
+        <!--android:layout_width = "wrap_content"-->
+        <!--android:layout_height = "wrap_content"-->
+        <!--android:id = "@+id/txt_mobileNo"-->
+        <!--android:hint = "Enter Passenger Mobile No"-->
+        <!--android:maxLength="10"-->
+        <!--android:maxLines="1"-->
+        <!--android:layout_marginTop="90dp"-->
+        <!--android:focusable = "true"-->
+        <!--android:textColorHighlight = "#ff7eff15"-->
+        <!--android:textColorHint =  "#7e7e7e"-->
+        <!--android:layout_below="@+id/nowcabs"-->
+        <!--android:layout_alignParentLeft = "true"-->
+        <!--android:layout_alignParentStart = "true"-->
+        <!--android:layout_alignParentRight = "true"-->
+        <!--android:layout_alignParentEnd = "true"-->
+        <!--android:inputType="number|none"-->
+        <!--android:digits="0123456789"-->
+        <!--android:imeOptions="actionNext"-->
+        <!--android:nextFocusForward="@+id/txt_name"-->
+        <!--android:drawableLeft="@drawable/phone_24px"-->
+            <!--/>-->
+
+
+
+        <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="text"-->
+        <!--android:ems="10"-->
+        <!--android:id="@+id/txt_name"-->
+        <!--android:maxLength="50"-->
+        <!--android:maxLines="1"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:layout_below="@+id/txt_mobileNo"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_alignRight="@+id/txt_mobileNo"-->
+        <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+        <!--android:textColorHint="#7e7e7e"-->
+        <!--android:hint="Enter Name"-->
+        <!--android:imeOptions="actionDone"-->
+        <!--android:nextFocusForward="@+id/btn_login"-->
+        <!--android:drawableLeft="@drawable/person_24px"-->
+            <!--/>-->
+
+
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Next"-->
+    <!--android:id="@+id/btn_login"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:layout_below="@+id/txt_name"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_alignRight="@+id/txt_name"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:nextFocusForward="@+id/txt_link"-->
+    <!--android:background="@drawable/button"-->
+    <!--android:textColor="#ffffff"-->
+        <!--/>-->
+
+
+    <!--<TextView-->
+    <!--android:id="@+id/txt_link"-->
+    <!--android:layout_width="66dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignBottom="@+id/driver_image"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:autoLink="web"-->
+    <!--android:linksClickable="true"-->
+    <!--android:textAlignment="center"-->
+    <!--android:textColorLink="@android:color/holo_blue_dark" />-->
+
+    <!--&lt;!&ndash;24-Sep-2018&ndash;&gt;-->
+    <!--<ImageView-->
+    <!--android:id="@+id/driver_image"-->
+    <!--android:layout_width="65dp"-->
+    <!--android:layout_height="75dp"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_marginTop="32dp"-->
+    <!--android:src="@drawable/driversingle" />-->
+
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:id="@+id/lbl_mobileNo"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginTop="80dp">-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/txt_mobileNo"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:ems="10"-->
+    <!--android:hint="Mobile No"-->
+    <!--android:layout_alignParentLeft = "true"-->
+    <!--android:layout_alignParentStart = "true"-->
+    <!--android:layout_alignParentRight = "true"-->
+    <!--android:layout_alignParentEnd = "true" />-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:id="@+id/lbl_name"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/lbl_mobileNo"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginTop="10dp">-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/txt_name"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:ems="10"-->
+    <!--android:hint=" Name"/>-->
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/txt_link"-->
+    <!--android:layout_below="@+id/txt_name"-->
+    <!--android:autoLink="web"-->
+    <!--android:linksClickable="true"-->
+    <!--/>-->
+
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/txt_link"-->
+    <!--android:layout_below="@+id/btn_login"-->
+    <!--android:layout_marginTop="15dp"-->
+    <!--android:layout_alignRight="@+id/txt_name"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:autoLink="web"-->
+    <!--android:linksClickable="true"-->
+    <!--android:textColorLink="@android:color/holo_blue_dark"-->
+
+    <!--/>-->
+
+
+
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/btn_login"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom|end"-->
+    <!--android:layout_margin="@dimen/fab_margin"-->
+    <!--/>-->
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/fab"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom|end"-->
+    <!--android:layout_margin="@dimen/fab_margin"-->
+    <!--android:src="@drawable/avatar_24dp" />-->
+
+
+    <!--29-Sep-2018-->
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="130dp"-->
+    <!--android:id="@+id/image_logo"-->
+    <!--android:src="@drawable/cab_icon"-->
+    <!--android:layout_below="@+id/nowcabs"-->
+    <!--android:layout_above="@+id/progressBar"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:layout_alignParentStart="true" />-->
+
+    <!--<TextView android:text = "Nowcabs"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height = "wrap_content"-->
+    <!--android:id = "@+id/textview"-->
+    <!--android:textSize = "30dp"-->
+    <!--android:layout_marginTop = "125dp"-->
+    <!--android:layout_alignParentTop = "true"-->
+    <!--android:layout_centerHorizontal = "true" />-->
+
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:orientation="vertical"-->
+    <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+    <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingTop="@dimen/activity_vertical_margin"-->
+    <!--tools:context="com.rootmind.nowcabs.RiderLoginActivity">-->
+
+    <!--&lt;!&ndash; Login progress &ndash;&gt;-->
+    <!--<ProgressBar-->
+    <!--android:id="@+id/login_progress"-->
+    <!--style="?android:attr/progressBarStyleLarge"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--android:visibility="gone" />-->
+
+    <!--<ScrollView-->
+    <!--android:id="@+id/login_form"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/email_login_form"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--<AutoCompleteTextView-->
+    <!--android:id="@+id/mobileNo"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:hint="@string/prompt_mobileNo"-->
+    <!--android:inputType="number"-->
+    <!--android:maxLines="1"-->
+    <!--android:singleLine="true" />-->
+
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--<EditText-->
+    <!--android:id="@+id/password"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:hint="@string/prompt_password"-->
+    <!--android:imeActionId="@+id/login"-->
+    <!--android:imeActionLabel="@string/action_sign_in_short"-->
+    <!--android:imeOptions="actionUnspecified"-->
+    <!--android:inputType="textPassword"-->
+    <!--android:maxLines="1"-->
+    <!--android:singleLine="true" />-->
+
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<Button-->
+    <!--android:id="@+id/email_sign_in_button"-->
+    <!--style="?android:textAppearanceSmall"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="16dp"-->
+    <!--android:text="@string/action_sign_in"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--</LinearLayout>-->
+    <!--</ScrollView>-->
+    <!--</LinearLayout>-->

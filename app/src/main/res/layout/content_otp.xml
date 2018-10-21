@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".OTPActivity"
+    tools:showIn="@layout/activity_otp">
+
+
+    <!--<android.support.design.widget.AppBarLayout-->
+        <!--android:id="@+id/appBarLayout"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:theme="@style/AppTheme.AppBarOverlay"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/logoContainer">-->
+
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
+
+
+        <!--</android.support.v7.widget.Toolbar>-->
+
+    <!--</android.support.design.widget.AppBarLayout>-->
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/relativeLayout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="200dp"-->
+    <!--android:background="@color/colorPrimary"-->
+    <!--android:orientation="horizontal">-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="120dp"-->
+    <!--android:layout_height="120dp"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:background="@drawable/nowcabs_icon48x48" />-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/imageView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="120dp"-->
+    <!--android:layout_below="@id/relativeLayout"-->
+    <!--android:layout_marginTop="-50dp"-->
+    <!--android:background="@drawable/driversingle" />-->
+
+    <RelativeLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/nowcabs"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/nowcabs"
+
+            />
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nowcabs"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/enter_otp"
+            android:textColor="@color/colorGrey"
+            android:textSize="20sp"
+            android:layout_gravity="center_horizontal"/>
+
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_below="@id/textView"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_centerInParent="true"
+            card_view:cardCornerRadius="10dp"
+            card_view:cardElevation="10dp"
+            >
+
+
+
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nowcabs"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <EditText
+                android:id="@+id/otpEditText1"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:digits="0123456789"
+                android:drawablePadding="1dp"
+                android:gravity="center_horizontal"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="1"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/otpEditText2"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:digits="0123456789"
+                android:drawablePadding="1dp"
+                android:gravity="center_horizontal"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="1"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/otpEditText3"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:digits="0123456789"
+                android:drawablePadding="1dp"
+                android:gravity="center_horizontal"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="1"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/otpEditText4"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:digits="0123456789"
+                android:drawablePadding="1dp"
+                android:gravity="center_horizontal"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="1"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/otpEditText5"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:digits="0123456789"
+                android:drawablePadding="1dp"
+                android:gravity="center_horizontal"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="1"
+                android:textSize="30sp" />
+
+            <EditText
+                android:id="@+id/otpEditText6"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:digits="0123456789"
+                android:drawablePadding="1dp"
+                android:gravity="center_horizontal"
+                android:imeOptions="actionNext"
+                android:inputType="phone"
+                android:maxLength="1"
+                android:textSize="30sp" />
+
+
+            <!--android:layout_below="@id/progressbar"-->
+
+            <!--<Button-->
+            <!--android:id="@+id/buttonSignIn"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/editTextCode"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--android:background="@color/colorPrimaryDark"-->
+            <!--android:text="Sign In"-->
+            <!--android:textAllCaps="false"-->
+            <!--android:textColor="#cdd8f1" />-->
+
+
+        </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/card_view"
+            android:background="@drawable/button"
+            android:layout_marginTop="30dp"
+            android:text="@string/next"
+            android:textColor="#ffffff"
+            android:imeOptions="actionDone"
+            />
+
+
+    </RelativeLayout>
+    <!--android:layout_below="@id/imageView"-->
+
+
+    <!--<ProgressBar-->
+    <!--android:id="@+id/progressbar"-->
+    <!--android:layout_below="@id/textView"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content" />-->
+
+    <!--android:hint="enter verification code"-->
+
+
+</android.support.constraint.ConstraintLayout>

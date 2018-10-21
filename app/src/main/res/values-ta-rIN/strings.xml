@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">இப்போது வண்டிகள்</string>
+
+    <string name="launcher_name">@string/app_name</string>
+    <string name="activity_name">@string/launcher_name</string>
+
+    <string name="logo">@string/app_name</string>
+
+
+    <string name="dropDown_vehicleType_prompt">Select Vehicle Type</string>
+
+    <string-array name="vehicleType_array">
+        <item>கார்</item>
+        <item>டாக்சி</item>
+    </string-array>
+
+    <string name="text_auto">கார்</string>
+    <string name="text_car">டாக்சி</string>
+    <string name="text_shop">கடை</string>
+    <string name="text_tool">சேவை</string>
+    <string name="select_language">மொழியைத் தேர்ந்தெடு</string>
+
+    <string name="enter_mobile_no">மொபைல் எண்</string>
+    <string name="enter_otp">ஓடிப</string>
+    <string name="next">அடுத்த</string>
+
+    <string name="rider">பயணி</string>
+    <string name="driver">இயக்கி</string>
+    <string name="select_rider_driver">பயணி அல்லது இயக்கி தேர்ந்தெடுக்கவும்</string>
+
+    <string name="enter_name">பெயரை உள்ளிடுக</string>
+    <string name="enter_vehicle_no">வாகன எண்</string>
+
+
+    <string name="you_rated">நீங்கள் மதிப்பிட்டீர்கள்</string>
+    <string name="call">அழைப்பு</string>
+    <string name="km">கி.மீ.</string>
+    <string name="rate">விகிதம்</string>
+
+
+    <string name="enter_destination">இலக்கு உள்ளிடவும்</string>
+
+
+    <string name="profile_and_settings">சுயவிவரமும் அமைப்புகளும்</string>
+    <string name="logout_confirm">வெளியேற வேண்டுமா?</string>
+    <string name="logout">வெளியேறு</string>
+    <string name="ok">ஆம்</string>
+    <string name="cancel">ரத்து</string>
+    <string name="update_success">மேம்படுத்தல் வெற்றிகரமாக</string>
+    <string name="save">காப்பாற்ற</string>
+
+
+    <!--Driver Strings-->
+
+    <string name="vacant">காலியாக</string>
+    <string name="hired">வேலைக்கு</string>
+
+
+    <string name="dropDown_local_prompt">மொழியைத் தேர்ந்தெடு</string>
+
+    <string-array name="locale_array">
+        <item>English</item>
+        <item>हिंदी</item>
+        <item>తెలుగు</item>
+        <item>தமிழ்</item>
+        <item>ಕನ್ನಡ್</item>
+        <item>اردو</item>
+    </string-array>
+
+    <string name="your_rides">உங்கள் சவால்கள்</string>
+    <string name="favorite_added">பிடித்தவை சேர்க்கப்பட்டது</string>
+    <string name="favorite_removed">பிடித்த நீக்கப்பட்டது</string>
+
+
+    <string name="directions">பாதைகளில்</string>
+    <string name="directions_confirm">பாதைகளை விரும்புகிறீர்களா?</string>
+    <string name="destination">இலக்கு</string>
+    <string name="please_enter_destination">தயவுசெய்து இலக்கை உள்ளிடுக</string>
+
+    <string name="no_driver_near_by">உங்கள் இடம் அருகே எந்த இயக்கி இல்லை!!!</string>
+
+    <string name="invalid_mobile">மொபைல் எண் சரியாக இல்லை</string>
+
+
+</resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ಈಗ ಕ್ಯಾಬ್ಗಳು</string>
+
+    <string name="launcher_name">@string/app_name</string>
+    <string name="activity_name">@string/launcher_name</string>
+
+    <string name="logo">@string/app_name</string>
+
+
+    <string name="dropDown_vehicleType_prompt">ವಾಹನ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ</string>
+
+    <string-array name="vehicleType_array">
+        <item>ಆಟೋ</item>
+        <item>ಟ್ಯಾಕ್ಸಿ</item>
+    </string-array>
+
+    <string name="text_auto">ಆಟೋ</string>
+    <string name="text_car">ಟ್ಯಾಕ್ಸಿ</string>
+    <string name="text_shop">ಅಂಗಡಿ</string>
+    <string name="text_tool">ಸೇವೆ</string>
+    <string name="select_language">ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+
+    <string name="enter_mobile_no">ಮೊಬೈಲ್ ನಂಬರ</string>
+    <string name="enter_otp">ಓಟಿಪು</string>
+    <string name="next">ಮುಂದಿನ</string>
+
+    <string name="rider">ಪ್ರವಾಸಿಗ</string>
+    <string name="driver">ಚಾಲಕ</string>
+    <string name="select_rider_driver">ದಯವಿಟ್ಟು ಪ್ರವಾಸಿಗ ಅಥವಾ ಚಾಲಕವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ</string>
+
+
+    <string name="enter_name">ಹೆಸರನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="enter_vehicle_no">ವಾಹನ ಸಂಖ್ಯೆ</string>
+
+
+    <string name="you_rated">ನೀವು ರೇಟ್ ಮಾಡಿದ್ದೀರಿ</string>
+    <string name="call">ಕರೆ ಮಾಡಿ</string>
+    <string name="km">ಕಿ.ಮೀ.</string>
+    <string name="rate">ರೇಟಿಂಗ್</string>
+
+
+    <string name="enter_destination">ಗಮ್ಯಸ್ಥಾನವನ್ನು ನಮೂದಿಸಿ</string>
+
+
+    <string name="profile_and_settings">ಪ್ರೊಫೈಲ್ ಮತ್ತು ಸೆಟ್ಟಿಂಗ್ಗಳು</string>
+    <string name="logout_confirm">ನೀವು ಲಾಗ್ಔಟ್ ಮಾಡಲು ಬಯಸುತ್ತೀರಾ?</string>
+    <string name="logout">ಲಾಗ್ ಔಟ್</string>
+    <string name="ok">ಹೌದು</string>
+    <string name="cancel">ರದ್ದುಮಾಡಿ</string>
+    <string name="update_success">ಅಪ್ಡೇಟ್ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
+    <string name="save">ಉಳಿಸು</string>
+
+
+    <!--Driver Strings-->
+
+    <string name="vacant">ಖಾಲಿ</string>
+    <string name="hired">ಬಾಡಿಗೆಗೆ ತೆಗೆದುಕೊಳ್ಳು</string>
+
+
+    <string name="dropDown_local_prompt">ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+
+    <string-array name="locale_array">
+        <item>English</item>
+        <item>हिंदी</item>
+        <item>తెలుగు</item>
+        <item>தமிழ்</item>
+        <item>ಕನ್ನಡ್</item>
+        <item>اردو</item>
+    </string-array>
+
+    <string name="your_rides">ನಿಮ್ಮ ಸವಾರಿಗಳು</string>
+    <string name="favorite_added">ನೆಚ್ಚಿನ ಸೇರಿಸಲಾಗಿದೆ</string>
+    <string name="favorite_removed">ನೆಚ್ಚಿನ ತೆಗೆದುಹಾಕಲಾಗಿದೆ</string>
+
+
+    <string name="directions">ಮಾರ್ಗಗಳು</string>
+    <string name="directions_confirm">ನಿಮಗೆ ಮಾರ್ಗಗಳು ಬೇಕು?</string>
+    <string name="destination">ಗಮ್ಯಸ್ಥಾನ</string>
+    <string name="please_enter_destination">ದಯವಿಟ್ಟು ಗಮ್ಯಸ್ಥಾನವನ್ನು ನಮೂದಿಸಿ</string>
+
+    <string name="no_driver_near_by">ನಿಮ್ಮ ಸ್ಥಳಕ್ಕೆ ಯಾವುದೇ ಚಾಲಕ ಇಲ್ಲ!!!</string>
+
+    <string name="invalid_mobile">ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಸರಿಯಾಗಿಲ್ಲ</string>
+
+
+</resources>

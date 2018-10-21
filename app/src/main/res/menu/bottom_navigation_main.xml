@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/action_auto"
+        android:enabled="true"
+        android:icon="@drawable/auto_24px"
+        android:title="@string/text_auto"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_car"
+        android:enabled="true"
+        android:icon="@drawable/car_24px"
+        android:title="@string/text_car"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_shop"
+        android:enabled="true"
+        android:icon="@drawable/tools"
+        android:title="@string/text_tool"
+        app:showAsAction="ifRoom" />
+
+    <!--<item-->
+        <!--android:id="@+id/action_tool"-->
+        <!--android:enabled="true"-->
+        <!--android:icon="@drawable/tools"-->
+        <!--android:title="@string/text_tool"-->
+        <!--app:showAsAction="ifRoom" />-->
+
+</menu>

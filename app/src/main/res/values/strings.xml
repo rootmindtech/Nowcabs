@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">Nowcabs</string>
+
+    <string name="launcher_name">@string/app_name</string>
+    <string name="activity_name">@string/launcher_name</string>
+
+    <string name="logo">@string/app_name</string>
+
+
+    <string name="dropDown_vehicleType_prompt">Select Vehicle Type</string>
+
+    <string-array name="vehicleType_array">
+        <item>AUTO</item>
+        <item>CAB</item>
+    </string-array>
+
+    <string name="text_auto">Auto</string>
+    <string name="text_car">Car</string>
+    <string name="text_shop">Shop</string>
+    <string name="text_tool">Service</string>
+    <string name="select_language">Select Language</string>
+
+    <string name="enter_mobile_no">Enter Mobile No</string>
+    <string name="enter_otp">Enter OTP</string>
+    <string name="next">Next</string>
+
+    <string name="rider">Passenger</string>
+    <string name="driver">Driver</string>
+    <string name="select_rider_driver">Please Select Passenger or Driver</string>
+
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_vehicle_no">Enter Vehicle No</string>
+
+    <string name="you_rated">You rated</string>
+    <string name="call">Call</string>
+    <string name="km">k.m.</string>
+    <string name="rate">Rate</string>
+
+
+    <string name="enter_destination">Enter Destination</string>
+
+
+    <string name="profile_and_settings">Profile &amp; Settings</string>
+    <string name="logout_confirm">Do you want to logout?</string>
+    <string name="logout">Logout</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="update_success">Update successful</string>
+    <string name="save">Save</string>
+
+
+    <!--Driver Strings-->
+
+    <string name="vacant">Vacant</string>
+    <string name="hired">Hired</string>
+
+
+    <string name="dropDown_local_prompt">Select Language</string>
+
+    <string-array name="locale_array">
+        <item>English</item>
+        <item>हिंदी</item>
+        <item>తెలుగు</item>
+        <item>தமிழ்</item>
+        <item>ಕನ್ನಡ್</item>
+        <item>اردو</item>
+    </string-array>
+
+    <string name="your_rides">Your rides</string>
+    <string name="favorite_added">favorite added</string>
+    <string name="favorite_removed">favorite removed</string>
+
+
+    <string name="directions">Directions</string>
+    <string name="directions_confirm">Do you want directions?</string>
+    <string name="destination">Destination</string>
+    <string name="please_enter_destination">Please enter destination</string>
+
+    <string name="no_driver_near_by">No driver found near to your location!!!</string>
+
+    <string name="invalid_mobile">Invalid mobile number!!!</string>
+
+    <string name="selfie">Selfie</string>
+    <string name="idcard">ID Card</string>
+
+
+</resources>

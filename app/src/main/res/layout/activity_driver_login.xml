@@ -1,0 +1,361 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:context=".RiderLoginActivity"
+    android:focusable="true"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    >
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="130dp"
+        android:id="@+id/nowcabs"
+        android:src="@drawable/nowcabs"
+        android:layout_centerHorizontal = "true" />
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nowcabs"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:text="@string/driver"
+        android:textColor="@color/colorGrey"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"/>
+
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/textView"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerInParent="true"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="10dp"
+        >
+
+    <EditText
+        android:id="@+id/txt_mobileNo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nowcabs"
+        android:digits="0123456789"
+        android:drawableLeft="@drawable/phone_24px"
+        android:focusable="true"
+        android:hint="@string/enter_mobile_no"
+        android:imeOptions="actionNext"
+        android:inputType="number|none"
+        android:maxLength="20"
+        android:maxLines="1"
+        android:nextFocusForward="@+id/btn_login"
+        android:textColorHighlight="#ff7eff15"
+        android:textColorHint="#7e7e7e"
+        android:textSize="20sp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:gravity="left"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerInParent="true"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:id="@+id/txt_name"
+            android:maxLength="50"
+            android:maxLines="1"
+            android:layout_below="@+id/txt_mobileNo"
+            android:textColorHint="#7e7e7e"
+            android:hint="@string/enter_name"
+            android:textSize="20sp"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@+id/txt_vehicleNo"
+            android:drawableLeft="@drawable/person_24px"
+            android:gravity="left"
+            android:layout_centerInParent="true"
+            android:layout_alignLeft="@+id/txt_mobileNo"
+            />
+
+
+        <EditText
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:inputType="text"
+            android:id = "@+id/txt_vehicleNo"
+            android:hint = "@string/enter_vehicle_no"
+            android:maxLength="10"
+            android:maxLines="1"
+            android:textColorHighlight = "#ff7eff15"
+            android:textColorHint = "#7e7e7e"
+            android:layout_below="@+id/txt_name"
+            android:layout_alignParentRight = "true"
+            android:layout_alignParentEnd = "true"
+            android:layout_marginTop="170dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:imeOptions="actionDone"
+            android:drawableLeft="@drawable/vehicle_24px"
+            android:gravity="left"
+            android:layout_centerInParent="true"
+            android:layout_alignLeft="@+id/txt_mobileNo"
+
+            />
+
+        <!-- Spinner Element -->
+        <Spinner
+            android:id="@+id/dropDown_vehicleType"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/dropDown_vehicleType_prompt"
+            android:entries="@array/vehicleType_array"
+            android:layout_below="@+id/txt_vehicleNo"
+            android:layout_marginTop="240dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:gravity="left"
+            android:layout_centerInParent="true"
+            android:nextFocusForward="@+id/btn_login"
+            android:layout_alignLeft="@+id/txt_mobileNo"
+
+            />
+
+
+
+
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        android:id="@+id/btn_login"
+        android:layout_below="@+id/card_view"
+        android:layout_alignStart="@id/card_view"
+        android:layout_alignLeft="@id/card_view"
+        android:layout_alignRight="@+id/card_view"
+        android:layout_alignEnd="@+id/card_view"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:imeOptions="actionDone"
+
+        />
+
+
+
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/circular_progress_bar"
+        android:layout_centerInParent="true"
+        />
+
+
+
+</RelativeLayout>
+
+
+    <!--<ImageView-->
+    <!--android:id="@+id/rider_image"-->
+    <!--android:layout_width="65dp"-->
+    <!--android:layout_height="45dp"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:layout_marginTop="40dp"-->
+    <!--android:src="@drawable/rider1" />-->
+
+
+
+    <!--<TextView-->
+    <!--android:id="@+id/txt_link"-->
+    <!--android:layout_width="78dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:layout_below="@+id/rider_image"-->
+    <!--android:autoLink="web"-->
+    <!--android:linksClickable="true"-->
+    <!--android:textAlignment="center"-->
+    <!--android:textColorLink="@android:color/holo_blue_dark" />-->
+
+
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="130dp"-->
+    <!--android:id="@+id/image_logo"-->
+    <!--android:src="@drawable/cab_icon"-->
+    <!--android:layout_above="@+id/progressBar"-->
+    <!--android:layout_below="@+id/nowcabs"-->
+    <!--android:layout_alignEnd="@+id/txt_link"-->
+    <!--android:layout_alignParentStart="true" />-->
+
+
+    <!--<TextView android:text = "Nowcabs" android:layout_width="wrap_content"-->
+    <!--android:layout_height = "wrap_content"-->
+    <!--android:id = "@+id/textview"-->
+    <!--android:textSize = "30dp"-->
+    <!--android:layout_marginTop = "120dp"-->
+    <!--android:layout_alignParentTop = "true"-->
+    <!--android:layout_centerHorizontal = "true" />-->
+
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Cancel"-->
+    <!--android:id="@+id/button2"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_toRightOf="@+id/textview"-->
+    <!--android:layout_toEndOf="@+id/textview" />-->
+
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Next"-->
+    <!--android:id="@+id/btn_login"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:layout_below="@+id/dropDown_vehicleType"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_alignRight="@+id/txt_name"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:nextFocusForward="@+id/txt_link"-->
+    <!--android:background="@drawable/button"-->
+    <!--android:textColor="#ffffff"-->
+    <!--/>-->
+
+
+
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/txt_link"-->
+    <!--android:layout_below="@+id/btn_login"-->
+    <!--android:layout_marginTop = "15dp"-->
+    <!--android:layout_alignRight="@+id/txt_name"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:autoLink="web"-->
+    <!--android:linksClickable="true"-->
+    <!--android:textColorLink="@android:color/holo_blue_dark"-->
+    <!--/>-->
+
+    <!--<EditText-->
+    <!--android:layout_width = "wrap_content"-->
+    <!--android:layout_height = "wrap_content"-->
+    <!--android:id = "@+id/txt_mobileNo"-->
+    <!--android:hint = "Enter Driver Mobile No"-->
+    <!--android:maxLength="10"-->
+    <!--android:maxLines="1"-->
+    <!--android:layout_marginTop="15dp"-->
+    <!--android:focusable = "true"-->
+    <!--android:textColorHighlight = "#ff7eff15"-->
+    <!--android:textColorHint = "#7e7e7e"-->
+    <!--android:layout_below="@+id/nowcabs"-->
+    <!--android:layout_alignParentLeft = "true"-->
+    <!--android:layout_alignParentStart = "true"-->
+    <!--android:layout_alignParentRight = "true"-->
+    <!--android:layout_alignParentEnd = "true"-->
+    <!--android:inputType="number|none"-->
+    <!--android:digits="0123456789"-->
+    <!--android:imeOptions="actionNext"-->
+    <!--android:nextFocusForward="@+id/txt_name"-->
+    <!--android:drawableLeft="@drawable/phone_24px"-->
+    <!--/>-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/imageView"-->
+    <!--android:src="@drawable/abc"-->
+    <!--android:layout_below="@+id/textView"-->
+    <!--android:layout_centerHorizontal="true" />-->
+
+    <!--<EditText-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:inputType="text"-->
+    <!--android:ems="10"-->
+    <!--android:id="@+id/txt_name"-->
+    <!--android:maxLength="50"-->
+    <!--android:maxLines="1"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:layout_below="@+id/txt_mobileNo"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_alignRight="@+id/txt_mobileNo"-->
+    <!--android:layout_alignEnd="@+id/txt_mobileNo"-->
+    <!--android:textColorHint="#7e7e7e"-->
+    <!--android:hint="Enter Driver Name"-->
+    <!--android:imeOptions="actionNext"-->
+    <!--android:nextFocusForward="@+id/txt_vehicleNo"-->
+    <!--android:drawableLeft="@drawable/person_24px"/>-->
+
+
+    <!--<EditText-->
+    <!--android:layout_width = "wrap_content"-->
+    <!--android:layout_height = "wrap_content"-->
+    <!--android:inputType="text"-->
+    <!--android:id = "@+id/txt_vehicleNo"-->
+    <!--android:hint = "Enter Vehicle No"-->
+    <!--android:maxLength="10"-->
+    <!--android:maxLines="1"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:textColorHighlight = "#ff7eff15"-->
+    <!--android:textColorHint = "#7e7e7e"-->
+    <!--android:layout_below="@+id/txt_name"-->
+    <!--android:layout_alignParentLeft = "true"-->
+    <!--android:layout_alignParentStart = "true"-->
+    <!--android:layout_alignParentRight = "true"-->
+    <!--android:layout_alignParentEnd = "true"-->
+    <!--android:imeOptions="actionDone"-->
+    <!--android:drawableLeft="@drawable/vehicle_24px"-->
+    <!--/>-->
+
+    <!--&lt;!&ndash; Spinner Element &ndash;&gt;-->
+    <!--<Spinner-->
+    <!--android:id="@+id/dropDown_vehicleType"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:prompt="@string/dropDown_vehicleType_prompt"-->
+    <!--android:entries="@array/vehicleType_array"-->
+    <!--android:layout_below="@+id/txt_vehicleNo"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:layout_alignParentLeft = "true"-->
+    <!--android:layout_alignParentStart = "true"-->
+    <!--android:layout_alignParentRight = "true"-->
+    <!--android:layout_alignParentEnd = "true"-->
+    <!--android:nextFocusForward="@+id/btn_login"-->
+    <!--/>-->
+
+
+
+    <!--24-Sep-2018 background="#1E90FF"-->

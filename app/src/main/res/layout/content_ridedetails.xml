@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.rootmind.nowcabs.RideDetailsActivity"
+    tools:showIn="@layout/app_bar_ridedetails"
+    >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/iv_driverimage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                 />
+
+            <TextView
+                android:id="@+id/tv_drivername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/iv_driverimage"
+                android:layout_toRightOf="@id/iv_driverimage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121" />
+
+            <TextView
+            android:id="@+id/tv_drivermobileno"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_drivername"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@id/iv_driverimage"
+            android:layout_toRightOf="@id/iv_driverimage"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#727272"
+                android:textSize="14dip"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_driverID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_drivermobileno"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="6dp"
+                android:layout_toEndOf="@id/iv_driverimage"
+                android:layout_toRightOf="@id/iv_driverimage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#727272"
+                android:textSize="10dip"/>
+
+            <ToggleButton
+                android:id="@+id/chkState1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:background="@drawable/avatar_24dp"
+                android:checked="true"
+                android:padding="6dp"
+                android:textOff=""
+                android:textOn="" />
+
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_driverID"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:background="@drawable/avatar_24dp"-->
+                <!--android:checked="true"-->
+                <!--android:padding="6dp"-->
+                <!--android:textOff=""-->
+                <!--android:textOn="" />-->
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/iv_riderimage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:src="@drawable/avatar_black_24dp"
+                />
+
+            <TextView
+                android:id="@+id/tv_ridername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/iv_riderimage"
+                android:layout_toRightOf="@id/iv_riderimage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121" />
+
+            <TextView
+                android:id="@+id/tv_ridermobileno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_ridername"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="6dp"
+                android:layout_toEndOf="@id/iv_riderimage"
+                android:layout_toRightOf="@id/iv_riderimage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#727272"
+                android:textSize="14dip"/>
+
+
+            <TextView
+                android:id="@+id/tv_riderID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_ridermobileno"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="6dp"
+                android:layout_toEndOf="@id/iv_riderimage"
+                android:layout_toRightOf="@id/iv_riderimage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#727272"
+                android:textSize="10dip"/>
+
+            <!--<ToggleButton-->
+                <!--android:id="@+id/chkState2"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:background="@drawable/toggle_selector"-->
+                <!--android:checked="false"-->
+                <!--android:padding="6dp"-->
+                <!--android:textOff=""-->
+                <!--android:textOn="" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_rideID"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:background="@drawable/avatar_24dp"-->
+                <!--android:checked="true"-->
+                <!--android:padding="6dp"-->
+                <!--android:textOff=""-->
+                <!--android:textOn="" />-->
+
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="false"
+           >
+
+            <TextView
+                android:id="@+id/tv_rideID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/iv_sourceimage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:src="@drawable/location_24px" />
+
+            <TextView
+                android:id="@+id/tv_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/iv_sourceimage"
+                android:layout_toLeftOf="@+id/chkState3"
+                android:layout_toRightOf="@id/iv_sourceimage"
+                android:layout_toStartOf="@+id/chkState3"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121" />
+
+            <TextView
+                android:text="Source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_source"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/iv_sourceimage"
+                android:layout_toRightOf="@id/iv_sourceimage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#727272" />
+
+            <ToggleButton
+                android:id="@+id/chkState3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:background="@drawable/avatar_24dp"
+                android:checked="true"
+                android:padding="6dp"
+                android:textOff=""
+                android:textOn="" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/iv_destinationimage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:src="@drawable/location_24px"
+                 />
+
+            <TextView
+                android:id="@+id/tv_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/iv_destinationimage"
+                android:layout_toLeftOf="@+id/chkState4"
+                android:layout_toRightOf="@id/iv_destinationimage"
+                android:layout_toStartOf="@+id/chkState4"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="pratik@letsnurture.com"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_destination"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/iv_destinationimage"
+                android:layout_toRightOf="@id/iv_destinationimage"
+                android:text="Destination"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#727272" />
+
+            <ToggleButton
+                android:id="@+id/chkState4"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:background="@drawable/vehicle_24px"
+                android:padding="6dp"
+                android:textOff=""
+                android:textOn="" />
+
+        </RelativeLayout>
+
+        <!--<include layout="@layout/item_divider" />-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="?attr/selectableItemBackground"-->
+            <!--android:clickable="true"-->
+            <!--android:padding="@dimen/activity_horizontal_margin">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/ivContactItem5"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+                <!--android:src="@drawable/ic_location_on_black_24dp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvNumber5"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_toEndOf="@id/ivContactItem5"-->
+                <!--android:layout_toLeftOf="@+id/chkState5"-->
+                <!--android:layout_toRightOf="@id/ivContactItem5"-->
+                <!--android:layout_toStartOf="@+id/chkState5"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"-->
+                <!--android:text="202 Park Street, Los Angeles"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+                <!--android:textColor="#212121" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/tvNumber5"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_toEndOf="@id/ivContactItem5"-->
+                <!--android:layout_toRightOf="@id/ivContactItem5"-->
+                <!--android:text="Home"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Small"-->
+                <!--android:textColor="#727272" />-->
+
+            <!--<ToggleButton-->
+                <!--android:id="@+id/chkState5"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:background="@drawable/toggle_selector"-->
+                <!--android:checked="true"-->
+                <!--android:padding="6dp"-->
+                <!--android:textOff=""-->
+                <!--android:textOn="" />-->
+
+        <!--</RelativeLayout>-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="?attr/selectableItemBackground"-->
+            <!--android:clickable="true"-->
+            <!--android:padding="@dimen/activity_horizontal_margin">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/ivContactItem6"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+                <!--android:src="@drawable/ic_email_black_24dp"-->
+                <!--android:visibility="invisible" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvNumber6"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_toEndOf="@id/ivContactItem6"-->
+                <!--android:layout_toLeftOf="@+id/chkState6"-->
+                <!--android:layout_toRightOf="@id/ivContactItem6"-->
+                <!--android:layout_toStartOf="@+id/chkState6"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"-->
+                <!--android:text="221B Baker Street, England"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+                <!--android:textColor="#212121" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/tvNumber6"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_toEndOf="@id/ivContactItem6"-->
+                <!--android:layout_toRightOf="@id/ivContactItem6"-->
+                <!--android:text="Work"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Small"-->
+                <!--android:textColor="#727272" />-->
+
+            <!--<ToggleButton-->
+                <!--android:id="@+id/chkState6"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+                <!--android:background="@drawable/toggle_selector"-->
+                <!--android:padding="6dp"-->
+                <!--android:textOff=""-->
+                <!--android:textOn="" />-->
+
+        <!--</RelativeLayout>-->
+
+        <!--<include layout="@layout/item_divider" />-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--android:padding="@dimen/activity_horizontal_margin">-->
+
+            <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Send SMS" />-->
+
+            <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginTop="@dimen/activity_horizontal_margin"-->
+                <!--android:text="Call" />-->
+
+            <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginTop="@dimen/activity_horizontal_margin"-->
+                <!--android:text="Email" />-->
+
+            <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginTop="@dimen/activity_horizontal_margin"-->
+                <!--android:text="Remove Contact" />-->
+
+        <!--</LinearLayout>-->
+    </LinearLayout>
+
+
+
+
+
+</android.support.constraint.ConstraintLayout>

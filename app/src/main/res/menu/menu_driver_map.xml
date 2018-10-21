@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.rootmind.nowcabs.DriverMapActivity">
+    <!--<item-->
+    <!--android:id="@+id/action_settings"-->
+    <!--android:orderInCategory="100"-->
+    <!--android:title="@string/action_settings"-->
+    <!--android:icon="@drawable/morevert_24dp"-->
+    <!--app:showAsAction="ifRoom" />-->
+
+    <!--<item-->
+        <!--android:id="@+id/menu_morevert"-->
+        <!--android:icon="@drawable/morevert_24dp"-->
+        <!--android:title="action_notification"-->
+        <!--app:showAsAction="always">-->
+        <!--<menu>-->
+            <!--&lt;!&ndash;<item&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/menu_mobileNo"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:icon="@drawable/menu_24dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:orderInCategory="100"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:title="Mobile No" />&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<item&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/menu_name"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:icon="@drawable/avatar_24dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:orderInCategory="100"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:title="Name" />&ndash;&gt;-->
+
+            <!--<item-->
+                <!--android:id="@+id/menu_logout"-->
+                <!--android:icon="@drawable/logout_black_24dp"-->
+                <!--android:orderInCategory="100"-->
+                <!--android:title="LOGOUT" />-->
+        <!--</menu>-->
+    <!--</item>-->
+
+    <item
+        android:id="@+id/menu_morevert"
+        android:icon="@drawable/morevert_24dp"
+        android:title="action_notification"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menu_mobileNo"
+                android:icon="@drawable/menu_24dp"
+                android:orderInCategory="100"
+                android:title="Mobile No" />
+
+            <item
+                android:id="@+id/menu_name"
+                android:icon="@drawable/avatar_24dp"
+                android:orderInCategory="100"
+                android:title="Name" />
+
+            <item
+                android:id="@+id/menu_driverID"
+                android:icon="@drawable/avatar_24dp"
+                android:orderInCategory="100"
+                android:title="DriverID" />
+
+            <item
+                android:id="@+id/menu_vehicleNo"
+                android:icon="@drawable/avatar_24dp"
+                android:orderInCategory="100"
+                android:title="DriverID" />
+
+            <item
+                android:id="@+id/menu_vehicleType"
+                android:icon="@drawable/avatar_24dp"
+                android:orderInCategory="100"
+                android:title="DriverID" />
+
+            <item
+                android:id="@+id/menu_camera"
+                android:icon="@drawable/logout_black_24dp"
+                android:orderInCategory="100"
+                android:title="LOGOUT" />
+
+            <item
+                android:id="@+id/menu_logout"
+                android:icon="@drawable/logout_black_24dp"
+                android:orderInCategory="100"
+                android:title="LOGOUT" />
+        </menu>
+    </item>
+</menu>

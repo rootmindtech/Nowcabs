@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp"
+    android:gravity="bottom"
+    android:background="@color/colorTwitterBlue"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
+    >
+
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="0dp"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="5dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/linearImage"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:gravity="left"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            >
+
+            <ImageView
+                android:id="@+id/iv_vehicleImage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:src="@drawable/vehicle_24px"
+                android:layout_weight="1"
+                android:layout_gravity="left"
+                android:adjustViewBounds="true"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:scaleType="fitCenter"
+                />
+            <ImageView
+                android:id="@+id/iv_driverImage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/iv_vehicleImage"
+                android:layout_alignParentStart="true"
+                android:adjustViewBounds="true"
+                android:gravity="right"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/avatar_black_24dp"
+                android:layout_weight="1"
+                android:layout_gravity="right"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_driverImage"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            >
+
+            <TextView
+                android:id="@+id/tv_driverName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121" />
+
+
+            <TextView
+                android:id="@+id/tv_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_driverName"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="14dip" />
+
+            <TextView
+                android:id="@+id/tv_mobileNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_destination"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="23dip" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearDilaer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_gravity="right"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            >
+
+
+            <ImageView
+                android:id="@+id/iv_dialImage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignTop="@+id/iv_smsImage"
+                android:layout_weight="1.09"
+                android:adjustViewBounds="true"
+                android:gravity="left"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/dialer_icon48x48" />
+
+            <!--<ImageView-->
+                <!--android:id="@+id/iv_smsImage"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:adjustViewBounds="true"-->
+                <!--android:gravity="right"-->
+                <!--android:maxHeight="48dp"-->
+                <!--android:maxWidth="48dp"-->
+                <!--android:scaleType="fitCenter"-->
+                <!--android:src="@drawable/sms_icon48x48" />-->
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

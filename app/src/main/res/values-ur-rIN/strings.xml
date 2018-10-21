@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">اب کیک</string>
+
+    <string name="launcher_name">@string/app_name</string>
+    <string name="activity_name">@string/launcher_name</string>
+
+    <string name="logo">@string/app_name</string>
+
+
+    <string name="dropDown_vehicleType_prompt">گاڑی کی قسم منتخب کریں</string>
+
+    <string-array name="vehicleType_array">
+        <item>آٹو</item>
+        <item>ٹیکسی</item>
+    </string-array>
+
+    <string name="text_auto">آٹو</string>
+    <string name="text_car">ٹیکسی</string>
+    <string name="text_shop">دکان</string>
+    <string name="text_tool">سروس</string>
+    <string name="select_language">زبان منتخب کریں</string>
+
+    <string name="enter_mobile_no">موبائل نمبر</string>
+    <string name="enter_otp">اے ٹی پی</string>
+    <string name="next">اگلے</string>
+
+    <string name="rider">مسافر</string>
+    <string name="driver">ڈرائیور</string>
+    <string name="select_rider_driver">براہ کرم مسافر یا ڈرائیور منتخب کریں</string>
+
+    <string name="enter_name">نام درج کریں</string>
+    <string name="enter_vehicle_no">گاڑی نمبر</string>
+
+    <string name="you_rated">آپ نے درجہ کی</string>
+    <string name="call">کال کریں</string>
+    <string name="km">کلومیٹر</string>
+    <string name="rate">درجہ بندی</string>
+
+
+    <string name="enter_destination">منزل</string>
+
+
+    <string name="profile_and_settings">پروفائل اور ترتیبات</string>
+    <string name="logout_confirm">کیا آپ لاگ آؤٹ کرنا چاہتے ہیں؟</string>
+    <string name="logout">لاگ آوٹ</string>
+    <string name="ok">جی ہاں</string>
+    <string name="cancel">منسوخ کریں</string>
+    <string name="update_success">کامیاب اپ ڈیٹ</string>
+    <string name="save">بچاؤ</string>
+
+
+    <!--Driver Strings-->
+
+    <string name="vacant">خالی</string>
+    <string name="hired">کرایہ پر</string>
+
+
+    <string name="dropDown_local_prompt">زبان منتخب کریں</string>
+
+    <string-array name="locale_array">
+        <item>English</item>
+        <item>हिंदी</item>
+        <item>తెలుగు</item>
+        <item>தமிழ்</item>
+        <item>ಕನ್ನಡ್</item>
+        <item>اردو</item>
+    </string-array>
+
+    <string name="your_rides">آپ کی سواری</string>
+    <string name="favorite_added">پسندیدہ شامل</string>
+    <string name="favorite_removed">پسندیدہ ہٹا دیا</string>
+
+
+    <string name="directions">راستے</string>
+    <string name="directions_confirm">کیا آپ راستے چاہتے ہیں؟</string>
+    <string name="destination">منزل</string>
+    <string name="please_enter_destination">برائے مہربانی منزل درج کریں</string>
+
+    <string name="no_driver_near_by">آپ کے مقام کے قریب کوئی ڈرائیور نہیں ملا !!!</string>
+
+    <string name="invalid_mobile">موبائل نمبر غلط!!!</string>
+
+
+</resources>

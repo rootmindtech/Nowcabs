@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".AvatarActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/nowcabs"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/nowcabs"
+
+            />
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nowcabs"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/selfie"
+            android:textColor="@color/colorGrey"
+            android:textSize="20sp"
+            android:layout_gravity="center_horizontal"/>
+
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@android:drawable/sym_def_app_icon"/>
+
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_avatar"
+            android:background="@drawable/button"
+            android:layout_marginTop="30dp"
+            android:text="@string/next"
+            android:textColor="#ffffff"
+            android:imeOptions="actionDone"
+            />
+
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

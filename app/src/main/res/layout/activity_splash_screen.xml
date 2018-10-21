@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/splashLayout"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1">
+
+    <!--//05-Oct-2018-->
+    <!--<ImageView android:id="@+id/splashscreen" android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:src="@drawable/cab_icon"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginTop="30dp" />-->
+
+    <ImageView
+        android:id="@+id/nowcabs"
+        android:layout_width="366dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.03"
+        android:src="@drawable/nowcabs"
+        android:layout_marginTop="30dp"/>
+
+
+</LinearLayout>
