@@ -4,12 +4,17 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,8 +29,17 @@ import org.json.JSONArray;
 import android.text.TextWatcher;
 import android.text.Editable;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -37,10 +51,13 @@ import android.widget.ProgressBar;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static com.rootmind.nowcabs.DriverMapActivity.getCroppedBitmap;
 
 
 //
@@ -66,7 +83,7 @@ public class RiderLoginActivity extends AppCompatActivity {
     //private ImageView driver_image;
 
     private EditText txt_name;
-    private EditText txt_mobileNo;
+    private TextView txt_mobileNo;
     Button btn_login;
 
     private TextView tv_title;
@@ -79,6 +96,7 @@ public class RiderLoginActivity extends AppCompatActivity {
 
     public ProgressBar loadingSpinner;
 
+    //FirebaseStorage firebaseStorage;
 
 //    //05-Oct-2018 --Firebase suppress
 //    FirebaseDatabase firebaseDatabase;
@@ -102,6 +120,7 @@ public class RiderLoginActivity extends AppCompatActivity {
     String fcmToken;
     public Toolbar toolbar;
 
+    //CommonService commonService=null;
 
     //private static RiderLoginActivity mInstance;
 
@@ -119,6 +138,8 @@ public class RiderLoginActivity extends AppCompatActivity {
 
         // mInstance = this;
 
+//        commonService= new CommonService();
+
 
         //checkPermissions();
 
@@ -129,11 +150,13 @@ public class RiderLoginActivity extends AppCompatActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
+
+
 //        //05-Oct-2018
 //        //To initiate firebase
 //        firebaseDatabase = FirebaseDatabase.getInstance();
 
-        parameter = (Parameter) getIntent().getSerializableExtra("Parameter");
+        //parameter = (Parameter) getIntent().getSerializableExtra("Parameter");
         mobileNo = (String) getIntent().getSerializableExtra("mobileNo");
         userGroup = (String) getIntent().getSerializableExtra("userGroup");
         locale = (String) getIntent().getSerializableExtra("locale");
@@ -215,7 +238,7 @@ public class RiderLoginActivity extends AppCompatActivity {
     }
 
 
-    public void riderLogin(boolean autoLogin) {
+    public void riderLogin(final boolean autoLogin) {
 
 
 //                txt_mobileNo.addTextChangedListener(new TextWatcher() {
@@ -234,13 +257,6 @@ public class RiderLoginActivity extends AppCompatActivity {
 //                    public void onTextChanged(CharSequence s, int start, int before, int count){}
 //                });
 
-        if (!autoLogin) {
-
-            if (!checkValidation()) {
-
-                return;
-            }
-        }
 
 
 //                    String mobileNo = txt_mobileNo.getText().toString().trim();
@@ -253,7 +269,19 @@ public class RiderLoginActivity extends AppCompatActivity {
             public void run() {
 
 
+
                 try {
+
+
+
+                    if (!autoLogin) {
+
+                        if (!checkValidation()) {
+
+                            return;
+                        }
+                    }
+
 
 
                     //Shared Preferences
@@ -348,7 +376,7 @@ public class RiderLoginActivity extends AppCompatActivity {
                             rider.setRiderMobileNo(wrapperArrayObj.getJSONObject(0).optString("mobileNo"));
                             rider.setRiderName(wrapperArrayObj.getJSONObject(0).optString("firstName"));
                             rider.setStatus(wrapperArrayObj.getJSONObject(0).optString("status"));
-                            rider.setImageFound(false);
+                            //rider.setImageFound(false);
                             rider.setDatetime(formattedDate);
                             rider.setFcmToken(fcmToken);
                             rider.setLocale(wrapperArrayObj.getJSONObject(0).optString("locale"));
@@ -653,7 +681,7 @@ public class RiderLoginActivity extends AppCompatActivity {
 
         Log.d(TAG, "SharedPreferences putString ");
 
-        editor.putString("riderMobileNo", rider.getRiderMobileNo());
+//        editor.putString("riderMobileNo", rider.getRiderMobileNo());
         editor.putString("riderFirstName", rider.getRiderName());
         editor.putString("userGroup", GlobalConstants.RIDER_CODE);
         editor.putString("riderRefNo", rider.getRiderRefNo());
@@ -678,12 +706,13 @@ public class RiderLoginActivity extends AppCompatActivity {
 
         if (rider.getStatus().equals(GlobalConstants.ACTIVE_CODE)) {
 
-            parameter = new Parameter();
+            //parameter = new Parameter();
 
-            Intent i = new Intent(getApplicationContext(), RiderMapActivity.class);
+            Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("Parameter", parameter);
+            //bundle.putSerializable("Parameter", parameter);
             bundle.putSerializable("Rider", rider);
+            bundle.putSerializable("RegisterFlag", true); //only for registration
             i.putExtras(bundle);
             startActivity(i);
 
@@ -880,7 +909,7 @@ public class RiderLoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        txt_mobileNo = (EditText) findViewById(R.id.txt_mobileNo);
+        txt_mobileNo = (TextView) findViewById(R.id.txt_mobileNo);
         txt_name = (EditText) findViewById(R.id.txt_name);
 
         btn_login = (Button) findViewById(R.id.btn_login);
@@ -892,10 +921,10 @@ public class RiderLoginActivity extends AppCompatActivity {
 
 
         //check for sharedPreferences values
-        if (sharedPreferences.getString("riderMobileNo", "") != null) {
-
-            txt_mobileNo.setText(sharedPreferences.getString("riderMobileNo", ""));
-        }
+//        if (sharedPreferences.getString("riderMobileNo", "") != null) {
+//
+//            txt_mobileNo.setText(sharedPreferences.getString("riderMobileNo", ""));
+//        }
         if (sharedPreferences.getString("riderFirstName", "") != null) {
 
             txt_name.setText(sharedPreferences.getString("riderFirstName", ""));
@@ -1156,6 +1185,10 @@ public class RiderLoginActivity extends AppCompatActivity {
 
         return true;
     }
+
+
+
+
 
 
 }

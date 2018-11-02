@@ -49,15 +49,15 @@ public class DriverLoginActivity extends AppCompatActivity {
     String responseData = null;
 
 //    private ImageView image_logo;
-    private ImageView rider_image;
+    //private ImageView rider_image;
 
     private Spinner dropDown_vehicleType;
-    private EditText txt_mobileNo;
-    private EditText txt_name;
+//    private EditText txt_mobileNo;
+//    private EditText txt_name;
     private EditText txt_vehicleNo;
     Button btn_login;
-    TextView txt_link;
-    private TextView tv_title;
+    //TextView txt_link;
+    //private TextView tv_title;
 
 
 //    //05-Oct-2018 --Firebase suppress
@@ -75,7 +75,7 @@ public class DriverLoginActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
-    Driver driver = null;
+    //Driver driver = null;
 
     public String mobileNo = null;
     public String name = null;
@@ -83,13 +83,16 @@ public class DriverLoginActivity extends AppCompatActivity {
     public String vehicleType = null;
     public String locale=null;
 
-    public Boolean validationSuccess = false;
+    //public Boolean validationSuccess = false;
 
-    Parameter parameter;
-    private String userGroup = null;
+    //Parameter parameter;
+    //private String userGroup = null;
 
-    private String fcmToken=null;
+    //private String fcmToken=null;
     public Toolbar toolbar;
+    boolean registerFlag=false;
+
+    Rider rider;
 
 
     @SuppressLint("ResourceType")
@@ -108,13 +111,17 @@ public class DriverLoginActivity extends AppCompatActivity {
 //        //To initiate firebase
 //        firebaseDatabase = FirebaseDatabase.getInstance();
 
-        parameter = (Parameter) getIntent().getSerializableExtra("Parameter");
-        mobileNo = (String) getIntent().getSerializableExtra("mobileNo");
-        userGroup = (String) getIntent().getSerializableExtra("userGroup");
-        locale = (String) getIntent().getSerializableExtra("locale");
+//        parameter = (Parameter) getIntent().getSerializableExtra("Parameter");
+//        mobileNo = (String) getIntent().getSerializableExtra("mobileNo");
+//        userGroup = (String) getIntent().getSerializableExtra("userGroup");
+//        locale = (String) getIntent().getSerializableExtra("locale");
 
 
-        fcmToken = sharedPreferences.getString("fcmToken","");
+        rider = (Rider) getIntent().getSerializableExtra("Rider");
+        registerFlag = (boolean) getIntent().getSerializableExtra("RegisterFlag");
+
+
+        //fcmToken = sharedPreferences.getString("fcmToken","");
 
 
         //Log.d(TAG, "DriverLoginActivity:" );
@@ -180,7 +187,11 @@ public class DriverLoginActivity extends AppCompatActivity {
         protected Void doInBackground(Void... arg0) {
             //my stuff is here
 
-            driverLogin(false);
+
+
+            updateProfile();
+
+            //driverLogin(false);
             //driverFBLogin(false);
 
             return null;
@@ -195,208 +206,252 @@ public class DriverLoginActivity extends AppCompatActivity {
         }
     }
 
-    public void driverLogin(boolean autoLogin) {
+
+    public void updateProfile()
+    {
 
 
 
-//                txt_mobileNo.addTextChangedListener(new TextWatcher() {
-//                        public void afterTextChanged(Editable s) {
-//                            Validation.isPhoneNumber(txt_mobileNo,true);
-//                        }
-//                    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
-//                    public void onTextChanged(CharSequence s, int start, int before, int count){}
-//                });
-//                // TextWatcher would let us check validation error on the fly
-//                txt_name.addTextChangedListener(new TextWatcher() {
-//                    public void afterTextChanged(Editable s) {
-//                        Validation.hasText(txt_name);
-//                    }
-//                    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
-//                    public void onTextChanged(CharSequence s, int start, int before, int count){}
-//                });
-//
-//                txt_vehicleNo.addTextChangedListener(new TextWatcher() {
-//                    public void afterTextChanged(Editable s) {
-//                        Validation.hasText(txt_vehicleNo);
-//                    }
-//                    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
-//                    public void onTextChanged(CharSequence s, int start, int before, int count){}
-//                });
+        DriverLoginActivity.this.runOnUiThread(new Runnable() {
 
+            @Override
+            public void run() {
 
-            if (!autoLogin) {
 
                 if (!checkValidation()) {
 
                     return;
                 }
-            }
-
-            DriverLoginActivity.this.runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-
-                    try {
-
-//                        String mobileNo = txt_mobileNo.getText().toString().trim();
-//                        String name = txt_name.getText().toString().trim();
-//                        String vehicleNo = txt_vehicleNo.getText().toString().trim();
-//                        String vehicleType = dropDown_vehicleType.getSelectedItem().toString().trim();
-
-                        Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
 
 
-                        //Shared Preferences
-                        editor = sharedPreferences.edit();
-
-                        editor.putString("userid", "SYSTEM");
-                        editor.putString("deviceToken", fcmToken);
-                        editor.putString("sessionid", "SESSIONID");
-
-                        editor.apply();
 
 
-                        String methodAction = "insertDriver";
+                //button click event
+                CommonService commonService = new CommonService();
+                commonService.updateDriver(new Listener<Boolean>() {
+                    @Override
+                    public void on(Boolean arg) {
 
-                        JSONObject messageJson = new JSONObject();
-                        messageJson.put("mobileNo", mobileNo);
-                        messageJson.put("firstName", name);
-                        messageJson.put("vehicleNo", vehicleNo);
-                        messageJson.put("vehicleType", vehicleType);
-                        messageJson.put("service", GlobalConstants.TRANSPORT_BUSINESS);
-                        messageJson.put("fcmToken", fcmToken);
-                        messageJson.put("locale", locale);
+                        if (arg &&  registerFlag) {
+                            Intent i = new Intent(getApplicationContext(), AvatarActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("RegisterFlag", registerFlag);
+                            bundle.putSerializable("Rider", rider);
+                            i.putExtras(bundle);
+                            startActivity(i);
 
-
-                        ConnectHost connectHost = new ConnectHost();
-                        responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-
-                        Log.d(TAG, "insertDriver responseData: " + responseData);
-
-
-                        if (responseData != null) {
-
-
-                            // Convert String to json object
-                            JSONObject jsonResponseData = new JSONObject(responseData);
-
-                            // get LL json object
-                            JSONObject jsonResult = jsonResponseData.getJSONObject("insertDriver");
-
-//                            Log.d(TAG, "resData insertDriver: " + jsonResult);
-//
-//                            Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
-
-                            JSONArray wrapperArrayObj = jsonResult.getJSONArray("driverWrapper");
-
-//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-//
-//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
-
-                            if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
-
-
-                                //String driverRefNo = wrapperArrayObj.getJSONObject(0).getString("driverRefNo");
-                                //String driverID = wrapperArrayObj.getJSONObject(0).getString("driverID");
-                                //wrapperArrayObj.getJSONObject(0).getString("mobileNo");
-
-
-                                //Log.d(TAG, "Driver Info: " + driverRefNo + " " + driverID);
-
-//                            SavePreferences savePreferences = new SavePreferences();
-//                            savePreferences.savedPreferences("driverMobileNo", wrapperArrayObj.getJSONObject(0).getString("mobileNo"),
-//                                    "driverFirstName", wrapperArrayObj.getJSONObject(0).getString("firstName"),
-//                                    "userGroup", "DRIVER",
-//                                    "id", wrapperArrayObj.getJSONObject(0).getString("driverID"));
-
-
-//                                //Shared Preferences
-//                                editor = sharedPreferences.edit();
-//
-//                                Log.d(TAG, "SharedPreferences putString ");
-//
-//                                editor.putString("driverMobileNo", wrapperArrayObj.getJSONObject(0).getString("mobileNo"));
-//                                editor.putString("driverFirstName", wrapperArrayObj.getJSONObject(0).getString("firstName"));
-//                                editor.putString("userGroup", "DRIVER");
-//                                editor.putString("id", wrapperArrayObj.getJSONObject(0).getString("driverID"));
-//
-//                                editor.putString("vehicleNo", wrapperArrayObj.getJSONObject(0).getString("vehicleNo"));
-//                                editor.putString("vehicleType", wrapperArrayObj.getJSONObject(0).getString("vehicleType"));
-//
-//                                editor.commit();
-//
-//
-//                                Log.d(TAG, "Saved Info: " + sharedPreferences.getString("driverMobileNo", "") + " " + sharedPreferences.getString("driverFirstName", ""));
-//
-//                                Log.d(TAG, "Saved Info:2 " + sharedPreferences.getString("userGroup", "") + " " + sharedPreferences.getString("id", ""));
-
-
-                                driver = new Driver();
-
-                                driver.setDriverRefNo(wrapperArrayObj.getJSONObject(0).getString("driverRefNo"));
-                                driver.setDriverID(wrapperArrayObj.getJSONObject(0).getString("driverID"));
-                                driver.setDriverMobileNo(wrapperArrayObj.getJSONObject(0).getString("mobileNo"));
-                                driver.setDriverName(wrapperArrayObj.getJSONObject(0).getString("firstName"));
-                                driver.setDriverVehicleNo(wrapperArrayObj.getJSONObject(0).getString("vehicleNo"));
-                                //driver.setDriverStatus(wrapperArrayObj.getJSONObject(0).getString("status"));
-                                driver.setStatus(wrapperArrayObj.getJSONObject(0).getString("status"));
-                                driver.setDriverVehicleType(wrapperArrayObj.getJSONObject(0).getString("vehicleType"));
-                                driver.setFcmToken(fcmToken);
-                                driver.setLocale(wrapperArrayObj.getJSONObject(0).getString("locale"));
-
-
-                                setLoginDetails();
-
-                                //Intent i = new Intent(DriverLoginActivity.this, DriverMapActivity.class);
-                                //startActivity(i);
-
-//                                Intent i = new Intent(getApplicationContext(), DriverMapActivity.class);
-//                                Bundle bundle = new Bundle();
-//                                bundle.putSerializable("Driver", driver);
-//                                i.putExtras(bundle);
-//                                startActivity(i);
-
-
-                            }
-                            else
-                            {
-
-                                Toast.makeText(DriverLoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-                            }
-
-                            // get value from LL Json Object
-                            // String str_value=jsonResult.getString("riderWrapper"); //<< get value here
-
-
-                            //                    object = new JSONObject(jsonStr);
-                            //                    JSONObject response = object.getJSONObject("response");
-                            //                    JSONArray legislators = response.getJSONArray("legislators");
-                            //                    JSONObject first = legislators.getJSONObject(0).getJSONObject("legislator");
-
-
-                            //JSONObject jsonArraayObj=wrapperArrayObj.getJSONObject(0).getString("recordFound");
-
-                        } else {
-
-                            Toast.makeText(DriverLoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
                         }
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(DriverLoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
                     }
+                }, DriverLoginActivity.this, getApplicationContext(), rider);
+            }
+        });
 
-                    //}// validation
-
-                }//run end
-
-            });//runnable end
+    }
 
 
-        }//driverLogin End
+//    public void driverLogin(boolean autoLogin) {
+//
+//
+//
+////                txt_mobileNo.addTextChangedListener(new TextWatcher() {
+////                        public void afterTextChanged(Editable s) {
+////                            Validation.isPhoneNumber(txt_mobileNo,true);
+////                        }
+////                    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+////                    public void onTextChanged(CharSequence s, int start, int before, int count){}
+////                });
+////                // TextWatcher would let us check validation error on the fly
+////                txt_name.addTextChangedListener(new TextWatcher() {
+////                    public void afterTextChanged(Editable s) {
+////                        Validation.hasText(txt_name);
+////                    }
+////                    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+////                    public void onTextChanged(CharSequence s, int start, int before, int count){}
+////                });
+////
+////                txt_vehicleNo.addTextChangedListener(new TextWatcher() {
+////                    public void afterTextChanged(Editable s) {
+////                        Validation.hasText(txt_vehicleNo);
+////                    }
+////                    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+////                    public void onTextChanged(CharSequence s, int start, int before, int count){}
+////                });
+//
+//
+//            if (!autoLogin) {
+//
+//                if (!checkValidation()) {
+//
+//                    return;
+//                }
+//            }
+//
+//            DriverLoginActivity.this.runOnUiThread(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//
+//                    try {
+//
+////                        String mobileNo = txt_mobileNo.getText().toString().trim();
+////                        String name = txt_name.getText().toString().trim();
+////                        String vehicleNo = txt_vehicleNo.getText().toString().trim();
+////                        String vehicleType = dropDown_vehicleType.getSelectedItem().toString().trim();
+//
+//                        Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+//
+//
+//                        //Shared Preferences
+//                        editor = sharedPreferences.edit();
+//
+//                        editor.putString("userid", "SYSTEM");
+//                        editor.putString("deviceToken", fcmToken);
+//                        editor.putString("sessionid", "SESSIONID");
+//
+//                        editor.apply();
+//
+//
+//                        String methodAction = "insertDriver";
+//
+//                        JSONObject messageJson = new JSONObject();
+//                        messageJson.put("mobileNo", mobileNo);
+//                        messageJson.put("firstName", name);
+//                        messageJson.put("vehicleNo", vehicleNo);
+//                        messageJson.put("vehicleType", vehicleType);
+//                        messageJson.put("service", GlobalConstants.TRANSPORT_BUSINESS);
+//                        messageJson.put("fcmToken", fcmToken);
+//                        messageJson.put("locale", locale);
+//
+//
+//                        ConnectHost connectHost = new ConnectHost();
+//                        responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+//
+//                        Log.d(TAG, "insertDriver responseData: " + responseData);
+//
+//
+//                        if (responseData != null) {
+//
+//
+//                            // Convert String to json object
+//                            JSONObject jsonResponseData = new JSONObject(responseData);
+//
+//                            // get LL json object
+//                            JSONObject jsonResult = jsonResponseData.getJSONObject("insertDriver");
+//
+////                            Log.d(TAG, "resData insertDriver: " + jsonResult);
+////
+////                            Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
+//
+//                            JSONArray wrapperArrayObj = jsonResult.getJSONArray("driverWrapper");
+//
+////                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+////
+////                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
+//
+//                            if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
+//
+//
+//                                //String driverRefNo = wrapperArrayObj.getJSONObject(0).getString("driverRefNo");
+//                                //String driverID = wrapperArrayObj.getJSONObject(0).getString("driverID");
+//                                //wrapperArrayObj.getJSONObject(0).getString("mobileNo");
+//
+//
+//                                //Log.d(TAG, "Driver Info: " + driverRefNo + " " + driverID);
+//
+////                            SavePreferences savePreferences = new SavePreferences();
+////                            savePreferences.savedPreferences("driverMobileNo", wrapperArrayObj.getJSONObject(0).getString("mobileNo"),
+////                                    "driverFirstName", wrapperArrayObj.getJSONObject(0).getString("firstName"),
+////                                    "userGroup", "DRIVER",
+////                                    "id", wrapperArrayObj.getJSONObject(0).getString("driverID"));
+//
+//
+////                                //Shared Preferences
+////                                editor = sharedPreferences.edit();
+////
+////                                Log.d(TAG, "SharedPreferences putString ");
+////
+////                                editor.putString("driverMobileNo", wrapperArrayObj.getJSONObject(0).getString("mobileNo"));
+////                                editor.putString("driverFirstName", wrapperArrayObj.getJSONObject(0).getString("firstName"));
+////                                editor.putString("userGroup", "DRIVER");
+////                                editor.putString("id", wrapperArrayObj.getJSONObject(0).getString("driverID"));
+////
+////                                editor.putString("vehicleNo", wrapperArrayObj.getJSONObject(0).getString("vehicleNo"));
+////                                editor.putString("vehicleType", wrapperArrayObj.getJSONObject(0).getString("vehicleType"));
+////
+////                                editor.commit();
+////
+////
+////                                Log.d(TAG, "Saved Info: " + sharedPreferences.getString("driverMobileNo", "") + " " + sharedPreferences.getString("driverFirstName", ""));
+////
+////                                Log.d(TAG, "Saved Info:2 " + sharedPreferences.getString("userGroup", "") + " " + sharedPreferences.getString("id", ""));
+//
+//
+//                                driver = new Driver();
+//
+//                                driver.setDriverRefNo(wrapperArrayObj.getJSONObject(0).getString("driverRefNo"));
+//                                driver.setDriverID(wrapperArrayObj.getJSONObject(0).getString("driverID"));
+//                                driver.setDriverMobileNo(wrapperArrayObj.getJSONObject(0).getString("mobileNo"));
+//                                driver.setDriverName(wrapperArrayObj.getJSONObject(0).getString("firstName"));
+//                                driver.setDriverVehicleNo(wrapperArrayObj.getJSONObject(0).getString("vehicleNo"));
+//                                //driver.setDriverStatus(wrapperArrayObj.getJSONObject(0).getString("status"));
+//                                driver.setStatus(wrapperArrayObj.getJSONObject(0).getString("status"));
+//                                driver.setDriverVehicleType(wrapperArrayObj.getJSONObject(0).getString("vehicleType"));
+//                                driver.setFcmToken(fcmToken);
+//                                driver.setLocale(wrapperArrayObj.getJSONObject(0).getString("locale"));
+//
+//
+//                                setLoginDetails();
+//
+//                                //Intent i = new Intent(DriverLoginActivity.this, DriverMapActivity.class);
+//                                //startActivity(i);
+//
+////                                Intent i = new Intent(getApplicationContext(), DriverMapActivity.class);
+////                                Bundle bundle = new Bundle();
+////                                bundle.putSerializable("Driver", driver);
+////                                i.putExtras(bundle);
+////                                startActivity(i);
+//
+//
+//                            }
+//                            else
+//                            {
+//
+//                                Toast.makeText(DriverLoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//                            }
+//
+//                            // get value from LL Json Object
+//                            // String str_value=jsonResult.getString("riderWrapper"); //<< get value here
+//
+//
+//                            //                    object = new JSONObject(jsonStr);
+//                            //                    JSONObject response = object.getJSONObject("response");
+//                            //                    JSONArray legislators = response.getJSONArray("legislators");
+//                            //                    JSONObject first = legislators.getJSONObject(0).getJSONObject("legislator");
+//
+//
+//                            //JSONObject jsonArraayObj=wrapperArrayObj.getJSONObject(0).getString("recordFound");
+//
+//                        } else {
+//
+//                            Toast.makeText(DriverLoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        Toast.makeText(DriverLoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//                    }
+//
+//                    //}// validation
+//
+//                }//run end
+//
+//            });//runnable end
+//
+//
+//        }//driverLogin End
 
 
 //    //05-Oct-2018 --Firebase suppress
@@ -606,50 +661,50 @@ public class DriverLoginActivity extends AppCompatActivity {
 //
 //        }
 
-        public void setLoginDetails () {
-
-
-            //Shared Preferences
-            editor = sharedPreferences.edit();
-
-            Log.d(TAG, "SharedPreferences putString ");
-
-            editor.putString("driverMobileNo", driver.getDriverMobileNo());
-            editor.putString("driverFirstName", driver.getDriverName());
-            editor.putString("userGroup", GlobalConstants.DRIVER_CODE);
-            editor.putString("driverID", driver.getDriverID());
-            editor.putString("vehicleNo", driver.getDriverVehicleNo());
-            editor.putString("vehicleType", driver.getDriverVehicleType());
-            editor.putString("autoLogin", GlobalConstants.YES_CODE);
-            //editor.putString("driverRadius", wrapperArrayObj.getJSONObject(0).getString("driverRadius"));
-            editor.putString("fcmToken", fcmToken);
-            editor.putString("locale",locale);
-
-            Log.d(TAG, "fcmToken: " + fcmToken);
-
-            editor.apply();
-
-
-            Log.d(TAG, "Saved Info: " + sharedPreferences.getString("driverMobileNo", "") + " " + sharedPreferences.getString("driverFirstName", ""));
-
-            Log.d(TAG, "Before Change Activity ");
-            if (driver.getStatus().equals(GlobalConstants.ACTIVE_CODE)) {
-
-                parameter = new Parameter();
-
-                Intent i = new Intent(getApplicationContext(), AvatarActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("Parameter", parameter);
-                bundle.putSerializable("Driver", driver);
-                i.putExtras(bundle);
-                startActivity(i);
-
-                Log.d(TAG, "Going to DriverMap ");
-            } else {
-                CommonService.Toast(DriverLoginActivity.this, GlobalConstants.ACCESS_RESTRICTED, Toast.LENGTH_SHORT);
-
-            }
-        }
+//        public void setLoginDetails () {
+//
+//
+//            //Shared Preferences
+//            editor = sharedPreferences.edit();
+//
+//            Log.d(TAG, "SharedPreferences putString ");
+//
+//            editor.putString("driverMobileNo", driver.getDriverMobileNo());
+//            editor.putString("driverFirstName", driver.getDriverName());
+//            editor.putString("userGroup", GlobalConstants.DRIVER_CODE);
+//            editor.putString("driverID", driver.getDriverID());
+//            editor.putString("vehicleNo", driver.getDriverVehicleNo());
+//            editor.putString("vehicleType", driver.getDriverVehicleType());
+//            editor.putString("autoLogin", GlobalConstants.YES_CODE);
+//            //editor.putString("driverRadius", wrapperArrayObj.getJSONObject(0).getString("driverRadius"));
+//            editor.putString("fcmToken", fcmToken);
+//            editor.putString("locale",locale);
+//
+//            Log.d(TAG, "fcmToken: " + fcmToken);
+//
+//            editor.apply();
+//
+//
+//            Log.d(TAG, "Saved Info: " + sharedPreferences.getString("driverMobileNo", "") + " " + sharedPreferences.getString("driverFirstName", ""));
+//
+//            Log.d(TAG, "Before Change Activity ");
+//            if (driver.getStatus().equals(GlobalConstants.ACTIVE_CODE)) {
+//
+//                //parameter = new Parameter();
+//
+//                Intent i = new Intent(getApplicationContext(), AvatarActivity.class);
+//                Bundle bundle = new Bundle();
+//                //bundle.putSerializable("Parameter", parameter);
+//                bundle.putSerializable("Driver", driver);
+//                i.putExtras(bundle);
+//                startActivity(i);
+//
+//                Log.d(TAG, "Going to DriverMap ");
+//            } else {
+//                CommonService.Toast(DriverLoginActivity.this, GlobalConstants.ACCESS_RESTRICTED, Toast.LENGTH_SHORT);
+//
+//            }
+//        }
 
 
 //    //05-Oct-2018 --Firebase suppress
@@ -741,17 +796,17 @@ public class DriverLoginActivity extends AppCompatActivity {
 //                }
 //            });
             // TextWatcher would let us check validation error on the fly
-            txt_name.addTextChangedListener(new TextWatcher() {
-                public void afterTextChanged(Editable s) {
-                    Validation.hasText(txt_name);
-                }
-
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-            });
+//            txt_name.addTextChangedListener(new TextWatcher() {
+//                public void afterTextChanged(Editable s) {
+//                    Validation.hasText(txt_name);
+//                }
+//
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                }
+//            });
 
             txt_vehicleNo.addTextChangedListener(new TextWatcher() {
                 public void afterTextChanged(Editable s) {
@@ -767,15 +822,18 @@ public class DriverLoginActivity extends AppCompatActivity {
 
 //            if (!Validation.isPhoneNumber(txt_mobileNo, true)) ret = false;
 
-            if (!Validation.hasText(txt_name)) ret = false;
+//            if (!Validation.hasText(txt_name)) ret = false;
             if (!Validation.hasText(txt_vehicleNo)) ret = false;
 
             if (ret) {
 
-                mobileNo = txt_mobileNo.getText().toString().trim();
-                name = txt_name.getText().toString().trim();
+//                mobileNo = txt_mobileNo.getText().toString().trim();
+//                name = txt_name.getText().toString().trim();
                 vehicleNo = txt_vehicleNo.getText().toString().trim();
                 vehicleType = CommonService.selectVehicleType(dropDown_vehicleType.getSelectedItemPosition());
+
+                rider.setVehicleNo(vehicleNo);
+                rider.setVehicleType(vehicleType);
 
 
 
@@ -877,47 +935,64 @@ public class DriverLoginActivity extends AppCompatActivity {
 
             dropDown_vehicleType = (Spinner) findViewById(R.id.dropDown_vehicleType);
 
-            txt_mobileNo = (EditText) findViewById(R.id.txt_mobileNo);
-            txt_name = (EditText) findViewById(R.id.txt_name);
+//            txt_mobileNo = (EditText) findViewById(R.id.txt_mobileNo);
+//            txt_name = (EditText) findViewById(R.id.txt_name);
+
             txt_vehicleNo = (EditText) findViewById(R.id.txt_vehicleNo);
             btn_login = (Button) findViewById(R.id.btn_login);
 
+            ImageView nowcabs = (ImageView) findViewById(R.id.nowcabs);
 
-            txt_mobileNo.setEnabled(false);
+
+//            txt_mobileNo.setEnabled(false);
+//            txt_name.setEnabled(false);
 
             //Progressbar
             loadingSpinner = (ProgressBar) findViewById(R.id.progressBar);
             loadingSpinner.setVisibility(View.GONE);
 
 
+            fetchProfile();
+
+            if(!registerFlag)
+            {
+                btn_login.setText(R.string.save);
+                //nowcabs.setVisibility(View.GONE);
+            }
+
+
             //addListenerOnButton();
             addListenerOnSpinnerItemSelection();
 
 
-            //check for sharedPreferences values
-            if (sharedPreferences.getString("driverMobileNo", "") != null) {
-                txt_mobileNo.setText(sharedPreferences.getString("driverMobileNo", ""));
-            }
-            if (sharedPreferences.getString("driverFirstName", "") != null) {
-                txt_name.setText(sharedPreferences.getString("driverFirstName", ""));
-            }
-            if (sharedPreferences.getString("vehicleNo", "") != null) {
-                txt_vehicleNo.setText(sharedPreferences.getString("vehicleNo", ""));
-            }
-            if (sharedPreferences.getString("vehicleNo", "") != null) {
+//            //check for sharedPreferences values
+//            if (sharedPreferences.getString("driverMobileNo", "") != null) {
+//                txt_mobileNo.setText(sharedPreferences.getString("driverMobileNo", ""));
+//            }
+//            if (sharedPreferences.getString("driverFirstName", "") != null) {
+//                txt_name.setText(sharedPreferences.getString("driverFirstName", ""));
+//            }
+//            if (sharedPreferences.getString("vehicleNo", "") != null) {
+//                txt_vehicleNo.setText(sharedPreferences.getString("vehicleNo", ""));
+//            }
+//            if (sharedPreferences.getString("vehicleNo", "") != null) {
+//
+//                dropDown_vehicleType.setSelection(CommonService.populateVehicleType(sharedPreferences.getString("vehicleType", "")));
+//
+////                int i = 0;
+////                if (sharedPreferences.getString("vehicleType", "").equals(GlobalConstants.AUTO_CODE)) {
+////                    i = 0; //AUTO
+////                } else {
+////                    i = 1; //CAB
+////                }
+////                dropDown_vehicleType.setSelection(i);
+//            }
 
-                dropDown_vehicleType.setSelection(CommonService.populateVehicleType(sharedPreferences.getString("vehicleType", "")));
+            mobileNo = rider.getRiderMobileNo();
+            name = rider.getRiderName();
 
-//                int i = 0;
-//                if (sharedPreferences.getString("vehicleType", "").equals(GlobalConstants.AUTO_CODE)) {
-//                    i = 0; //AUTO
-//                } else {
-//                    i = 1; //CAB
-//                }
-//                dropDown_vehicleType.setSelection(i);
-            }
-
-            txt_mobileNo.setText(mobileNo);
+//            txt_mobileNo.setText(mobileNo);
+//            txt_name.setText(name);
 
             btn_login.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -934,16 +1009,16 @@ public class DriverLoginActivity extends AppCompatActivity {
                 }
             });
 
-            txt_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        txt_name.clearFocus();
-                        Log.d(TAG, "RiderLogin onFocusChange:");
-                        CommonService.hideKeyboardView(DriverLoginActivity.this,txt_name);
-                    }
-                }
-            });
+//            txt_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                @Override
+//                public void onFocusChange(View v, boolean hasFocus) {
+//                    if (!hasFocus) {
+//                        txt_name.clearFocus();
+//                        Log.d(TAG, "RiderLogin onFocusChange:");
+//                        CommonService.hideKeyboardView(DriverLoginActivity.this,txt_name);
+//                    }
+//                }
+//            });
 
 
             txt_vehicleNo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -1172,6 +1247,40 @@ public class DriverLoginActivity extends AppCompatActivity {
         return true;
     }
 
+    public void fetchProfile()
+    {
+        //button click event
+        final CommonService commonService = new CommonService();
+        commonService.fetchRider(new Listener<Boolean>() {
+            @Override
+            public void on(Boolean arg) {
 
+                if(arg)
+                {
+
+                    txt_vehicleNo.setText(rider.getVehicleNo());
+                    dropDown_vehicleType.setSelection(CommonService.populateVehicleType(rider.getVehicleType()));
+
+                    vehicleNo = txt_vehicleNo.getText().toString().trim();
+                    vehicleType = CommonService.selectVehicleType(dropDown_vehicleType.getSelectedItemPosition());
+
+
+
+                }
+                else
+                {
+                    btn_login.setVisibility(View.GONE);
+                }
+
+
+
+            }
+
+        }, DriverLoginActivity.this, getApplicationContext(), rider);
+
+
+
+
+    }
 
 }

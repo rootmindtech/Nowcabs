@@ -1,6 +1,7 @@
 package com.rootmind.nowcabs;
 
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -35,10 +38,12 @@ import java.util.Locale;
  * Created by rootmindtechsoftprivatelimited on 28/07/17.
  */
 
-public class RiderProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+//implements NavigationView.OnNavigationItemSelectedListener
+
+public class RiderProfileActivity extends AppCompatActivity  {
 
     public Toolbar toolbar;
-    public DrawerLayout drawer;
+    //public DrawerLayout drawer;
     private static final String TAG = "RiderProfileActivity";
 
     private EditText txt_name;
@@ -49,7 +54,7 @@ public class RiderProfileActivity extends AppCompatActivity implements Navigatio
     Button btn_save;
     Rider rider;
 
-    String responseData = null;
+    //String responseData = null;
 
 
     SharedPreferences sharedPreferences;
@@ -64,8 +69,11 @@ public class RiderProfileActivity extends AppCompatActivity implements Navigatio
 
     public String locale=null;
 
+    ImageView iv_avatar;
 
+    CommonService commonService=null;
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,12 +93,11 @@ public class RiderProfileActivity extends AppCompatActivity implements Navigatio
 
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundResource(Color.TRANSPARENT);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setTitle(R.string.profile_and_settings);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         //sidenav header
@@ -104,11 +111,14 @@ public class RiderProfileActivity extends AppCompatActivity implements Navigatio
 //        drawer.setDrawerListener(toggle);
 //        toggle.syncState();
 
+        commonService = new CommonService();
+
 
         //---input text boxes
         txt_mobileNo = (EditText) findViewById(R.id.txt_mobileNo);
         txt_name = (EditText) findViewById(R.id.txt_name);
         dropDown_locale = (Spinner) findViewById(R.id.dropDown_locale);
+        iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
 
 
         btn_logout = (Button) findViewById(R.id.btn_logout);
@@ -199,6 +209,9 @@ public class RiderProfileActivity extends AppCompatActivity implements Navigatio
                     locale = CommonService.selectLocale(dropDown_locale.getSelectedItemPosition());
 
 
+                    rider.setRiderName(name);
+                    rider.setLocale(locale);
+
                     updateProfile();
                     //updateFBProfile();
                 }
@@ -215,6 +228,16 @@ public class RiderProfileActivity extends AppCompatActivity implements Navigatio
                     Log.d(TAG, "RiderLogin onFocusChange:");
                     CommonService.hideKeyboardView(RiderProfileActivity.this,txt_name);
                 }
+            }
+        });
+
+        iv_avatar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                commonService.openFrontCamera(RiderProfileActivity.this);
+
             }
         });
 
@@ -244,30 +267,30 @@ public class RiderProfileActivity extends AppCompatActivity implements Navigatio
 //    }
 
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//        // Handle navigation view item clicks here.
+//        int id = item.getItemId();
 //
-//        } else if (id == R.id.nav_slideshow) {
+////        if (id == R.id.nav_camera) {
+////            // Handle the camera action
+////        } else if (id == R.id.nav_gallery) {
+////
+////        } else if (id == R.id.nav_slideshow) {
+////
+////        } else if (id == R.id.nav_manage) {
+////
+////        } else if (id == R.id.nav_share) {
+////
+////        } else if (id == R.id.nav_send) {
+////
+////        }
 //
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -275,238 +298,358 @@ public class RiderProfileActivity extends AppCompatActivity implements Navigatio
         return true;
     }
 
-    public void fetchProfile() {
+//    public void fetchProfile()
+//    {
+//
+//        //onCreate
+//        final CommonService commonService = new CommonService();
+//        commonService.fetchRider(new Listener<Boolean>() {
+//            @Override
+//            public void on(Boolean arg) {
+//
+//                if(arg)
+//                {
+//
+//
+//
+//                    txt_mobileNo.setText(rider.getRiderMobileNo());
+//                    txt_name.setText(rider.getRiderName());
+//                    dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
+//
+//                    commonService.getImage(iv_avatar,rider.getImageName());
+//
+//
+//                }
+//
+//            }
+//        }, RiderProfileActivity.this, getApplicationContext(), rider);
+//
+//
+//    }
 
 
-        RiderProfileActivity.this.runOnUiThread(new Runnable() {
-
+    public void fetchProfile()
+    {
+        //button click event
+        final CommonService commonService = new CommonService();
+        commonService.fetchRider(new Listener<Boolean>() {
             @Override
-            public void run() {
+            public void on(Boolean arg) {
 
+                if(arg)
+                {
+                    txt_mobileNo.setText(rider.getRiderMobileNo());
+                    txt_name.setText(rider.getRiderName());
+                    dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
 
-                try {
+                    commonService.getImage(iv_avatar,CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
 
-
-                    //Shared Preferences
-                    editor = sharedPreferences.edit();
-
-                    editor.putString("userid", rider.getRiderID());
-                    editor.putString("deviceToken", "DEVICETOKEN");
-                    editor.putString("sessionid", "SESSIONID");
-
-                    editor.apply();
-
-
-                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
-
-                    //loadingSpinner.setVisibility(View.VISIBLE);
-
-                    String methodAction = "fetchRider";
-
-                    JSONObject messageJson = new JSONObject();
-                    messageJson.put("riderRefNo", rider.getRiderRefNo());
-                    messageJson.put("riderID", rider.getRiderID());
-                    messageJson.put("status", rider.getStatus());
-
-
-                    ConnectHost connectHost = new ConnectHost();
-                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-                    // loadingSpinner.setVisibility(View.GONE);
-
-                    Log.d(TAG, "RiderLogin responseData: " + responseData);
-
-
-                    if (responseData != null) {
-
-
-                        JSONObject jsonResponseData = new JSONObject(responseData);
-                        JSONObject jsonResult = jsonResponseData.getJSONObject("fetchRider");
-
-                        //Log.d(TAG, "resData insertRider: " + jsonResult);
-                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
-
-                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
-
-                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
-
-                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
-
-
-                            //rider = new Rider();
-                            rider.setRiderMobileNo(wrapperArrayObj.getJSONObject(0).optString("mobileNo"));
-                            rider.setRiderName(wrapperArrayObj.getJSONObject(0).optString("firstName"));
-                            rider.setLocale(wrapperArrayObj.getJSONObject(0).optString("locale"));
-
-                            txt_mobileNo.setText(rider.getRiderMobileNo());
-                            txt_name.setText(rider.getRiderName());
-
-                            dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
-
-
-
-                        } else {
-
-                            Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    } else {
-
-                        Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                }
+                else
+                {
+                    btn_save.setVisibility(View.GONE);
                 }
 
 
-                //}//validation
 
-            }//run end
+            }
 
-        });//runnable end
+        }, RiderProfileActivity.this, getApplicationContext(), rider);
 
 
-    } //-------end of fetch profile
-
-
-    public void updateProfile() {
-
-
-        RiderProfileActivity.this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-
-                try {
-
-
-                    //Shared Preferences
-                    editor = sharedPreferences.edit();
-
-                    editor.putString("userid", rider.getRiderID());
-                    editor.putString("deviceToken", "DEVICETOKEN");
-                    editor.putString("sessionid", "SESSIONID");
-
-                    editor.apply();
-
-
-                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
-
-                    //loadingSpinner.setVisibility(View.VISIBLE);
-
-
-                    String methodAction = "updateRider";
-
-                    JSONObject messageJson = new JSONObject();
-                    //messageJson.put("mobileNo", mobileNo);
-                    messageJson.put("firstName", name);
-                    messageJson.put("locale", locale);
-                    messageJson.put("riderRefNo", rider.getRiderRefNo());
-                    messageJson.put("riderID", rider.getRiderID());
-
-
-
-                    ConnectHost connectHost = new ConnectHost();
-
-                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-
-                    // loadingSpinner.setVisibility(View.GONE);
-
-                    Log.d(TAG, "RiderLogin responseData: " + responseData);
-
-
-                    if (responseData != null) {
-
-
-                        // Convert String to json object
-                        JSONObject jsonResponseData = new JSONObject(responseData);
-
-                        // get LL json object
-                        JSONObject jsonResult = jsonResponseData.getJSONObject("updateRider");
-
-                        //Log.d(TAG, "resData insertRider: " + jsonResult);
-                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
-
-                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
-
-                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
-
-                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
-
-
-                            rider = new Rider();
-
-                            rider.setRiderRefNo(wrapperArrayObj.getJSONObject(0).getString("riderRefNo"));
-                            rider.setRiderID(wrapperArrayObj.getJSONObject(0).getString("riderID"));
-                            //rider.setRiderMobileNo(wrapperArrayObj.getJSONObject(0).getString("mobileNo"));
-                            rider.setRiderName(wrapperArrayObj.getJSONObject(0).optString("firstName"));
-                            rider.setLocale(wrapperArrayObj.getJSONObject(0).optString("locale"));
-
-                            setLoginDetails();
-
-                        } else {
-
-                            Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    } else {
-
-                        Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                //}//validation
-
-            }//run end
-
-        });//runnable end
-
-
-    } //-------end of update profile
-
-
-
-    public void setLoginDetails() {
-
-
-        //Shared Preferences
-        editor = sharedPreferences.edit();
-
-        Log.d(TAG, "SharedPreferences putString ");
-
-        editor.putString("riderFirstName", rider.getRiderName());
-        editor.putString("locale", rider.getLocale());
-
-
-        editor.apply();
-
-        updateLocale(RiderProfileActivity.this, new Locale(rider.getLocale()));
-
-        Toast.makeText(RiderProfileActivity.this, R.string.update_success, Toast.LENGTH_SHORT).show();
 
 
     }
 
 
-    @TargetApi(Build.VERSION_CODES.N)
-    private void updateLocale(Context context, Locale locale) {
+//    public void fetchProfile() {
+//
+//
+//        RiderProfileActivity.this.runOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//
+//                try {
+//
+//
+//                    //Shared Preferences
+//                    editor = sharedPreferences.edit();
+//
+//                    editor.putString("userid", rider.getRiderID());
+//                    editor.putString("deviceToken", rider.getFcmToken());
+//                    editor.putString("sessionid", "SESSIONID");
+//
+//                    editor.apply();
+//
+//
+//                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+//
+//                    //loadingSpinner.setVisibility(View.VISIBLE);
+//
+//                    String methodAction = "fetchRider";
+//
+//                    JSONObject messageJson = new JSONObject();
+//                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+//                    messageJson.put("riderID", rider.getRiderID());
+//                    messageJson.put("status", rider.getStatus());
+//                    messageJson.put("imageID", GlobalConstants.IMAGE_AVATAR);
+//
+//
+//
+//                    ConnectHost connectHost = new ConnectHost();
+//                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+//                    // loadingSpinner.setVisibility(View.GONE);
+//
+//                    Log.d(TAG, "RiderLogin responseData: " + responseData);
+//
+//
+//                    if (responseData != null) {
+//
+//
+//                        JSONObject jsonResponseData = new JSONObject(responseData);
+//                        JSONObject jsonResult = jsonResponseData.getJSONObject("fetchRider");
+//
+//                        //Log.d(TAG, "resData insertRider: " + jsonResult);
+//                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
+//
+//                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
+//
+//                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+//                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
+//
+//                        if (jsonResponseData.optString("success") == "true" && wrapperArrayObj.getJSONObject(0).optString("recordFound") == "true") {
+//
+//
+//                            //rider = new Rider();
+//                            rider.setRiderMobileNo(wrapperArrayObj.getJSONObject(0).optString("mobileNo"));
+//                            rider.setRiderName(wrapperArrayObj.getJSONObject(0).optString("firstName"));
+//                            rider.setLocale(wrapperArrayObj.getJSONObject(0).optString("locale"));
+//
+//                            txt_mobileNo.setText(rider.getRiderMobileNo());
+//                            txt_name.setText(rider.getRiderName());
+//
+//                            dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
+//
+//                            JSONArray imageWrappers = wrapperArrayObj.getJSONObject(0).getJSONArray("imageWrappers");
+//
+//                            if(imageWrappers!=null)
+//                            {
+//
+//                                for(int i=0;i<imageWrappers.length();i++)
+//                                {
+//                                   if(imageWrappers.getJSONObject(i).optString("recordFound")=="true" &&
+//                                           imageWrappers.getJSONObject(i).optString("imageID").equals(GlobalConstants.IMAGE_AVATAR))
+//                                   {
+//
+//                                       rider.setImageName(imageWrappers.getJSONObject(i).optString("imageName"));
+//                                       //Toast.makeText(RiderProfileActivity.this, rider.getImageName(), Toast.LENGTH_SHORT).show();
+//
+//                                       commonService.getImage(iv_avatar,rider.getImageName());
+//                                       break;
+//                                   }
+//                                }
+//
+//                            }
+//
+//
+//
+//                        } else {
+//
+//                            Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//                        }
+//
+//
+//                    } else {
+//
+//                        Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//
+//                }
+//
+//
+//                //}//validation
+//
+//            }//run end
+//
+//        });//runnable end
+//
+//
+//    } //-------end of fetch profile
 
-        Configuration configuration = context.getResources().getConfiguration();
-        configuration.setLocale(locale);
 
-        getBaseContext().getResources().updateConfiguration(configuration,
-                getBaseContext().getResources().getDisplayMetrics());
+    public void updateProfile()
+    {
+        //button click event
+        CommonService commonService = new CommonService();
+        commonService.updateRider(new Listener<Boolean>() {
+            @Override
+            public void on(Boolean arg) {
+
+
+            }
+        }, RiderProfileActivity.this, getApplicationContext(), rider);
 
     }
+//    public void updateProfile() {
+//
+//
+//        RiderProfileActivity.this.runOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//
+//                try {
+//
+//
+//                    //Shared Preferences
+//                    editor = sharedPreferences.edit();
+//
+//                    editor.putString("userid", rider.getRiderID());
+//                    editor.putString("deviceToken", "DEVICETOKEN");
+//                    editor.putString("sessionid", "SESSIONID");
+//
+//                    editor.apply();
+//
+//
+//                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+//
+//                    //loadingSpinner.setVisibility(View.VISIBLE);
+//
+//
+//                    String methodAction = "updateRider";
+//
+//                    JSONObject messageJson = new JSONObject();
+//                    //messageJson.put("mobileNo", mobileNo);
+//                    messageJson.put("firstName", name);
+//                    messageJson.put("locale", locale);
+//                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+//                    messageJson.put("riderID", rider.getRiderID());
+//
+//
+//
+//                    ConnectHost connectHost = new ConnectHost();
+//
+//                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+//
+//                    // loadingSpinner.setVisibility(View.GONE);
+//
+//                    Log.d(TAG, "RiderLogin responseData: " + responseData);
+//
+//
+//                    if (responseData != null) {
+//
+//
+//                        // Convert String to json object
+//                        JSONObject jsonResponseData = new JSONObject(responseData);
+//
+//                        // get LL json object
+//                        JSONObject jsonResult = jsonResponseData.getJSONObject("updateRider");
+//
+//                        //Log.d(TAG, "resData insertRider: " + jsonResult);
+//                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
+//
+//                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
+//
+//                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+//                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
+//
+//                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
+//
+//
+//                            rider = new Rider();
+//
+//                            rider.setRiderRefNo(wrapperArrayObj.getJSONObject(0).getString("riderRefNo"));
+//                            rider.setRiderID(wrapperArrayObj.getJSONObject(0).getString("riderID"));
+//                            //rider.setRiderMobileNo(wrapperArrayObj.getJSONObject(0).getString("mobileNo"));
+//                            rider.setRiderName(wrapperArrayObj.getJSONObject(0).optString("firstName"));
+//                            rider.setLocale(wrapperArrayObj.getJSONObject(0).optString("locale"));
+//
+//                            setLoginDetails();
+//
+//                        } else {
+//
+//                            Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//                        }
+//
+//
+//                    } else {
+//
+//                        Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//
+//                //}//validation
+//
+//            }//run end
+//
+//        });//runnable end
+//
+//
+//    } //-------end of update profile
+//
+//
+//
+//    public void setLoginDetails() {
+//
+//
+//        //Shared Preferences
+//        editor = sharedPreferences.edit();
+//
+//        Log.d(TAG, "SharedPreferences putString ");
+//
+//        editor.putString("riderFirstName", rider.getRiderName());
+//        editor.putString("locale", rider.getLocale());
+//
+//
+//        editor.apply();
+//
+//        updateLocale(RiderProfileActivity.this, new Locale(rider.getLocale()));
+//
+//        Toast.makeText(RiderProfileActivity.this, R.string.update_success, Toast.LENGTH_SHORT).show();
+//
+//
+//    }
+//
+//
+//    @TargetApi(Build.VERSION_CODES.N)
+//    private void updateLocale(Context context, Locale locale) {
+//
+//        Configuration configuration = context.getResources().getConfiguration();
+//        configuration.setLocale(locale);
+//
+//        getBaseContext().getResources().updateConfiguration(configuration,
+//                getBaseContext().getResources().getDisplayMetrics());
+//
+//    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+        if(commonService==null) {
+            commonService = new CommonService();
+        }
+
+        rider.setImageName(rider.getRiderID()+"_avatar.jpg");
+        rider.setImageID(GlobalConstants.IMAGE_AVATAR);
+        commonService.onActivityResult(RiderProfileActivity.this, getApplicationContext() , requestCode,resultCode,data, rider, iv_avatar, true);
+
+    }
+
+
+
 }

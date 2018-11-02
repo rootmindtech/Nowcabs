@@ -81,7 +81,8 @@
     <string name="invalid_mobile">Invalid mobile number!!!</string>
 
     <string name="selfie">Selfie</string>
-    <string name="idcard">ID Card</string>
+    <string name="idcard_front">ID Card - Front</string>
+    <string name="idcard_back">ID Card - Back</string>
 
 
 </resources>

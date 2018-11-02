@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.RegionIterator;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -15,16 +17,52 @@ import android.graphics.Color;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
 public class RegisterActivity extends AppCompatActivity {
 
 
     String mobileNo;
-    Parameter parameter;
+    //Parameter parameter;
     String locale;
+
+    private static final String TAG = "RegisterActivity";
+
+    Rider rider;
+    Service service;
+
+    Service services[];
 
     public Toolbar toolbar;
     SharedPreferences sharedPreferences;
-    String userGroup;
+    //String serviceCode;
+    SharedPreferences.Editor editor;
+
+
+    CardView carpenterView;
+    CardView driverView;
+    CardView electricianView;
+    CardView plumberView ;
+    CardView tailorView;
+    CardView washerView;
+    CardView courierView;
+    CardView merchantView;
+
+    boolean registerFlag=false;
+
+    Button btn_skip;
+    Button btn_login;
+
+
+    String responseData = null;
+
+    ArrayList<String> serviceArrayList = new ArrayList<String>();
+    ArrayList<String> activeServiceArrayList = new ArrayList<String>();
 
     @SuppressLint("ResourceType")
     @Override
@@ -33,11 +71,14 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
 
+        rider = (Rider) getIntent().getSerializableExtra("Rider");
+        registerFlag = (boolean) getIntent().getSerializableExtra("RegisterFlag");
 
+        //sharedPreferences initiated
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mobileNo = (String) getIntent().getSerializableExtra("mobileNo");
-        parameter = (Parameter) getIntent().getSerializableExtra("Parameter");
-        locale = (String) getIntent().getSerializableExtra("locale");
+//        parameter = (Parameter) getIntent().getSerializableExtra("Parameter");
+//        locale = (String) getIntent().getSerializableExtra("locale");
 
 
         //29-Sep-2018
@@ -49,8 +90,11 @@ public class RegisterActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setServiceArrayList();
 
-        findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
+        btn_login = (Button) findViewById(R.id.btn_login);
+
+        btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -59,63 +103,154 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        final CardView riderView = (CardView) findViewById(R.id.rider_card_view);
-        riderView.setRadius(10);
-        riderView.setCardElevation(10);
 
-        final CardView driverView = (CardView)findViewById(R.id.driver_card_view);
-        driverView.setRadius(10);
-        driverView.setCardElevation(10);
+        btn_skip = (Button) findViewById(R.id.btn_skip);
 
-        Button riderButton = (Button) findViewById(R.id.btn_rider);
-        Button driverButton = (Button) findViewById(R.id.btn_driver);
-
-
-        riderView.setOnClickListener(new View.OnClickListener() {
+        btn_skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-                driverView.setBackgroundColor(Color.WHITE);
-                userGroup = GlobalConstants.RIDER_CODE;
 
+                skip();
             }
         });
 
+//        final CardView riderView = (CardView) findViewById(R.id.rider_card_view);
+//        riderView.setRadius(10);
+//        riderView.setCardElevation(10);
+//
+//        final CardView driverView = (CardView) findViewById(R.id.driver_card_view);
+//        driverView.setRadius(10);
+//        driverView.setCardElevation(10);
+//        driverView.setTag(GlobalConstants.SERVICE_DRIVER);
+
+        //Button riderButton = (Button) findViewById(R.id.btn_rider);
+        //Button driverButton = (Button) findViewById(R.id.btn_driver);
+
+
+        carpenterView = (CardView) findViewById(R.id.carpenter_cardView);
+        driverView = (CardView) findViewById(R.id.driver_cardView);
+        electricianView = (CardView) findViewById(R.id.electrician_cardView);
+        plumberView = (CardView) findViewById(R.id.plumber_cardView);
+        tailorView = (CardView) findViewById(R.id.tailor_cardView);
+        washerView = (CardView) findViewById(R.id.washer_cardView);
+        courierView = (CardView) findViewById(R.id.courier_cardView);
+        merchantView = (CardView) findViewById(R.id.merchant_cardView);
+
+
+        carpenterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_CARPENTER);
+
+            }
+        });
 
         driverView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-                riderView.setBackgroundColor(Color.WHITE);
-                userGroup = GlobalConstants.DRIVER_CODE;
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_DRIVER);
 
             }
         });
 
-        riderButton.setOnClickListener(new View.OnClickListener() {
+        electricianView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                riderView.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-                driverView.setBackgroundColor(Color.WHITE);
-                userGroup = GlobalConstants.RIDER_CODE;
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_ELECTRICIAN);
 
             }
         });
 
-
-        driverButton.setOnClickListener(new View.OnClickListener() {
+        plumberView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                driverView.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-                riderView.setBackgroundColor(Color.WHITE);
-                userGroup = GlobalConstants.DRIVER_CODE;
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_PLUMBER);
 
             }
         });
+
+        tailorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_TAILOR);
+
+            }
+        });
+
+        washerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_WASHER);
+
+            }
+        });
+
+        courierView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_COURIER);
+
+            }
+        });
+        merchantView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_MERCHANT);
+
+            }
+        });
+
+
+        if(!registerFlag)
+        {
+            btn_skip.setVisibility(View.GONE);
+            btn_login.setText(R.string.save);
+
+        }
+
+
+
+        fetchService();
+
+//        riderButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                riderView.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+//                driverView.setBackgroundColor(Color.WHITE);
+//                userGroup = GlobalConstants.RIDER_CODE;
+//
+//            }
+//        });
+//
+//
+//        driverButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                driverView.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+//                riderView.setBackgroundColor(Color.WHITE);
+//                userGroup = GlobalConstants.DRIVER_CODE;
+//
+//            }
+//        });
 
     }
 
@@ -127,8 +262,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    public void register()
-    {
+    public void register() {
 
         RegisterActivity.this.runOnUiThread(new Runnable() {
 
@@ -136,57 +270,458 @@ public class RegisterActivity extends AppCompatActivity {
             public void run() {
 
 
-                if (userGroup != null && !userGroup.isEmpty()) {
+                if(activeServiceArrayList.size()<=0)
+                {
+                    CommonService.Toast(RegisterActivity.this,"Please select your profession",Toast.LENGTH_SHORT);
+                    return;
+                }
 
-                    Log.d("Register", "Usergroup in Register: " + userGroup);
+//                if (userGroup != null && !userGroup.isEmpty()) {
+//
+//                    Log.d("Register", "Usergroup in Register: " + userGroup);
+//
+//
+//                    if (userGroup.equals(GlobalConstants.RIDER_CODE)) {
 
 
-                    if (userGroup.equals(GlobalConstants.RIDER_CODE)) {
+                services = new Service[serviceArrayList.size()];
+
+                for(int i=0; i<serviceArrayList.size();i++)
+                {
+                    Service service = new Service();
+                    service.setRiderRefNo(rider.riderRefNo);
+                    service.setRiderID(rider.riderID);
+                    service.setServiceCode(serviceArrayList.get(i));
+
+                    if(activeServiceArrayList.contains(serviceArrayList.get(i))) {
+                        service.setStatus(GlobalConstants.ACTIVE_CODE);
+                    }
+                    else
+                    {
+                        service.setStatus(GlobalConstants.INACTIVE_CODE);
+                    }
+                    services[i] = service;
+                }
+
+                insertService();
+
+                //move to next screen only during registration
+                if(registerFlag) {
+
+                    if (activeServiceArrayList.contains(GlobalConstants.SERVICE_DRIVER)) {
+                        setDriverLogin();
+                    } else {
+                        setAvatar();
+                    }
+                }
+
+            }//run
+        });//runnable
+    }
+
+    public void skip()
+    {
+
+//        CommonService commonService = new CommonService();
+//        commonService.updateRider(new Listener<Boolean>() {
+//            @Override
+//            public void on(Boolean arg) {
+//                if (arg == true) {
+
+                    Intent i = new Intent(getApplicationContext(), RiderMapActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("Rider", rider);
+                    i.putExtras(bundle);
+                    startActivity(i);
+
+//                }
+//            }
+//        }, RegisterActivity.this, getApplicationContext(), rider);
+
+    }
+
+    public void setDriverLogin()
+    {
+
+        Intent i = new Intent(getApplicationContext(), DriverLoginActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Rider", rider);
+        bundle.putSerializable("RegisterFlag",registerFlag);
+        i.putExtras(bundle);
+        startActivity(i);
+
+    }
+
+    public void setAvatar()
+    {
+
+        Intent i = new Intent(getApplicationContext(), AvatarActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Rider", rider);
+        bundle.putSerializable("RegisterFlag",registerFlag);
+        i.putExtras(bundle);
+        startActivity(i);
+
+    }
+
+    public void setServiceArrayList()
+    {
+        serviceArrayList.add(GlobalConstants.SERVICE_CARPENTER);
+        serviceArrayList.add(GlobalConstants.SERVICE_COURIER);
+        serviceArrayList.add(GlobalConstants.SERVICE_DRIVER);
+        serviceArrayList.add(GlobalConstants.SERVICE_ELECTRICIAN);
+        serviceArrayList.add(GlobalConstants.SERVICE_MERCHANT);
+        serviceArrayList.add(GlobalConstants.SERVICE_PLUMBER);
+        serviceArrayList.add(GlobalConstants.SERVICE_TAILOR);
+        serviceArrayList.add(GlobalConstants.SERVICE_WASHER);
+
+    }
+
+    public void setActiveServiceArrayList(View view,String serviceCode)
+    {
+        if(activeServiceArrayList.contains(serviceCode))
+        {
+            view.setBackgroundColor(Color.WHITE);
+            activeServiceArrayList.remove(serviceCode);
+        }
+        else
+        {
+            view.setBackgroundColor(Color.YELLOW);
+            activeServiceArrayList.add(serviceCode);
+        }
+    }
 
 
-                        CommonService commonService = new CommonService();
-                        boolean result = commonService.riderAutoLogin(RegisterActivity.this, getApplicationContext(), mobileNo);
+    public void insertService() {
 
-                        if(result==false) {
 
-                            Intent i = new Intent(getApplicationContext(), RiderLoginActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("Parameter", parameter);
-                            bundle.putSerializable("mobileNo", mobileNo);
-                            bundle.putSerializable("userGroup", userGroup);
-                            bundle.putSerializable("locale", locale);
-                            i.putExtras(bundle);
-                            startActivity(i);
 
-                            Log.d("Register", "moved to RiderLogin: " + userGroup);
+        RegisterActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+
+
+                try {
+
+
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+                    //loadingSpinner.setVisibility(View.VISIBLE);
+
+
+                    String methodAction = "insertService";
+
+                    JSONArray messageJsonArray = new JSONArray();
+
+                    for(int i=0;i<services.length;i++) {
+
+                        JSONObject messageJson = new JSONObject();
+                        messageJson.put("riderRefNo", services[i].getRiderRefNo());
+                        messageJson.put("riderID", services[i].getRiderID());
+                        messageJson.put("serviceCode", services[i].getServiceCode());
+                        messageJson.put("status", services[i].getStatus());
+                        messageJsonArray.put(messageJson);
+                    }
+
+
+                    ConnectHost connectHost = new ConnectHost();
+
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJsonArray.toString(), sharedPreferences);
+
+                    // loadingSpinner.setVisibility(View.GONE);
+
+                    Log.d(TAG, "Register responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        // Convert String to json object
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+
+                        // get LL json object
+                        JSONObject jsonResult = jsonResponseData.getJSONObject("insertService");
+
+                        //Log.d(TAG, "resData insertRider: " + jsonResult);
+                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
+
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("serviceWrapper");
+
+                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
+
+                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
+
+
+
+                            Toast.makeText(RegisterActivity.this, "Update successful", Toast.LENGTH_SHORT).show();
+
+
+
+                        }
+                        else
+                        {
+
+                            Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
                         }
 
+
+                    } else {
+
+                        Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
                     }
-                    if (userGroup.equals(GlobalConstants.DRIVER_CODE)) {
 
-                        CommonService commonService = new CommonService();
-                        boolean result = commonService.driverAutoLogin(RegisterActivity.this, getApplicationContext(), mobileNo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
 
-                        if(result==false) {
+                }
 
-                            Intent i = new Intent(getApplicationContext(), DriverLoginActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("Parameter", parameter);
-                            bundle.putSerializable("mobileNo", mobileNo);
-                            bundle.putSerializable("userGroup", userGroup);
-                            bundle.putSerializable("locale", locale);
-                            i.putExtras(bundle);
-                            startActivity(i);
+
+                //}//validation
+
+            }//run end
+
+        });//runnable end
+
+
+    }//end of update service
+
+    public void fetchService() {
+
+
+        RegisterActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+
+                try {
+
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+                    //loadingSpinner.setVisibility(View.VISIBLE);
+
+                    String methodAction = "fetchService";
+
+                    JSONObject messageJson = new JSONObject();
+                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+                    messageJson.put("riderID", rider.getRiderID());
+
+
+
+                    ConnectHost connectHost = new ConnectHost();
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+                    // loadingSpinner.setVisibility(View.GONE);
+
+                    Log.d(TAG, "RiderLogin responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchService");
+
+                        //Log.d(TAG, "resData insertRider: " + jsonResult);
+                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
+
+                        JSONArray wrapperArrayObj = jsonResult.optJSONArray("serviceWrapper");
+
+                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
+
+                        if (jsonResponseData.optString("success") == "true")
+                        {
+
+                            if (wrapperArrayObj.optJSONObject(0).optString("recordFound") == "true") {
+
+                                services = new Service[wrapperArrayObj.length()];
+                            }
+
+                            for(int i=0;i<wrapperArrayObj.length();i++) {
+
+                                if (wrapperArrayObj.optJSONObject(i).optString("recordFound") == "true") {
+
+
+                                    service = new Service();
+                                    service.setRiderRefNo(wrapperArrayObj.getJSONObject(i).optString("riderRefNo"));
+                                    service.setRiderID(wrapperArrayObj.getJSONObject(i).optString("riderID"));
+                                    service.setServiceCode(wrapperArrayObj.getJSONObject(i).optString("serviceCode"));
+                                    service.setStatus(wrapperArrayObj.getJSONObject(i).optString("status"));
+
+                                    services[i]=service;
+
+                                }
+
+                            }
+
+                            setService();
+
+//                            JSONArray imageWrappers = wrapperArrayObj.getJSONObject(0).getJSONArray("imageWrappers");
+//
+//                            if(imageWrappers!=null)
+//                            {
+//
+//                                for(int i=0;i<imageWrappers.length();i++)
+//                                {
+//                                    if(imageWrappers.getJSONObject(i).optString("recordFound")=="true" &&
+//                                            imageWrappers.getJSONObject(i).optString("imageID").equals(GlobalConstants.IMAGE_AVATAR))
+//                                    {
+//
+//                                        rider.setImageName(imageWrappers.getJSONObject(i).optString("imageName"));
+//                                        //Toast.makeText(RiderProfileActivity.this, rider.getImageName(), Toast.LENGTH_SHORT).show();
+//
+////                                        commonService.getImage(iv_avatar,rider.getImageName());
+//                                        break;
+//                                    }
+//                                }
+//
+//                            }
+
+
+
+                        } else {
+
+                            Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
                         }
+
+
+                    } else {
+
+                        Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
                     }
 
-                } else {
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    btn_login.setVisibility(View.GONE);
 
-                    Toast.makeText(RegisterActivity.this, R.string.select_rider_driver, Toast.LENGTH_SHORT).show();
+                }
+
+
+                //}//validation
+
+            }//run end
+
+        });//runnable end
+
+
+    } //-------end of fetch service
+
+
+    public void setService()
+    {
+
+        carpenterView.setBackgroundColor(Color.WHITE);
+        courierView.setBackgroundColor(Color.WHITE);
+        driverView.setBackgroundColor(Color.WHITE);
+        electricianView.setBackgroundColor(Color.WHITE);
+        merchantView.setBackgroundColor(Color.WHITE);
+        plumberView.setBackgroundColor(Color.WHITE);
+        tailorView.setBackgroundColor(Color.WHITE);
+        washerView.setBackgroundColor(Color.WHITE);
+
+        activeServiceArrayList.clear();
+
+        for(int i=0;i< (services!=null ? services.length : 0);i++)
+        {
+
+            if(services[i].getStatus().equals(GlobalConstants.ACTIVE_CODE))
+            {
+
+                switch (services[i].getServiceCode()) {
+
+
+                    case GlobalConstants.SERVICE_CARPENTER: {
+
+                        carpenterView.setBackgroundColor(Color.YELLOW);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_CARPENTER);
+                        break;
+                    }
+                    case GlobalConstants.SERVICE_COURIER: {
+
+                        courierView.setBackgroundColor(Color.YELLOW);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_COURIER);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_DRIVER: {
+
+                        driverView.setBackgroundColor(Color.YELLOW);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_DRIVER);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_ELECTRICIAN: {
+
+                        electricianView.setBackgroundColor(Color.YELLOW);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_ELECTRICIAN);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_MERCHANT: {
+
+                        merchantView.setBackgroundColor(Color.YELLOW);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_MERCHANT);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_PLUMBER: {
+
+                        plumberView.setBackgroundColor(Color.YELLOW);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_PLUMBER);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_TAILOR: {
+
+                        tailorView.setBackgroundColor(Color.YELLOW);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_TAILOR);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_WASHER: {
+
+                        washerView.setBackgroundColor(Color.YELLOW);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_WASHER);
+                        break;
+
+                    }
 
                 }
             }
-        });
+
+        }
 
     }
+
 }
+
+

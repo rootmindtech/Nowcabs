@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public Boolean validationSuccess = false;
 
-    Parameter parameter;
+    //Parameter parameter;
 
     String fcmToken;
 
@@ -98,6 +98,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_login);
+
+
+        //Flow 27-Oct-2018
+        //LoginActivity (Auto) --> OTPActivity --> RiderLoginActivity (Record Created)
+        // --> RegisterActivity --> DriverLoginActivity (Update) --> AvatarActivity (Store image)
+        //--> IDCardActivity (Store image) --> RiderMapActivity
 
 
         //findViewById(R.id.loginActivity).setOnTouchListener(LoginActivity.this);
@@ -129,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 //
 
         //to comment
+//        editor = sharedPreferences.edit();
 //        editor.clear();
 //        editor.apply();
 
@@ -214,7 +221,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "fcm token " + fcmToken);
 
                 //check for userGroup
-                if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE)) {
+                //if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE)) {
 
                     //check for sharedPreferences values
                     //if( sharedPreferences.getString("riderMobileNo","") !=null &&  sharedPreferences.getString("riderFirstName","") !=null)
@@ -224,32 +231,24 @@ public class LoginActivity extends AppCompatActivity {
 
                         setContentView(R.layout.activity_splash_screen);
 
-                        mobileNo = sharedPreferences.getString("riderMobileNo", "");
+                        mobileNo = sharedPreferences.getString("mobileNo", "");
 
-                        riderLogin(true);
+                        //riderLogin(true);
 
+                        //auto login
+                        CommonService commonService = new CommonService();
+                        commonService.riderAutoLogin(new Listener<Boolean>() {
+                            @Override
+                            public void on(Boolean arg) {
 
-                    } else {
+                                if(arg==false)
+                                {
 
-                        //to show components
-                        setComponentView();
+                                    setComponentView();
+                                }
 
-                    } //end of if condition for view components
-
-
-                } else if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.DRIVER_CODE)) {
-
-
-                    if (sharedPreferences.getString("autoLogin", "").equals(GlobalConstants.YES_CODE)) {
-
-//                locale = CommonService.getLocale(sharedPreferences.getString("locale", "")).toString();
-
-                        setContentView(R.layout.activity_splash_screen);
-
-                        mobileNo = sharedPreferences.getString("driverMobileNo", "");
-
-                        driverLogin(true);
-
+                            }
+                        }, LoginActivity.this, getApplicationContext(), mobileNo);
 
                     } else {
 
@@ -259,13 +258,38 @@ public class LoginActivity extends AppCompatActivity {
                     } //end of if condition for view components
 
 
-                } else {
+                //}
 
-                    //to show components, if no sharedPreferences are stored
-                    setComponentView();
-
-
-                }
+// else if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.DRIVER_CODE)) {
+//
+//
+//                    if (sharedPreferences.getString("autoLogin", "").equals(GlobalConstants.YES_CODE)) {
+//
+////                locale = CommonService.getLocale(sharedPreferences.getString("locale", "")).toString();
+//
+//                        setContentView(R.layout.activity_splash_screen);
+//
+//                        mobileNo = sharedPreferences.getString("driverMobileNo", "");
+//
+//                        driverLogin(true);
+//
+//
+//                    } else {
+//
+//                        //to show components
+//                        setComponentView();
+//
+//                    } //end of if condition for view components
+//
+//
+//                }
+//                    else {
+//
+//                    //to show components, if no sharedPreferences are stored
+//                    setComponentView();
+//
+//
+//                }
 
 
                 // Log and toast
@@ -317,39 +341,49 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("locale", locale);
             editor.apply();
 
-            Log.d(TAG, "riderMobileNo " + sharedPreferences.getString("riderMobileNo", ""));
-            Log.d(TAG, "driverMobileNo " + sharedPreferences.getString("driverMobileNo", ""));
+            //Log.d(TAG, "riderMobileNo " + sharedPreferences.getString("riderMobileNo", ""));
+            //Log.d(TAG, "driverMobileNo " + sharedPreferences.getString("driverMobileNo", ""));
             Log.d(TAG, "userGroup " + sharedPreferences.getString("userGroup", ""));
 
 
             //if matching mobile number then auto login
-            if(mobileNo.equals( sharedPreferences.getString("riderMobileNo", ""))
-                    &&  sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE))
-            {
+//            if(mobileNo.equals( sharedPreferences.getString("riderMobileNo", ""))
+//                    &&  sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE))
+//            {
+//
+//                riderLogin(true);
+//
+//            }
+//            else if(mobileNo.equals( sharedPreferences.getString("driverMobileNo", ""))
+//                    &&  sharedPreferences.getString("userGroup", "").equals(GlobalConstants.DRIVER_CODE))
+//            {
+//                driverLogin(true);
+//            }
 
-                riderLogin(true);
+            //button click event
+            CommonService commonService = new CommonService();
+            commonService.riderAutoLogin(new Listener<Boolean>() {
+                @Override
+                public void on(Boolean arg) {
 
-            }
-            else if(mobileNo.equals( sharedPreferences.getString("driverMobileNo", ""))
-                    &&  sharedPreferences.getString("userGroup", "").equals(GlobalConstants.DRIVER_CODE))
-            {
-                driverLogin(true);
-            }
-            else
-            {
+                    if(arg==false)
+                    {
 
-                parameter = new Parameter();
+                        //parameter = new Parameter();
 
-                Intent i = new Intent(getApplicationContext(), OTPActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("mobileNo", mobileNo);
-                bundle.putSerializable("Parameter", parameter);
-                bundle.putSerializable("locale", locale);
+                        Intent i = new Intent(getApplicationContext(), OTPActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("mobileNo", mobileNo);
+                        //bundle.putSerializable("Parameter", parameter);
+                        bundle.putSerializable("locale", locale);
 
-                i.putExtras(bundle);
-                startActivity(i);
+                        i.putExtras(bundle);
+                        startActivity(i);
 
-            }
+                    }
+
+                }
+            }, LoginActivity.this, getApplicationContext(), mobileNo);
 
 
             return null;
@@ -363,142 +397,150 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void riderLogin(boolean autoLogin) {
-
-
-        if (!autoLogin) {
-
-        }
-
-
-        LoginActivity.this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-
-                CommonService commonService = new CommonService();
-                commonService.riderAutoLogin(LoginActivity.this, getApplicationContext(), mobileNo);
-
-
-//                try {
+//    public boolean riderLogin(boolean autoLogin) {
 //
 //
-//                    Log.d(TAG, "fcm token riderautologin " + fcmToken);
+//        final boolean result=false;
+//
+//        if (!autoLogin) {
+//
+//        }
 //
 //
-//                    //Shared Preferences
-//                    editor = sharedPreferences.edit();
-//
-//                    editor.putString("userid", "SYSTEM");
-//                    editor.putString("deviceToken", fcmToken);
-//                    editor.putString("sessionid", "SESSIONID");
-//
-//                    editor.apply();
+////        LoginActivity.this.runOnUiThread(new Runnable() {
+////
+////            @Override
+////            public void run() {
 //
 //
-//                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+//                CommonService commonService = new CommonService();
+//                commonService.riderAutoLogin(new Listener<Boolean>() {
+//                    @Override
+//                    public void on(Boolean arg) {
 //
-//                    loadingSpinner.setVisibility(View.VISIBLE);
-//
-//
-//                    String methodAction = "riderAutoLogin";
-//
-//                    JSONObject messageJson = new JSONObject();
-//                    messageJson.put("mobileNo", mobileNo);
-//                    messageJson.put("riderRefNo", sharedPreferences.getString("riderRefNo", ""));
-//                    messageJson.put("riderID", sharedPreferences.getString("riderID", ""));
-//                    messageJson.put("fcmToken", fcmToken);
-//                    messageJson.put("locale", locale);
-//
-//
-//                    ConnectHost connectHost = new ConnectHost();
-//
-//                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-//
-//                    loadingSpinner.setVisibility(View.GONE);
-//
-//                    Log.d(TAG, "RiderLogin responseData: " + responseData);
-//
-//
-//                    if (responseData != null) {
-//
-//
-//                        // Convert String to json object
-//                        JSONObject jsonResponseData = new JSONObject(responseData);
-//
-//                        // get LL json object
-//                        JSONObject jsonResult = jsonResponseData.getJSONObject("riderAutoLogin");
-//
-//                        //Log.d(TAG, "resData insertRider: " + jsonResult);
-//                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
-//
-//                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
-//
-//                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-//                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
-//
-//                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
-//
-//
-//
-//                            Calendar c = Calendar.getInstance();
-//                            System.out.println("Current time => " + c.getTime());
-//                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-//                            final String formattedDate = df.format(c.getTime());
-//
-//                            rider = new Rider();
-//
-//                            rider.setRiderRefNo(wrapperArrayObj.getJSONObject(0).getString("riderRefNo"));
-//                            rider.setRiderID(wrapperArrayObj.getJSONObject(0).getString("riderID"));
-//                            rider.setRiderMobileNo(wrapperArrayObj.getJSONObject(0).optString("mobileNo"));
-//                            rider.setRiderName(wrapperArrayObj.getJSONObject(0).optString("firstName"));
-//                            rider.setStatus(wrapperArrayObj.getJSONObject(0).optString("status"));
-//                            rider.setImageFound(false);
-//                            rider.setDatetime(formattedDate);
-//                            rider.setFcmToken(fcmToken);
-//                            rider.setLocale(wrapperArrayObj.getJSONObject(0).optString("locale"));
-//
-//
-//                            setRiderLogin();
-//
-//
-//
-//                        }
-//                        else
-//                        {
-//
-//                            Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
-//
-//                        }
-//
-//
-//
-//
-//                    } else {
-//
-//                        Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
+//                        result=arg;
 //                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//
-//                    Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//                }, LoginActivity.this, getApplicationContext(), mobileNo);
 //
 //
-//                }
-
-
-                //}//validation
-
-            }//run end
-
-        });//runnable end
-
-
-    }
+////                try {
+////
+////
+////                    Log.d(TAG, "fcm token riderautologin " + fcmToken);
+////
+////
+////                    //Shared Preferences
+////                    editor = sharedPreferences.edit();
+////
+////                    editor.putString("userid", "SYSTEM");
+////                    editor.putString("deviceToken", fcmToken);
+////                    editor.putString("sessionid", "SESSIONID");
+////
+////                    editor.apply();
+////
+////
+////                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+////
+////                    loadingSpinner.setVisibility(View.VISIBLE);
+////
+////
+////                    String methodAction = "riderAutoLogin";
+////
+////                    JSONObject messageJson = new JSONObject();
+////                    messageJson.put("mobileNo", mobileNo);
+////                    messageJson.put("riderRefNo", sharedPreferences.getString("riderRefNo", ""));
+////                    messageJson.put("riderID", sharedPreferences.getString("riderID", ""));
+////                    messageJson.put("fcmToken", fcmToken);
+////                    messageJson.put("locale", locale);
+////
+////
+////                    ConnectHost connectHost = new ConnectHost();
+////
+////                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+////
+////                    loadingSpinner.setVisibility(View.GONE);
+////
+////                    Log.d(TAG, "RiderLogin responseData: " + responseData);
+////
+////
+////                    if (responseData != null) {
+////
+////
+////                        // Convert String to json object
+////                        JSONObject jsonResponseData = new JSONObject(responseData);
+////
+////                        // get LL json object
+////                        JSONObject jsonResult = jsonResponseData.getJSONObject("riderAutoLogin");
+////
+////                        //Log.d(TAG, "resData insertRider: " + jsonResult);
+////                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
+////
+////                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
+////
+////                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+////                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
+////
+////                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
+////
+////
+////
+////                            Calendar c = Calendar.getInstance();
+////                            System.out.println("Current time => " + c.getTime());
+////                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+////                            final String formattedDate = df.format(c.getTime());
+////
+////                            rider = new Rider();
+////
+////                            rider.setRiderRefNo(wrapperArrayObj.getJSONObject(0).getString("riderRefNo"));
+////                            rider.setRiderID(wrapperArrayObj.getJSONObject(0).getString("riderID"));
+////                            rider.setRiderMobileNo(wrapperArrayObj.getJSONObject(0).optString("mobileNo"));
+////                            rider.setRiderName(wrapperArrayObj.getJSONObject(0).optString("firstName"));
+////                            rider.setStatus(wrapperArrayObj.getJSONObject(0).optString("status"));
+////                            rider.setImageFound(false);
+////                            rider.setDatetime(formattedDate);
+////                            rider.setFcmToken(fcmToken);
+////                            rider.setLocale(wrapperArrayObj.getJSONObject(0).optString("locale"));
+////
+////
+////                            setRiderLogin();
+////
+////
+////
+////                        }
+////                        else
+////                        {
+////
+////                            Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+////
+////
+////                        }
+////
+////
+////
+////
+////                    } else {
+////
+////                        Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+////
+////                    }
+////
+////                } catch (Exception e) {
+////                    e.printStackTrace();
+////
+////                    Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+////
+////
+////                }
+//
+//
+//                //}//validation
+//
+////            }//run end
+////
+////        });//runnable end
+//
+//
+//    }
 
 
 //    public void setRiderLogin() {
@@ -554,138 +596,138 @@ public class LoginActivity extends AppCompatActivity {
 //    }
 
 
-    public void driverLogin(boolean autoLogin) {
-
-
-        if (!autoLogin) {
-
-        }
-
-
-        LoginActivity.this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-
-                CommonService commonService = new CommonService();
-                commonService.driverAutoLogin(LoginActivity.this, getApplicationContext(), mobileNo);
-
-
-//                try {
+//    public void driverLogin(boolean autoLogin) {
 //
 //
-//                    //Shared Preferences
-//                    editor = sharedPreferences.edit();
+//        if (!autoLogin) {
 //
-//                    editor.putString("userid", "SYSTEM");
-//                    editor.putString("deviceToken", fcmToken);
-//                    editor.putString("sessionid", "SESSIONID");
-//
-//                    editor.apply();
+//        }
 //
 //
-//                    Log.d(TAG, "mobileNo: " + mobileNo + " locale" + locale);
+//        LoginActivity.this.runOnUiThread(new Runnable() {
 //
-//                    loadingSpinner.setVisibility(View.VISIBLE);
-//
-//
-//                    String methodAction = "driverAutoLogin";
-//
-//                    JSONObject messageJson = new JSONObject();
-//                    messageJson.put("mobileNo", mobileNo);
-//                    messageJson.put("driverRefNo", sharedPreferences.getString("driverRefNo", ""));
-//                    messageJson.put("driverID", sharedPreferences.getString("driverID", ""));
-//                    messageJson.put("fcmToken", fcmToken);
-//                    messageJson.put("locale", locale);
+//            @Override
+//            public void run() {
 //
 //
-//                    ConnectHost connectHost = new ConnectHost();
-//
-//                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-//
-//                    loadingSpinner.setVisibility(View.GONE);
-//
-//                    Log.d(TAG, "DriverLogin responseData: " + responseData);
+//                CommonService commonService = new CommonService();
+//                commonService.driverAutoLogin(LoginActivity.this, getApplicationContext(), mobileNo);
 //
 //
-//                    if (responseData != null) {
+////                try {
+////
+////
+////                    //Shared Preferences
+////                    editor = sharedPreferences.edit();
+////
+////                    editor.putString("userid", "SYSTEM");
+////                    editor.putString("deviceToken", fcmToken);
+////                    editor.putString("sessionid", "SESSIONID");
+////
+////                    editor.apply();
+////
+////
+////                    Log.d(TAG, "mobileNo: " + mobileNo + " locale" + locale);
+////
+////                    loadingSpinner.setVisibility(View.VISIBLE);
+////
+////
+////                    String methodAction = "driverAutoLogin";
+////
+////                    JSONObject messageJson = new JSONObject();
+////                    messageJson.put("mobileNo", mobileNo);
+////                    messageJson.put("driverRefNo", sharedPreferences.getString("driverRefNo", ""));
+////                    messageJson.put("driverID", sharedPreferences.getString("driverID", ""));
+////                    messageJson.put("fcmToken", fcmToken);
+////                    messageJson.put("locale", locale);
+////
+////
+////                    ConnectHost connectHost = new ConnectHost();
+////
+////                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+////
+////                    loadingSpinner.setVisibility(View.GONE);
+////
+////                    Log.d(TAG, "DriverLogin responseData: " + responseData);
+////
+////
+////                    if (responseData != null) {
+////
+////
+////                        // Convert String to json object
+////                        JSONObject jsonResponseData = new JSONObject(responseData);
+////
+////                        // get LL json object
+////                        JSONObject jsonResult = jsonResponseData.getJSONObject("driverAutoLogin");
+////
+////                        //Log.d(TAG, "resData insertRider: " + jsonResult);
+////                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
+////
+////                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("driverWrapper");
+////
+////                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+////                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
+////
+////                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
+////
+////
+////
+////                            Calendar c = Calendar.getInstance();
+////                            System.out.println("Current time => " + c.getTime());
+////                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+////                            final String formattedDate = df.format(c.getTime());
+////
+////                            driver = new Driver();
+////
+////                            driver.setDriverRefNo(wrapperArrayObj.getJSONObject(0).getString("driverRefNo"));
+////                            driver.setDriverID(wrapperArrayObj.getJSONObject(0).getString("driverID"));
+////                            driver.setDriverMobileNo(wrapperArrayObj.getJSONObject(0).getString("mobileNo"));
+////                            driver.setDriverName(wrapperArrayObj.getJSONObject(0).getString("firstName"));
+////                            driver.setDriverVehicleNo(wrapperArrayObj.getJSONObject(0).getString("vehicleNo"));
+////                            driver.setStatus(wrapperArrayObj.getJSONObject(0).getString("status"));
+////                            driver.setDriverVehicleType(wrapperArrayObj.getJSONObject(0).getString("vehicleType"));
+////                            driver.setImageFound(false);
+////                            driver.setDatetime(formattedDate);
+////                            driver.setFcmToken(fcmToken);
+////                            driver.setLocale(wrapperArrayObj.getJSONObject(0).getString("locale"));
+////
+////                            setDriverLogin();
+////
+////
+////
+////                        }
+////                        else
+////                        {
+////
+////                            Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+////
+////                        }
+////
+////
+////
+////
+////                    } else {
+////
+////                        Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+////
+////                    }
+////
+////                } catch (Exception e) {
+////                    e.printStackTrace();
+////                    Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+////
+////
+////                }
 //
 //
-//                        // Convert String to json object
-//                        JSONObject jsonResponseData = new JSONObject(responseData);
+//                //}//validation
 //
-//                        // get LL json object
-//                        JSONObject jsonResult = jsonResponseData.getJSONObject("driverAutoLogin");
+//            }//run end
 //
-//                        //Log.d(TAG, "resData insertRider: " + jsonResult);
-//                        //Log.d(TAG, "resData success: " + jsonResponseData.getString("success"));
-//
-//                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("driverWrapper");
-//
-//                        //Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-//                        //Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
-//
-//                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
+//        });//runnable end
 //
 //
-//
-//                            Calendar c = Calendar.getInstance();
-//                            System.out.println("Current time => " + c.getTime());
-//                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-//                            final String formattedDate = df.format(c.getTime());
-//
-//                            driver = new Driver();
-//
-//                            driver.setDriverRefNo(wrapperArrayObj.getJSONObject(0).getString("driverRefNo"));
-//                            driver.setDriverID(wrapperArrayObj.getJSONObject(0).getString("driverID"));
-//                            driver.setDriverMobileNo(wrapperArrayObj.getJSONObject(0).getString("mobileNo"));
-//                            driver.setDriverName(wrapperArrayObj.getJSONObject(0).getString("firstName"));
-//                            driver.setDriverVehicleNo(wrapperArrayObj.getJSONObject(0).getString("vehicleNo"));
-//                            driver.setStatus(wrapperArrayObj.getJSONObject(0).getString("status"));
-//                            driver.setDriverVehicleType(wrapperArrayObj.getJSONObject(0).getString("vehicleType"));
-//                            driver.setImageFound(false);
-//                            driver.setDatetime(formattedDate);
-//                            driver.setFcmToken(fcmToken);
-//                            driver.setLocale(wrapperArrayObj.getJSONObject(0).getString("locale"));
-//
-//                            setDriverLogin();
-//
-//
-//
-//                        }
-//                        else
-//                        {
-//
-//                            Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
-//                        }
-//
-//
-//
-//
-//                    } else {
-//
-//                        Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(LoginActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
-//
-//                }
-
-
-                //}//validation
-
-            }//run end
-
-        });//runnable end
-
-
-    }
+//    }
 
 
 //    public void setDriverLogin () {
@@ -815,26 +857,34 @@ public class LoginActivity extends AppCompatActivity {
 
 //        txt_mobileNo.setText(sharedPreferences.getString("mobileNo", ""));
 
-            ccp.setFullNumber( sharedPreferences.getString("mobileNo", ""));
+
+
+            mobileNo = sharedPreferences.getString("mobileNo", "");
+
+            Log.d(TAG, "mobileNo shared: " + mobileNo);
+
+            ccp.setFullNumber(mobileNo);
+
+
 
             //check for sharedPreferences values
-            if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE) &&
-                    !CommonService.isEmpty(sharedPreferences.getString("riderMobileNo", ""))) {
-
-                //txt_mobileNo.setText(sharedPreferences.getString("riderMobileNo", ""));
-                ccp.setFullNumber(sharedPreferences.getString("riderMobileNo", ""));
-
-
-            }
-            if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.DRIVER_CODE) &&
-                    !CommonService.isEmpty(sharedPreferences.getString("driverMobileNo", ""))) {
-
-                Log.d(TAG, "driver is empty: " + sharedPreferences.getString("driverMobileNo", ""));
-
-                //txt_mobileNo.setText(sharedPreferences.getString("driverMobileNo", ""));
-                ccp.setFullNumber(sharedPreferences.getString("driverMobileNo", ""));
-
-            }
+//            if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE) &&
+//                    !CommonService.isEmpty(sharedPreferences.getString("riderMobileNo", ""))) {
+//
+//                //txt_mobileNo.setText(sharedPreferences.getString("riderMobileNo", ""));
+//                ccp.setFullNumber(sharedPreferences.getString("riderMobileNo", ""));
+//
+//
+//            }
+//            if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.DRIVER_CODE) &&
+//                    !CommonService.isEmpty(sharedPreferences.getString("driverMobileNo", ""))) {
+//
+//                Log.d(TAG, "driver is empty: " + sharedPreferences.getString("driverMobileNo", ""));
+//
+//                //txt_mobileNo.setText(sharedPreferences.getString("driverMobileNo", ""));
+//                ccp.setFullNumber(sharedPreferences.getString("driverMobileNo", ""));
+//
+//            }
 
             btn_login.setOnClickListener(new View.OnClickListener() {
                 @Override

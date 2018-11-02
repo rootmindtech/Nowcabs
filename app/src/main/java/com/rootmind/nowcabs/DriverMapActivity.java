@@ -266,7 +266,7 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
         //initialize autocomplete to specific area
         //initMapBoundaries();
 
-        firebaseStorage = FirebaseStorage.getInstance("gs://nowcabs.appspot.com");
+        firebaseStorage = FirebaseStorage.getInstance(GlobalConstants.FIREBASE_URL);
 
 
         btn_vacant = (Button) findViewById(R.id.btn_vacant);
@@ -393,21 +393,21 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
         editor.putString("driverFirstName", driver.getDriverName());
         editor.apply();
 
-        //sidenav header
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+//        //sidenav header
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//
+//
+//        View headerView = navigationView.getHeaderView(0);
+//        driverImage = (ImageView) headerView.findViewById(R.id.iv_userimage);
+//        TextView driverName = (TextView) headerView.findViewById(R.id.tv_name);
+//        TextView driverID = (TextView) headerView.findViewById(R.id.tv_id);
+//        //drawerImage.setImageDrawable(R.drawable.ic_menu_camera);
+//        driverImage.setImageResource(R.drawable.avatar_24dp);
 
 
-        View headerView = navigationView.getHeaderView(0);
-        driverImage = (ImageView) headerView.findViewById(R.id.iv_userimage);
-        TextView driverName = (TextView) headerView.findViewById(R.id.tv_name);
-        TextView driverID = (TextView) headerView.findViewById(R.id.tv_id);
-        //drawerImage.setImageDrawable(R.drawable.ic_menu_camera);
-        driverImage.setImageResource(R.drawable.avatar_24dp);
-
-
-        driverName.setText(sharedPreferences.getString("driverFirstName", "")); //to get latest name
-        driverID.setText(driver.driverID);
+//        driverName.setText(sharedPreferences.getString("driverFirstName", "")); //to get latest name
+//        driverID.setText(driver.driverID);
 
         getDriverImage();
 
@@ -434,37 +434,37 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
 
 
 
-        driverImage.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                openFrontCamera();
-
-            }
-        });
-
-
-        //--navigation header onclick
-        View headerview = navigationView.getHeaderView(0);
-
-        LinearLayout header = (LinearLayout) headerview.findViewById(R.id.nav_header);
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(DriverMapActivity.this, "clicked", Toast.LENGTH_SHORT).show();
-
-                Intent i = new Intent(getApplicationContext(), DriverProfileActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("Driver", driver);
-                i.putExtras(bundle);
-                startActivity(i);
+//        driverImage.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//                openFrontCamera();
+//
+//            }
+//        });
 
 
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        });
-
+//        //--navigation header onclick
+//        View headerview = navigationView.getHeaderView(0);
+//
+//        LinearLayout header = (LinearLayout) headerview.findViewById(R.id.nav_header);
+//        header.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //Toast.makeText(DriverMapActivity.this, "clicked", Toast.LENGTH_SHORT).show();
+//
+//                Intent i = new Intent(getApplicationContext(), DriverProfileActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("Driver", driver);
+//                i.putExtras(bundle);
+//                startActivity(i);
+//
+//
+//                drawer.closeDrawer(GravityCompat.START);
+//            }
+//        });
+//
 
 
         //to bring locationbutton to bottom right----MyLocationEnabled Button
@@ -1568,7 +1568,7 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
 
             StorageReference storageRef = firebaseStorage.getReference();
 
-            final StorageReference  avatarRef = storageRef.child("images/" + driver.getDriverID()+"_avatar.jpg");
+            final StorageReference  avatarRef = storageRef.child(GlobalConstants.FB_IMAGE_FOLDER + driver.getDriverID()+"_avatar.jpg");
 
             UploadTask uploadTask = avatarRef.putBytes(byteArray);
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -1928,20 +1928,24 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        switch (id) {
 
+//            case R.id.nav_rides: {
+//
+//                Intent i = new Intent(getApplicationContext(), RidesActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("Driver", driver);
+//                i.putExtra("UserGroup", GlobalConstants.DRIVER_CODE);
+//                i.putExtras(bundle);
+//                startActivity(i);
+//            }
 
-        if (id == R.id.nav_rides) {
-
-            Intent i = new Intent(getApplicationContext(), RidesActivity.class);
-            Bundle bundle = new Bundle();
-
-            bundle.putSerializable("Driver", driver);
-            i.putExtra("UserGroup", GlobalConstants.DRIVER_CODE);
-            i.putExtras(bundle);
-            startActivity(i);
 
 
         }
+
+
+
 
 //        if (id == R.id.nav_camera) {
 //            // Handle the camera action
@@ -1976,7 +1980,7 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
     {
 
         StorageReference storageRef = firebaseStorage.getReference();
-        final StorageReference  avatarRef = storageRef.child("images/" + driver.getDriverID()+"_avatar.jpg");
+        final StorageReference  avatarRef = storageRef.child(GlobalConstants.FB_IMAGE_FOLDER + driver.getDriverID()+"_avatar.jpg");
 
         avatarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override

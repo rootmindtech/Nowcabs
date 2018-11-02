@@ -39,7 +39,7 @@ public class OTPActivity extends AppCompatActivity {
     String mResendToken=null;
 
     String mobileNo;
-    Parameter parameter;
+    //Parameter parameter;
     String locale;
 
     private EditText otpEditText1;
@@ -65,7 +65,7 @@ public class OTPActivity extends AppCompatActivity {
 
 
         mobileNo = (String) getIntent().getSerializableExtra("mobileNo");
-        parameter = (Parameter) getIntent().getSerializableExtra("Parameter");
+        //parameter = (Parameter) getIntent().getSerializableExtra("Parameter");
         locale = (String) getIntent().getSerializableExtra("locale");
 
 
@@ -333,7 +333,11 @@ public class OTPActivity extends AppCompatActivity {
             // afterTextChanged
             @Override
             public void afterTextChanged (Editable s){
+
+
             }
+
+
 
             // beforeTextChanged
             @Override
@@ -445,7 +449,7 @@ public class OTPActivity extends AppCompatActivity {
         catch (Exception ex)
         {
             ex.printStackTrace();
-            Toast.makeText(OTPActivity.this, "Invalid OTP", Toast.LENGTH_LONG).show();
+            CommonService.Toast(OTPActivity.this, "Invalid OTP", Toast.LENGTH_LONG);
 
 
         }
@@ -464,9 +468,9 @@ public class OTPActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("signInWithCredential", "signInWithCredential:success");
 
-                                Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+                                Intent i = new Intent(getApplicationContext(), RiderLoginActivity.class);
                                 Bundle bundle = new Bundle();
-                                bundle.putSerializable("Parameter", parameter);
+                                //bundle.putSerializable("Parameter", parameter);
                                 bundle.putSerializable("mobileNo", mobileNo);
                                 bundle.putSerializable("locale", locale);
                                 i.putExtras(bundle);
@@ -487,7 +491,7 @@ public class OTPActivity extends AppCompatActivity {
                                     // The verification code entered was invalid
 
                                     message = "Invalid code entered...";
-                                    Toast.makeText(OTPActivity.this, "Invalid OTP", Toast.LENGTH_LONG).show();
+                                    CommonService.Toast(OTPActivity.this, "Invalid OTP", Toast.LENGTH_LONG);
 
                                 }
 
@@ -532,16 +536,16 @@ public class OTPActivity extends AppCompatActivity {
             // for instance if the the phone number format is not valid.
             Log.w("OnVerification", "onVerificationFailed", e);
 
-            Toast.makeText(OTPActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            CommonService.Toast(OTPActivity.this, e.getMessage(), Toast.LENGTH_LONG);
 
             if (e instanceof FirebaseAuthInvalidCredentialsException) {
                 // Invalid request
-                Toast.makeText(OTPActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            CommonService.Toast(OTPActivity.this, e.getMessage(), Toast.LENGTH_LONG);
                 // ...
             } else if (e instanceof FirebaseTooManyRequestsException) {
                 // The SMS quota for the project has been exceeded
                 // ...
-                Toast.makeText(OTPActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            CommonService.Toast(OTPActivity.this, e.getMessage(), Toast.LENGTH_LONG);
 
             }
 

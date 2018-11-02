@@ -15,7 +15,7 @@
         android:title="@string/text_car"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_shop"
+        android:id="@+id/action_tool"
         android:enabled="true"
         android:icon="@drawable/tools"
         android:title="@string/text_tool"

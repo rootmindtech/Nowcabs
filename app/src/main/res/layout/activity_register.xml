@@ -1,142 +1,525 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="10"
+            tools:context=".RegisterActivity">
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/transparent"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:popupTheme="@style/AppTheme.PopupOverlay" >
 
+                <Button
+                    android:id="@+id/btn_skip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="30dp"
+                    android:text="Skip"
+                    android:textColor="@color/colorWhite"
+                    android:backgroundTint="@color/colorAccent"
+                    android:imeOptions="actionDone"
 
-    <RelativeLayout
-        android:id="@+id/logoContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+                    />
 
-        <ImageView
-            android:id="@+id/nowcabs"
-            android:layout_width="wrap_content"
-            android:layout_height="130dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/nowcabs"
-
-            />
-
+            </android.support.v7.widget.Toolbar>
 
 
             <TextView
                 android:id="@+id/txt_rider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="@string/rider"
+                android:text="Please select your profession"
                 android:textColor="@color/colorGrey"
                 android:textSize="20sp"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="left"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
                 android:layout_below="@id/nowcabs"/>
 
 
-            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/rider_card_view"
+    <!--<RelativeLayout-->
+                <!--android:id="@+id/logoContainer"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_weight="2"-->
+                <!--&gt;-->
+
+                <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:id="@+id/nowcabs"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="130dp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:src="@drawable/nowcabs"&ndash;&gt;-->
+
+                    <!--&lt;!&ndash;/>&ndash;&gt;-->
+
+
+
+            <!--</RelativeLayout>-->
+
+
+            <GridLayout
+                android:id="@+id/gridLayout"
+                android:columnCount="2"
+                android:rowCount="4"
+                android:alignmentMode="alignMargins"
+                android:columnOrderPreserved="false"
+                android:layout_weight="10"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_gravity="top"
-                android:layout_below="@id/txt_rider"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                card_view:cardCornerRadius="10dp"
-                card_view:cardElevation="10dp"
-                >
+                android:layout_height="0dp"
+               >
+
+                <!--Row-1-->
+                <!--Column-1 carpenter-->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/carpenter_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/carpenter"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
 
 
-                <Button
-                    android:id="@+id/btn_rider"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_below="@id/txt_rider"
-                    android:background="@drawable/rider"
-                    android:textColor="#ffffff"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:imeOptions="actionNext"
-                    />
+                        <TextView
+                            android:text="Carpenter"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
-            </android.support.v7.widget.CardView>
-
-            <TextView
-                android:id="@+id/txt_driver"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/rider_card_view"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="30dp"
-                android:text="@string/driver"
-                android:textColor="@color/colorGrey"
-                android:textSize="20sp"
-                android:layout_gravity="left"/>
+                    </LinearLayout>
 
 
-            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/driver_card_view"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom"
-                android:layout_below="@id/txt_driver"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
-                card_view:cardCornerRadius="10dp"
-                card_view:cardElevation="10dp"
-                >
 
+
+                </android.support.v7.widget.CardView>
+
+                <!--Row-1-->
+                <!--Column-2 driver-->
+                <android.support.v7.widget.CardView
+
+                    android:id="@+id/driver_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/driver"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
+
+
+                        <TextView
+                            android:text="Driver"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+
+
+                </android.support.v7.widget.CardView>
+
+
+                <!--Row-2-->
+                <!--Column-1 electrician-->
+                <android.support.v7.widget.CardView
+
+                    android:id="@+id/electrician_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/electrician"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
+
+
+                        <TextView
+                            android:text="Electrician"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+
+
+                </android.support.v7.widget.CardView>
+
+                <!--Row-2-->
+                <!--Column-2 plumber-->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/plumber_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/plumber"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
+
+
+                        <TextView
+                            android:text="Plumber"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+
+
+                </android.support.v7.widget.CardView>
+
+                <!--Row-3-->
+                <!--Column-1 tailer-->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/tailor_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/tailor"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+                        <TextView
+                            android:text="Tailor"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+
+
+                </android.support.v7.widget.CardView>
+
+                <!--Row-3-->
+                <!--Column-2 washer-->
+                <android.support.v7.widget.CardView
+
+                    android:id="@+id/washer_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/washer"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
+
+
+                        <TextView
+                            android:text="Washer"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+
+
+                </android.support.v7.widget.CardView>
+
+                <!--Row-4-->
+                <!--Column-1 courier-->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/courier_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/courier"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
+
+
+                        <TextView
+                            android:text="Courier"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+
+
+                </android.support.v7.widget.CardView>
+
+                <!--Row-5-->
+                <!--Column-2 merchant-->
+                <android.support.v7.widget.CardView
+
+                    android:id="@+id/merchant_cardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_columnWeight="1"
+                    android:layout_rowWeight="1"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:cardElevation="8dp"
+                    app:cardCornerRadius="8dp"
+                    >
+                    <LinearLayout
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:src="@drawable/merchant"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+                        <TextView
+                            android:text="Merchant"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+
+
+                </android.support.v7.widget.CardView>
+
+            </GridLayout>
 
             <Button
-                android:id="@+id/btn_driver"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_below="@id/txt_driver"
-                android:background="@drawable/driver_select"
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gridLayout"
+                android:background="@drawable/button"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/next"
                 android:textColor="#ffffff"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
+
                 />
 
-            </android.support.v7.widget.CardView>
 
 
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/driver_card_view"
-            android:background="@drawable/button"
-            android:layout_alignLeft="@id/rider_card_view"
-            android:layout_alignRight="@id/driver_card_view"
-            android:text="@string/next"
-            android:textColor="#ffffff"
-            android:imeOptions="actionDone"
+<!--<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+<!--android:id="@+id/rider_card_view"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="100dp"-->
+<!--android:layout_gravity="top"-->
+<!--android:layout_below="@id/txt_rider"-->
+<!--android:layout_marginTop="5dp"-->
+<!--android:layout_marginLeft="20dp"-->
+<!--android:layout_marginRight="20dp"-->
+<!--card_view:cardCornerRadius="10dp"-->
+<!--card_view:cardElevation="10dp"-->
+    <!--&gt;-->
 
-            />
+
+<!--<Button-->
+    <!--android:id="@+id/btn_rider"-->
+    <!--android:layout_width="80dp"-->
+    <!--android:layout_height="80dp"-->
+    <!--android:layout_below="@id/txt_rider"-->
+    <!--android:background="@drawable/rider"-->
+    <!--android:textColor="#ffffff"-->
+    <!--android:layout_gravity="center_horizontal|center_vertical"-->
+    <!--android:imeOptions="actionNext"-->
+    <!--/>-->
+
+<!--</android.support.v7.widget.CardView>-->
+
+<!--<TextView-->
+<!--android:id="@+id/txt_driver"-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:layout_below="@id/rider_card_view"-->
+<!--android:layout_centerHorizontal="true"-->
+<!--android:layout_marginTop="30dp"-->
+<!--android:text="@string/driver"-->
+<!--android:textColor="@color/colorGrey"-->
+<!--android:textSize="20sp"-->
+<!--android:layout_gravity="left"/>-->
 
 
-    </RelativeLayout>
+<!--<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+<!--android:id="@+id/driver_card_view"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="100dp"-->
+<!--android:layout_gravity="bottom"-->
+<!--android:layout_below="@id/txt_driver"-->
+<!--android:layout_marginTop="5dp"-->
+<!--android:layout_marginLeft="20dp"-->
+<!--android:layout_marginRight="20dp"-->
+<!--android:layout_marginBottom="20dp"-->
+<!--card_view:cardCornerRadius="10dp"-->
+<!--card_view:cardElevation="10dp"-->
+    <!--&gt;-->
 
-</android.support.constraint.ConstraintLayout>
+
+<!--<Button-->
+    <!--android:id="@+id/btn_driver"-->
+    <!--android:layout_width="80dp"-->
+    <!--android:layout_height="80dp"-->
+    <!--android:layout_below="@id/txt_driver"-->
+    <!--android:background="@drawable/driver_select"-->
+    <!--android:textColor="#ffffff"-->
+    <!--android:layout_gravity="center_horizontal|center_vertical"-->
+    <!--android:imeOptions="actionNext"-->
+    <!--/>-->
+
+<!--</android.support.v7.widget.CardView>-->

@@ -76,19 +76,19 @@ public class RidesActivity extends AppCompatActivity implements OnItemClickListe
         setContentView(R.layout.activity_rides);
         Context context = this; // or ActivityNotification.this
 
-        userGroup= getIntent().getStringExtra("UserGroup");
+//        userGroup= getIntent().getStringExtra("UserGroup");
 
-        if(userGroup.equals(GlobalConstants.RIDER_CODE)) {
+//        if(userGroup.equals(GlobalConstants.RIDER_CODE)) {
 
             rider = (Rider) getIntent().getSerializableExtra("Rider");
 
-        }
-        else {
+//        }
+//        else {
+//
+//            driver = (Driver) getIntent().getSerializableExtra("Driver");
+//        }
 
-            driver = (Driver) getIntent().getSerializableExtra("Driver");
-        }
-
-        Log.d(TAG, "userGroup "+ userGroup);
+  //      Log.d(TAG, "userGroup "+ userGroup);
 
         //sharedPreferences initiated
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -110,7 +110,7 @@ public class RidesActivity extends AppCompatActivity implements OnItemClickListe
 
 
 
-        getRidesHistory();
+        //getRidesHistory();
 
 
 //        ArrayAdapter adapter = new ArrayAdapter<String>(this,
@@ -124,102 +124,102 @@ public class RidesActivity extends AppCompatActivity implements OnItemClickListe
 
     }
 
-    public void getRidesHistory(){
-
-
-        //final Vector<Object> vector=new Vector<Object>();
-
-
-            try{
-
-
-                if(userGroup.equals(GlobalConstants.RIDER_CODE)) {
-
-                    dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDES_PATH + "/" + GlobalConstants.RIDER_CODE + "/" + rider.riderID);
-
-                    Log.d(TAG, "getRidesHistory riderID "+ rider.riderID);
-
-                }
-                else {
-
-                    dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDES_PATH + "/" + GlobalConstants.DRIVER_CODE + "/" + driver.driverID);
-
-                    Log.d(TAG, "getRidesHistory driverID "+ driver.driverID);
-                }
-
-
-
-                valueEventListener = new ValueEventListener() {
-
-
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get Post object and use the values to update the UI
-                        //Post post = dataSnapshot.getValue(Post.class);
-                        // ...
-                        Log.d(TAG, "ridersHistory:" + dataSnapshot);
-
-                        Log.d(TAG, "dataSnapshot.getKey() :" + dataSnapshot.getKey());
-                        Log.d(TAG, "dataSnapshot.getValue() :" + dataSnapshot.getValue());
-
-                        //ArrayList<RideDetails> rideDetailsArrayList = new ArrayList<RideDetails>();
-
-
-                        for (DataSnapshot dataSnapshotSub : dataSnapshot.getChildren()) {
-                            //Exercise exercise = postSnapshot.getValue(Exercise.class);
-                            //String temp = exercise.toString();
-                            //Log.d("exercise: ", temp + "\n"); // can log all
-                            //listExercises.add(exercise);
-
-                            Log.d(TAG, "dataSnapshotSub:" + dataSnapshotSub);
-
-                            rideDetails = dataSnapshotSub.getValue(RideDetails.class);
-                            //vector.addElement(rideDetails);
-                            rideDetailsArrayList.add(rideDetails);
-
-                            Log.d(TAG, "rideDetails: add to vector " + rideDetails.source+" "+rideDetails.destination);
-                        }
-
-
-                        RidesArrayAdapter adapter = new RidesArrayAdapter(RidesActivity.this, rideDetailsArrayList);
-                        // Attach the adapter to a ListView
-                        ListView listView = (ListView)findViewById(R.id.tv_rideslist);
-                        listView.setAdapter(adapter);
-
-                        listView.setOnItemClickListener(RidesActivity.this);
-
-                        //listView.setOnItemClickListener(new OnItemClickListenerListViewItem());
-                        if(userGroup.equals(GlobalConstants.RIDER_CODE)) {
-
-                            rider = dataSnapshot.getValue(Rider.class);
-
-                        }
-                        else{
-                            driver=dataSnapshot.getValue(Driver.class);
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Getting Post failed, log a message
-                        Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                        // ...
-                    }
-                };
-                dbRef.addListenerForSingleValueEvent(valueEventListener);
-                dbRef.removeEventListener(valueEventListener);
-
-
-            }
-            catch (Exception e) {
-                Log.d(TAG, "In updateFirebase Exception");
-                e.printStackTrace();
-            }
-
-
-
-    }
+//    public void getRidesHistory(){
+//
+//
+//        //final Vector<Object> vector=new Vector<Object>();
+//
+//
+//            try{
+//
+//
+//                if(userGroup.equals(GlobalConstants.RIDER_CODE)) {
+//
+//                    dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDES_PATH + "/" + GlobalConstants.RIDER_CODE + "/" + rider.riderID);
+//
+//                    Log.d(TAG, "getRidesHistory riderID "+ rider.riderID);
+//
+//                }
+//                else {
+//
+//                    dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDES_PATH + "/" + GlobalConstants.DRIVER_CODE + "/" + driver.driverID);
+//
+//                    Log.d(TAG, "getRidesHistory driverID "+ driver.driverID);
+//                }
+//
+//
+//
+//                valueEventListener = new ValueEventListener() {
+//
+//
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        // Get Post object and use the values to update the UI
+//                        //Post post = dataSnapshot.getValue(Post.class);
+//                        // ...
+//                        Log.d(TAG, "ridersHistory:" + dataSnapshot);
+//
+//                        Log.d(TAG, "dataSnapshot.getKey() :" + dataSnapshot.getKey());
+//                        Log.d(TAG, "dataSnapshot.getValue() :" + dataSnapshot.getValue());
+//
+//                        //ArrayList<RideDetails> rideDetailsArrayList = new ArrayList<RideDetails>();
+//
+//
+//                        for (DataSnapshot dataSnapshotSub : dataSnapshot.getChildren()) {
+//                            //Exercise exercise = postSnapshot.getValue(Exercise.class);
+//                            //String temp = exercise.toString();
+//                            //Log.d("exercise: ", temp + "\n"); // can log all
+//                            //listExercises.add(exercise);
+//
+//                            Log.d(TAG, "dataSnapshotSub:" + dataSnapshotSub);
+//
+//                            rideDetails = dataSnapshotSub.getValue(RideDetails.class);
+//                            //vector.addElement(rideDetails);
+//                            rideDetailsArrayList.add(rideDetails);
+//
+//                            Log.d(TAG, "rideDetails: add to vector " + rideDetails.source+" "+rideDetails.destination);
+//                        }
+//
+//
+//                        RidesArrayAdapter adapter = new RidesArrayAdapter(RidesActivity.this, rideDetailsArrayList);
+//                        // Attach the adapter to a ListView
+//                        ListView listView = (ListView)findViewById(R.id.tv_rideslist);
+//                        listView.setAdapter(adapter);
+//
+//                        listView.setOnItemClickListener(RidesActivity.this);
+//
+//                        //listView.setOnItemClickListener(new OnItemClickListenerListViewItem());
+//                        if(userGroup.equals(GlobalConstants.RIDER_CODE)) {
+//
+//                            rider = dataSnapshot.getValue(Rider.class);
+//
+//                        }
+//                        else{
+//                            driver=dataSnapshot.getValue(Driver.class);
+//                        }
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                        // Getting Post failed, log a message
+//                        Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                        // ...
+//                    }
+//                };
+//                dbRef.addListenerForSingleValueEvent(valueEventListener);
+//                dbRef.removeEventListener(valueEventListener);
+//
+//
+//            }
+//            catch (Exception e) {
+//                Log.d(TAG, "In updateFirebase Exception");
+//                e.printStackTrace();
+//            }
+//
+//
+//
+//    }
 
 
     @Override

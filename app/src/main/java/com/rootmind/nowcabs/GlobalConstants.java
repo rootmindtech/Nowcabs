@@ -25,6 +25,7 @@ public  final class GlobalConstants {
     public static final String  VACANT_CODE = "VACANT";
     public static final String  HIRED_CODE = "HIRED";
     public static final String  ACTIVE_CODE = "ACTIVE";
+    public static final String  INACTIVE_CODE = "INACTIVE";
     public static final String  NO_CODE = "NO";
     public static final String  YES_CODE = "YES";
     public static final String  RIDER_CODE = "RIDER";
@@ -59,6 +60,10 @@ public  final class GlobalConstants {
 
     public static final String FCM_URL="https://fcm.googleapis.com/fcm/send";
 
+    public static final String FIREBASE_URL="gs://nowcabs.appspot.com";
+
+    public static final String FB_IMAGE_FOLDER="images/";
+
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
     public static final String PACKAGE_NAME =
@@ -70,5 +75,27 @@ public  final class GlobalConstants {
             ".LOCATION_DATA_EXTRA";
 
     public static final String CommonService = "CommonService";
+
+
+    //------------Image Constants
+    public static final String IMAGE_AVATAR="AVATAR";
+    public static final String IMAGE_LICENSE_FRONT="LICENSE_F";
+    public static final String IMAGE_LICENSE_BACK="LICENSE_B";
+
+    //------------
+
+
+    //------------ServiceList Constants
+    public static final String SERVICE_CARPENTER="CARPENTER";
+    public static final String SERVICE_DRIVER="DRIVER";
+    public static final String SERVICE_ELECTRICIAN="ELECTRICIAN";
+    public static final String SERVICE_PLUMBER="PLUMBER";
+    public static final String SERVICE_TAILOR="TAILOR";
+    public static final String SERVICE_WASHER="WASHER";
+    public static final String SERVICE_COURIER="COURIER";
+    public static final String SERVICE_MERCHANT="MERCHANT";
+
+    //------------
+
 
 }

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@color/colorWhite"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp">
+
+
+    <!--26-Sep-2018-->
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="5dp">
+
+        <RelativeLayout
+            android:id="@+id/layoutLeft"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/driver_list_margin"
+            android:layout_marginTop="@dimen/driver_list_margin"
+            android:layout_marginRight="@dimen/driver_list_margin"
+            >
+
+            <ImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:src="@drawable/driver" />
+
+
+            <!--<TextView-->
+            <!--android:id="@+id/tv_rating"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:layout_alignStart="@id/tv_driverName"-->
+            <!--android:layout_marginLeft="60dp"-->
+            <!--android:gravity="left"-->
+            <!--android:text="0.0"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Small"-->
+            <!--android:textSize="25dp"-->
+            <!--android:layout_toRightOf="@id/iv_driverImage"/>-->
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/Widget.AppCompat.RatingBar.Indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/tv_servicerName"
+                android:layout_gravity="start"
+                android:gravity="center_vertical"
+                android:layout_marginStart="60dp"
+                android:isIndicator="true"
+                android:maxHeight="50dp"
+                android:minHeight="28dp"
+                android:numStars="5"
+                android:rating="3.5"
+                android:scaleX=".5"
+                android:scaleY=".5"
+                android:stepSize="0.5"
+                android:transformPivotX="0dp"
+                android:transformPivotY="0dp"
+                android:fillViewport="true"/>
+
+            <TextView
+                android:id="@+id/tv_yourRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/ratingBar"
+                android:layout_alignStart="@+id/ratingBar"
+                android:gravity="center"
+                android:text="Your rating 3.2"
+                android:textSize="10sp" />
+
+
+            <ImageView
+                android:id="@+id/iv_vehicleImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="150dp"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:src="@drawable/auto_blue48px"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_vehicleNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_vehicleImage"
+                android:text="1234"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginStart="148dp"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_servicerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_avatar"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:text="Amit Kumar"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/iv_dialImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_vehicleImage"
+                android:layout_gravity="end"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:layout_marginStart="150dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/dial_blue48px"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_servicerName"
+                android:layout_marginTop="5dp"
+                android:layout_alignStart="@id/tv_servicerName"
+                android:gravity="start"
+                android:text="Bhimavaram"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_destination"
+                android:layout_marginTop="5dp"
+                android:text="12.00 km"
+                android:textSize="12sp" />
+
+
+            <TextView
+                android:id="@+id/tv_call"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_dialImage"
+                android:layout_marginTop="5dp"
+                android:text="@string/call"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginStart="150dp"
+                android:textColor="#212121"/>
+
+
+            <!--13-Sep-2018-->
+            <TextView
+                android:id="@+id/tv_vacantStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_distance"
+                android:layout_marginTop="5dp"
+                android:gravity="start"
+                android:text="@string/vacant"
+                android:textSize="12sp" />
+
+
+            <!--<TextView-->
+            <!--android:id="@+id/tv_mobileNo"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/tv_vacantStatus"-->
+            <!--android:layout_alignStart="@id/tv_driverName"-->
+            <!--android:gravity="start"-->
+            <!--android:text="9849342551"-->
+            <!--android:textAppearance="@style/TextAppearance.AppCompat.Small"-->
+            <!--android:textSize="23dp" />-->
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/btn_favorite"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@null"
+            android:src="@drawable/fav_outline" />
+
+        <ImageButton
+            android:id="@+id/btn_rating"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="50dp"
+            android:layout_below="@id/btn_favorite"
+            android:background="@null"
+            android:src="@drawable/rating_pink" />
+
+        <ImageButton
+            android:id="@+id/btn_location"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="110dp"
+            android:layout_below="@id/btn_rating"
+            android:background="@null"
+            android:src="@drawable/location_outline" />
+
+
+
+        <!--&lt;!&ndash;//this is for alert dialog rating&ndash;&gt;-->
+        <!--<RatingBar-->
+        <!--android:id="@+id/yourRatingBar"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignStart="@id/tv_driverName"-->
+        <!--android:layout_gravity="left"-->
+        <!--android:gravity="left"-->
+        <!--android:layout_marginLeft="60dp"-->
+        <!--android:maxHeight="50dp"-->
+        <!--android:minHeight="28dp"-->
+        <!--android:isIndicator="true"-->
+        <!--android:numStars="5"-->
+        <!--android:rating="3.5"-->
+        <!--android:scaleX=".5"-->
+        <!--android:scaleY=".5"-->
+        <!--android:stepSize="0.5"-->
+        <!--android:transformPivotX="0dp"-->
+        <!--android:transformPivotY="0dp"-->
+        <!--android:visibility="invisible"/>-->
+
+
+        <!--<ImageView-->
+        <!--android:id="@+id/iv_smsImage"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:adjustViewBounds="true"-->
+        <!--android:gravity="right"-->
+        <!--android:maxHeight="48dp"-->
+        <!--android:maxWidth="48dp"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:src="@drawable/sms_icon48x48" />-->
+
+
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/layoutDialer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/layoutVehicle"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_gravity="center_vertical|center_horizontal"-->
+        <!--android:layout_marginTop="@dimen/activity_margin">-->
+
+
+
+
+
+        <!--</RelativeLayout>-->
+
+        <!--<include layout="@layout/item_divider" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_drivername"-->
+        <!--android:textSize="16dp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_mobileno"-->
+        <!--android:layout_below="@id/tv_drivername"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_destination"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_height="wrap_content" />-->
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
+
+
+    <!--<LinearLayout--><!--android:id="@+id/info"--><!--android:layout_width="wrap_content"--><!--android:layout_height="match_parent"--><!--android:layout_centerVertical="true"--><!--android:layout_toRightOf="@+id/iv_driverImage"--><!--android:orientation="vertical"--><!--android:layout_weight="1"--><!--android:layout_gravity="center"--><!--&gt;-->
+
+    <!--</LinearLayout>-->
+
+    <!--<ToggleButton--><!--android:id="@+id/btn_call"--><!--android:layout_width="24dp"--><!--android:layout_height="24dp"--><!--android:layout_alignParentEnd="true"--><!--android:layout_alignParentRight="true"--><!--android:layout_centerVertical="true"--><!--android:layout_marginLeft="@dimen/activity_horizontal_margin"--><!--android:layout_marginStart="@dimen/activity_horizontal_margin"--><!--android:layout_toEndOf="@id/tv_drivername"--><!--android:layout_toRightOf="@id/iv_driverimage"--><!--android:background="@drawable/dial_icon"--><!--android:checked="true"--><!--android:padding="6dp"--><!--android:textOff=""--><!--android:textOn="" />-->
+
+
+    <!--<ToggleButton--><!--android:id="@+id/tbtn_sms"--><!--android:layout_width="24dp"--><!--android:layout_height="24dp"--><!--android:layout_alignParentEnd="true"--><!--android:layout_alignParentRight="true"--><!--android:layout_centerVertical="true"--><!--android:layout_marginLeft="@dimen/activity_horizontal_margin"--><!--android:layout_marginStart="@dimen/activity_horizontal_margin"--><!--android:background="@drawable/sms_icon"--><!--android:checked="true"--><!--android:padding="6dp"--><!--android:textOff=""--><!--android:textOn="" />-->

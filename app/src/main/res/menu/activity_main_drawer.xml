@@ -4,9 +4,30 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_rides"
-            android:icon="@drawable/vehicle_24px"
-            android:title="@string/your_rides" />
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/avatar_outline48"
+            android:title="Profile" />
+
+        <!--<item-->
+            <!--android:id="@+id/nav_rides"-->
+            <!--android:icon="@drawable/vehicle_24px"-->
+            <!--android:title="@string/your_rides" />-->
+
+        <item
+            android:id="@+id/nav_driver"
+            android:icon="@drawable/driver"
+            android:title="Driver" />
+
+
+        <item
+            android:id="@+id/nav_idcard"
+            android:icon="@drawable/driving_front"
+            android:title="ID Card" />
+
+        <item
+            android:id="@+id/nav_service"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Service" />
 
         <!--<item-->
             <!--android:id="@+id/nav_camera"-->
@@ -20,10 +41,6 @@
             <!--android:id="@+id/nav_slideshow"-->
             <!--android:icon="@drawable/ic_menu_slideshow"-->
             <!--android:title="Slideshow" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_manage"-->
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            <!--android:title="Tools" />-->
     </group>
 
     <!--<item android:title="Communicate">-->

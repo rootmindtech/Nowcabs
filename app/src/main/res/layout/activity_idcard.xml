@@ -7,6 +7,14 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".IDCardActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
 
     <RelativeLayout
         android:id="@+id/logoContainer"
@@ -27,36 +35,71 @@
             android:layout_height="130dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/nowcabs"
-
             />
 
 
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@id/textView"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_centerInParent="true"
+            card_view:cardCornerRadius="10dp"
+            card_view:cardElevation="10dp"
+            >
+
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView_front"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/nowcabs"
+            android:layout_below="@id/card_view"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:text="@string/idcard"
+            android:layout_marginTop="10dp"
+            android:text="@string/idcard_front"
             android:textColor="@color/colorGrey"
             android:textSize="20sp"
             android:layout_gravity="center_horizontal"/>
 
 
         <ImageView
-            android:id="@+id/iv_avatar"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@android:drawable/sym_def_app_icon"/>
+            android:id="@+id/iv_id_front"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="45dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@id/textView_front"
+            android:src="@drawable/driving_front"/>
 
+        <TextView
+            android:id="@+id/textView_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_id_front"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="155dp"
+            android:text="@string/idcard_back"
+            android:textColor="@color/colorGrey"
+            android:textSize="20sp"
+            android:layout_gravity="center_horizontal"/>
+
+        <ImageView
+            android:id="@+id/iv_id_back"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="190dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@id/textView_back"
+            android:src="@drawable/driving_back"/>
+
+        </android.support.v7.widget.CardView>
 
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/iv_avatar"
+            android:layout_below="@id/card_view"
             android:background="@drawable/button"
             android:layout_marginTop="30dp"
             android:text="@string/next"

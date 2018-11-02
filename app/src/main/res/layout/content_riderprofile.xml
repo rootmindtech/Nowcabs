@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
-    android:clickable="true"
-    android:focusableInTouchMode="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.rootmind.nowcabs.RiderProfileActivity"
+    tools:context=".RiderProfileActivity"
     tools:showIn="@layout/app_bar_riderprofile"
     >
+
+    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+
 
     <!--<TextView-->
     <!--android:layout_width="wrap_content"-->
@@ -22,15 +22,28 @@
     <!--app:layout_constraintTop_toTopOf="parent" />-->
 
 
-    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
-        xmlns:tools = "http://schemas.android.com/tools" android:layout_width="match_parent"
-        android:layout_height = "match_parent" android:paddingLeft= "@dimen/activity_horizontal_margin"
-        android:paddingRight = "@dimen/activity_horizontal_margin"
-        android:paddingTop = "@dimen/activity_vertical_margin"
-        android:paddingBottom = "@dimen/activity_vertical_margin"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        >
+    <RelativeLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/avatar_outline48"
+            app:srcCompat="@android:drawable/sym_def_app_icon"/>
+
 
 
         <EditText
@@ -38,6 +51,7 @@
             android:layout_height = "wrap_content"
             android:id = "@+id/txt_mobileNo"
             android:drawableLeft="@drawable/phone_24px"
+            android:layout_below="@id/iv_avatar"
             android:hint = "Enter Mobile No"
             android:maxLength="20"
             android:maxLines="1"
@@ -106,7 +120,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignRight="@+id/txt_name"
             android:layout_alignEnd="@+id/txt_mobileNo"
-            android:nextFocusForward="@+id/txt_link"
             android:background="@drawable/button"
             android:textColor="#ffffff"
             />

@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,7 +42,7 @@ public class AvatarActivity extends AppCompatActivity {
 
 
     Rider rider;
-    Driver driver;
+    //Driver driver;
     
     public Toolbar toolbar;
     SharedPreferences sharedPreferences;
@@ -55,13 +56,19 @@ public class AvatarActivity extends AppCompatActivity {
 
     ImageView iv_avatar;
 
-    private Camera mCamera;
-    private int cameraId = 0;
+//    private Camera mCamera;
+//    private int cameraId = 0;
+//    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+
+    //String userGroup=null;
+    //String refID=null;
+
+    CommonService commonService=null;
+    boolean photoTaken=false;
+    boolean registerFlag=false;
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
-
-
-    String userGroup=null;
-    String refID=null;
 
     @SuppressLint("ResourceType")
     @Override
@@ -69,21 +76,25 @@ public class AvatarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_avatar);
 
-        rider = (Rider) getIntent().getSerializableExtra("rider");
-        driver = (Driver) getIntent().getSerializableExtra("driver");
+        rider = (Rider) getIntent().getSerializableExtra("Rider");
+        registerFlag = (boolean) getIntent().getSerializableExtra("RegisterFlag");
 
-        userGroup = (String) getIntent().getSerializableExtra("userGroup");
+        //driver = (Driver) getIntent().getSerializableExtra("driver");
 
+//        userGroup = (String) getIntent().getSerializableExtra("userGroup");
+//
+//
+//        if(userGroup.equals(GlobalConstants.RIDER_CODE))
+//        {
+//            refID = rider.getRiderID();
+//        }
+//
+//        if(userGroup.equals(GlobalConstants.DRIVER_CODE))
+//        {
+//            refID = driver.getDriverID();
+//        }
 
-        if(userGroup.equals(GlobalConstants.RIDER_CODE))
-        {
-            refID = rider.getRiderID();
-        }
-
-        if(userGroup.equals(GlobalConstants.DRIVER_CODE))
-        {
-            refID = driver.getDriverID();
-        }
+        commonService = new CommonService();
 
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -96,10 +107,19 @@ public class AvatarActivity extends AppCompatActivity {
 
         btn_login = (Button) findViewById(R.id.btn_login);
 
-        iv_avatar = (ImageView) findViewById(R.id.iv_userimage);
-        iv_avatar.setImageResource(R.drawable.avatar_24dp);
+        iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
+        //iv_avatar.setImageResource(R.drawable.avatar_24dp);
 
-        getAvatarImage();
+
+        commonService.getImage(iv_avatar,rider.getImageName());
+
+        if(!registerFlag)
+        {
+            btn_login.setText(R.string.save);
+            btn_login.setVisibility(View.GONE);
+        }
+
+        commonService.getImage(iv_avatar,rider.getImageName());
 
 
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +128,13 @@ public class AvatarActivity extends AppCompatActivity {
 
 
 
+                if(!photoTaken)
+                {
+                    CommonService.Toast(AvatarActivity.this,"Please take photo",Toast.LENGTH_SHORT);
+                    return;
+                }
 
-                setLoginDetails();
+                setRider();
 
                 CommonService.hideKeyboard(AvatarActivity.this);
 
@@ -124,11 +149,27 @@ public class AvatarActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                openFrontCamera();
+                commonService.openFrontCamera(AvatarActivity.this);
 
             }
         });
 
+//        if(!registerFlag) {
+//
+//            Button btn_close = (Button) findViewById(R.id.btn_close);
+//            btn_close.setOnClickListener(new View.OnClickListener() {
+//
+//                @Override
+//                public void onClick(View v) {
+//
+//                    // TODO:
+//                    // This function closes Activity Two
+//                    // Hint: use Context's finish() method
+//                    finish();
+//                }
+//            });
+//
+//        }
     }
 
 
@@ -141,88 +182,24 @@ public class AvatarActivity extends AppCompatActivity {
     }
 
 
-    //------------Camera function -----------
-    public void openFrontCamera() {
 
-        try {
+    public void setRider()
+    {
 
-            Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-
-            intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-
-            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-
-            // do we have a camera?
-            if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-                Toast.makeText(this, "No camera on this device", Toast.LENGTH_LONG)
-                        .show();
-            } else {
-                cameraId = findFrontFacingCamera();
-
-                Log.d(TAG, "cameraId  " + cameraId);
-
-                if (cameraId < 0) {
-                    Toast.makeText(this, "No front facing camera found.",
-                            Toast.LENGTH_LONG).show();
-                } else {
-
-                    Log.d(TAG, "Camera To Open");
-
-                    mCamera = Camera.open(cameraId);
-
-                }
-
-
-            }
-
-
-            //Parameters parameters = mCamera.getParameters();
-            //parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
-            //mCamera.setParameters(parameters);
-
-            mCamera.startPreview();
-            mCamera.takePicture(null, null, new PhotoHandler(getApplicationContext()));
-
-        }
-        catch (Exception ex)
+        //only during registration move to next screen
+        if(registerFlag)
         {
-            ex.printStackTrace();
-        }
 
-    }
+            //Parameter parameter = new Parameter();
 
-    private int findFrontFacingCamera() {
-
-        try{
-
-            int cameraId = -1;
-            // Search for the front facing camera
-            int numberOfCameras = Camera.getNumberOfCameras();
-
-            Log.d(TAG, "numberOfCameras "+numberOfCameras);
-
-            for (int i = 0; i < numberOfCameras; i++) {
-                Camera.CameraInfo info = new Camera.CameraInfo();
-                Camera.getCameraInfo(i, info);
-
-                Log.d(TAG, "info.facing "+i+" "+info.facing);
-
-                if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-
-                    Log.d(TAG, "Camera found");
-                    cameraId = i;
-                    break;
-                }
-            }
+            Intent i = new Intent(getApplicationContext(), IDCardActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("Rider", rider);
+            bundle.putSerializable("RegisterFlag", registerFlag);
+            i.putExtras(bundle);
+            startActivity(i);
 
         }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        return cameraId;
-
 
     }
 
@@ -230,145 +207,20 @@ public class AvatarActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        try{
-
-            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-
-                //Log.d(TAG, "imageBitmap "+imageBitmap);
-                // ImageView imageview = (ImageView) findViewById(R.id.ImageView01);
-                //imageview.setImageBitmap(image);
-
-                ByteArrayOutputStream bao = new ByteArrayOutputStream();
-
-                //Bitmap circleBitmap=getCircleBitmap(imageBitmap);
-
-                Bitmap circleBitmap=getCroppedBitmap(imageBitmap,imageBitmap.getWidth());
-
-                circleBitmap.compress(Bitmap.CompressFormat.PNG, 100, bao); // bmp is bitmap from user image file
-                circleBitmap.recycle();
-
-                byte[] byteArray = bao.toByteArray();
-                String imageB64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-                StorageReference storageRef = firebaseStorage.getReference();
-
-                final StorageReference  avatarRef = storageRef.child("images/" + refID +"_avatar.jpg");
-
-                UploadTask uploadTask = avatarRef.putBytes(byteArray);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        CommonService.Toast(AvatarActivity.this, "Image upload failed", Toast.LENGTH_SHORT);
-
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                        // ...
-                        CommonService.Toast(AvatarActivity.this, "Image uploaded", Toast.LENGTH_SHORT);
-
-
-
-                    }
-                });
-
-                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-
-                        // Continue with the task to get the download URL
-                        return avatarRef.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-
-                            setAvatarImage(downloadUri);
-
-                        } else {
-                            // Handle failures
-                            // ...
-                        }
-                    }
-                });
-
-
-
-                Log.d(TAG, "imageBitmap-3");
-            }
-
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+        if(commonService==null) {
+            commonService = new CommonService();
         }
 
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
-    }
-
-
-    public void getAvatarImage()
-    {
-
-        StorageReference storageRef = firebaseStorage.getReference();
-        final StorageReference  avatarRef = storageRef.child("images/" + refID +"_avatar.jpg");
-
-        avatarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-
-                Log.d(TAG, "onSuccess  " + uri);
-
-                setAvatarImage(uri);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                //Toast.makeText(RiderMapActivity.this, "Image download failed", Toast.LENGTH_SHORT).show();
-                iv_avatar.setImageResource(R.drawable.avatar_24dp);
-
-            }
-        });
-    }
-
-    public void setAvatarImage(Uri uri){
-
-
-        Picasso.get().load(uri).into(iv_avatar); //http://square.github.io/picasso/
-
-
-    }
-    //-------------end of camera function
-
-
-    public void setLoginDetails()
-    {
-
-        if(userGroup.equals(GlobalConstants.DRIVER_CODE))
-        {
-
-            Parameter parameter = new Parameter();
-
-            Intent i = new Intent(getApplicationContext(), DriverMapActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("Parameter", parameter);
-            bundle.putSerializable("Driver", driver);
-            i.putExtras(bundle);
-            startActivity(i);
-
+            photoTaken=true;
         }
+            rider.setImageName(rider.getRiderID()+"_avatar.jpg");
+        rider.setImageID(GlobalConstants.IMAGE_AVATAR);
+        commonService.onActivityResult(AvatarActivity.this, getApplicationContext() , requestCode,resultCode,data, rider, iv_avatar, true);
 
     }
+
+
 
 }

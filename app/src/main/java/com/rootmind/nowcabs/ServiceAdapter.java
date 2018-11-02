@@ -42,15 +42,15 @@ import org.json.JSONObject;
  * Created by saikirangandham on 7/31/17.
  */
 
-public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder> {
+public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHolder> {
 
 
-    private static final String TAG = "DriverAdapter";
+    private static final String TAG = "ServiceAdapter";
 
 
     public interface ItemClickListener {
         //void onClick(View view, int position);
-        void onClickDriverImage(View view, int position);
+        void onClickAvatarImage(View view, int position);
         void onClickDialImage(View view, int position);
         void onClickSMSImage(View view, int position);
         void onClickFavorite(View view, int position);
@@ -60,13 +60,13 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
     }
 
 
-    private List<Driver> driversList;
+    private List<Rider> servicesList;
     private  ItemClickListener  mClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView tv_driverName, tv_mobileNo, tv_destination, tv_distance, tv_vacantStatus, tv_yourRating, tv_vehicleNo;
+        public TextView tv_servicerName, tv_mobileNo, tv_destination, tv_distance, tv_vacantStatus, tv_yourRating, tv_vehicleNo;
         public ImageView iv_vehicleImage;
-        public ImageView iv_driverImage;
+        public ImageView iv_avatar;
         public ImageView iv_dialImage;
         public ImageView iv_smsImage;
         public ImageButton ib_favorite;
@@ -82,7 +82,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
             //view.setOnClickListener(this);
 
 
-            tv_driverName = (TextView) view.findViewById(R.id.tv_driverName);
+            tv_servicerName = (TextView) view.findViewById(R.id.tv_servicerName);
 //            tv_mobileNo = (TextView) view.findViewById(R.id.tv_mobileNo);
             tv_destination = (TextView) view.findViewById(R.id.tv_destination);
 
@@ -92,7 +92,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
 
 
             iv_vehicleImage=(ImageView) view.findViewById(R.id.iv_vehicleImage);
-            iv_driverImage=(ImageView) view.findViewById(R.id.iv_driverImage);
+            iv_avatar=(ImageView) view.findViewById(R.id.iv_avatar);
 
             iv_dialImage=(ImageView) view.findViewById(R.id.iv_dialImage);
             //13-Sep-2018
@@ -110,9 +110,9 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
 
             tv_vehicleNo= (TextView) view.findViewById(R.id.tv_vehicleNo);
 
-            view.setTag(iv_driverImage);
+            view.setTag(iv_avatar);
 
-            iv_driverImage.setOnClickListener(this);
+            iv_avatar.setOnClickListener(this);
 
             iv_dialImage.setOnClickListener(this);
             //13-Sep-2018
@@ -149,10 +149,10 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
                 Log.i(TAG, "get ID "+ view.getId());
 
 
-                if(view.getId()==iv_driverImage.getId()){
+                if(view.getId()==iv_avatar.getId()){
 
 
-                    mClickListener.onClickDriverImage(view, getAdapterPosition());
+                    mClickListener.onClickAvatarImage(view, getAdapterPosition());
 
 
                 }
@@ -213,14 +213,14 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
 
 
 
-    public DriverAdapter(List<Driver> driversList) {
-        this.driversList = driversList;
+    public ServiceAdapter(List<Rider> servicesList) {
+        this.servicesList = servicesList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.drivers_list_row, parent, false);
+                .inflate(R.layout.service_list_row, parent, false);
 
 
         return new ViewHolder(itemView);
@@ -235,20 +235,20 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
 
         Resources res = holder.itemView.getContext().getResources();
 
-        Driver driver = driversList.get(position);
-        holder.tv_driverName.setText(driver.getDriverName());
-//        holder.tv_mobileNo.setText(driver.getDriverMobileNo());
-        holder.tv_destination.setText(driver.getDriverLocation()); //13-Sep-2018
+        Rider rider = servicesList.get(position);
+        holder.tv_servicerName.setText(rider.getRiderName());
+//        holder.tv_mobileNo.setText(rider.getDriverMobileNo());
+        holder.tv_destination.setText(rider.getRiderLocation()); //13-Sep-2018
 
-        holder.tv_distance.setText((String.valueOf(driver.getDistance())) + " " + res.getString(R.string.km)); //13-Sep-2018
-        //holder.tv_vacantStatus.setText(driver.getVacantStatus()); //13-Sep-2018
+        holder.tv_distance.setText((String.valueOf(rider.getDistance())) + " " + res.getString(R.string.km)); //13-Sep-2018
+        //holder.tv_vacantStatus.setText(rider.getVacantStatus()); //13-Sep-2018
         holder.tv_vacantStatus.setText("");
 
 //        //favorite button
 //        ImageButton favButton = view.findViewById(R.id.btn_favorite);
 //        favButton.setBackgroundResource(R.drawable.fav_yellow);
 
-        if(driver.getFavorite().equals("N")) {
+        if(rider.getFavorite().equals("N")) {
             holder.ib_favorite.setImageResource(R.drawable.fav_outline);
         }
         else
@@ -256,34 +256,26 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
             holder.ib_favorite.setImageResource(R.drawable.fav_yellow);
         }
 
-        holder.ratingBar.setRating((float)driver.getAvgRating());
+        holder.ratingBar.setRating((float)rider.getAvgRating());
 
-        holder.tv_yourRating.setText(res.getString(R.string.you_rated) + " " + String.valueOf(driver.getYourRating()));
-
-        holder.tv_vehicleNo.setText(driver.getDriverVehicleNo());
-
-        Log.i(TAG, "Rating Adapter "+ driver.getAvgRating());
+        holder.tv_yourRating.setText(res.getString(R.string.you_rated) + " " + String.valueOf(rider.getYourRating()));
 
 
-        holder.iv_vehicleImage.setAdjustViewBounds(true);
-
-        if (driver.getDriverVehicleType().equals(GlobalConstants.CAB_CODE)) {
-
-            holder.iv_vehicleImage.setImageResource(R.drawable.taxi_blue48px);
-        } else {
-            holder.iv_vehicleImage.setImageResource(R.drawable.auto_blue48px);
-        }
+        Log.i(TAG, "Rating Adapter "+ rider.getAvgRating());
 
 
 
-        holder.iv_driverImage.setAdjustViewBounds(true);
 
-        //Log.d(TAG, "driverImage Found "+driverTabs.getJSONObject(i).getString("imageFound"));
+        setServiceImage(holder, rider);
 
 
-        getDriverImage(holder.iv_driverImage, driver);
 
-//        if (driver.getImageFound() == true) {
+        //Log.d(TAG, "riderImage Found "+riderTabs.getJSONObject(i).getString("imageFound"));
+
+
+        //getDriverImage(holder.iv_driverImage, rider);
+
+//        if (rider.getImageFound() == true) {
 //
 //           // Log.d(TAG, "driverImage Found 1");
 //
@@ -311,7 +303,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
 
 
         //don't display button if already rated
-        if(driver.getYourRating()>0.0)
+        if(rider.getYourRating()>0.0)
         {
             holder.ib_rating.setVisibility(View.INVISIBLE);
         }
@@ -321,7 +313,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
 
         }
 
-        if(driver.getYourRating()<=0.0)
+        if(rider.getYourRating()<=0.0)
         {
             holder.tv_yourRating.setVisibility(View.INVISIBLE);
         }
@@ -338,21 +330,21 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return driversList.size();
+        return servicesList.size();
     }
 
 
 
     //to identify the driver position;
-    public int getItemPosition(Driver driver)
+    public int getItemPosition(Rider rider)
     {
-        Driver driver1=null;
+        Rider rider1=null;
         int position=-1;
 
-        for(int i=0;i<=driversList.size()-1;i++)
+        for(int i=0;i<=servicesList.size()-1;i++)
         {
-            driver1=driversList.get(i);
-            if(driver1.getDriverID()==driver.getDriverID())
+            rider1=servicesList.get(i);
+            if(rider1.getRiderID()==rider.getRiderID())
             {
                 position=i;
                 break;
@@ -366,35 +358,121 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
         this.mClickListener = itemClickListener;
     }
 
-    public void getDriverImage(final ImageView imageView, Driver driver)
+    public void setServiceImage(ViewHolder holder, Rider rider)
     {
 
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance(GlobalConstants.FIREBASE_URL);
+        holder.iv_vehicleImage.setAdjustViewBounds(true);
+        holder.iv_avatar.setAdjustViewBounds(true);
 
-            StorageReference storageRef = firebaseStorage.getReference();
-            final StorageReference avatarRef = storageRef.child(GlobalConstants.FB_IMAGE_FOLDER + driver.getDriverID() + "_avatar.jpg");
 
-            avatarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    // Got the download URL for 'users/me/profile.png'
+        //clear values
+        holder.tv_vehicleNo.setText("");
 
-                    Log.d(TAG, "onSuccess  " + uri);
+        //-----set avatar
+        CommonService commonService = new CommonService();
+        commonService.getImage(holder.iv_avatar,CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
 
-                    Picasso.get().load(uri).into(imageView); //http://square.github.io/picasso/
+
+        //------set profession image
+        switch (rider.getServiceCode()) {
+
+            case GlobalConstants.SERVICE_CARPENTER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.carpenter);
+                break;
+            }
+            case GlobalConstants.SERVICE_COURIER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.courier);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_DRIVER:
+            {
+
+                switch (rider.getVehicleType()){
+
+                    case GlobalConstants.AUTO_CODE:
+                    {
+                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_blue48px);
+                        break;
+
+                    }
+                    case GlobalConstants.CAB_CODE:
+                    {
+                        holder.iv_vehicleImage.setImageResource(R.drawable.taxi_blue48px);
+                        break;
+
+                    }
+
+
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                    //Toast.makeText(RiderMapActivity.this, "Image download failed", Toast.LENGTH_SHORT).show();
-                    imageView.setImageResource(R.drawable.driver);
+                holder.tv_vehicleNo.setText(rider.getVehicleNo());
+                break;
+            }
+            case GlobalConstants.SERVICE_ELECTRICIAN:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.electrician);
+                break;
 
+            }
+            case GlobalConstants.SERVICE_MERCHANT:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.merchant);
+                break;
 
-                }
-            });
+            }
+            case GlobalConstants.SERVICE_PLUMBER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.plumber);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_TAILOR:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.tailor);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_WASHER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.washer);
+                break;
+
+            }
+        }
 
     }
+
+//    public void getDriverImage(final ImageView imageView, Driver driver)
+//    {
+//
+//        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance(GlobalConstants.FIREBASE_URL);
+//
+//        StorageReference storageRef = firebaseStorage.getReference();
+//        final StorageReference avatarRef = storageRef.child(GlobalConstants.FB_IMAGE_FOLDER + driver.getDriverID() + "_avatar.jpg");
+//
+//        avatarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                // Got the download URL for 'users/me/profile.png'
+//
+//                Log.d(TAG, "onSuccess  " + uri);
+//
+//                Picasso.get().load(uri).into(imageView); //http://square.github.io/picasso/
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                // Handle any errors
+//                //Toast.makeText(RiderMapActivity.this, "Image download failed", Toast.LENGTH_SHORT).show();
+//                imageView.setImageResource(R.drawable.driver);
+//
+//
+//            }
+//        });
+//
+//    }
 
 
 
