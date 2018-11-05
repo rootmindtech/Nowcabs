@@ -13,4 +13,7 @@
     <dimen name="bottom_sheet_top_padding">10dp</dimen>
     <dimen name="driver_list_margin">20dp</dimen>
 
+    <dimen name="icon_width">40dp</dimen>
+    <dimen name="icon_height">40dp</dimen>
+
 </resources>

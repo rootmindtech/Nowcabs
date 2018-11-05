@@ -76,7 +76,7 @@
     <string name="destination">Destination</string>
     <string name="please_enter_destination">Please enter destination</string>
 
-    <string name="no_driver_near_by">No driver found near to your location!!!</string>
+    <string name="no_driver_near_by">No service found near to your location!!!</string>
 
     <string name="invalid_mobile">Invalid mobile number!!!</string>
 

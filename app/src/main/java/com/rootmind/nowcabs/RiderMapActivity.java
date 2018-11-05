@@ -4,19 +4,20 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.rootmind.nowcabs.ServiceAdapter.ItemClickListener;
-
+//import com.google.firebase.storage.FirebaseStorage;
+//import com.google.firebase.storage.StorageReference;
+//import com.google.firebase.storage.UploadTask;
+//import com.rootmind.nowcabs.ServiceAdapter.ItemClickListener;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.hardware.Camera;
+//import android.hardware.Camera;
 import android.location.Location;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -29,8 +30,10 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -147,9 +150,9 @@ public class RiderMapActivity extends AppCompatActivity implements
         OnCameraMoveListener,
         OnCameraMoveCanceledListener,
         OnCameraIdleListener,
-        ItemClickListener,
+        ServiceAdapter.ItemClickListener,
+        ServiceSelectionAdapter.ItemClickListener,
         OnInfoWindowClickListener
-
 
 {
 
@@ -234,9 +237,6 @@ public class RiderMapActivity extends AppCompatActivity implements
     public Toolbar toolbar;
     public DrawerLayout drawer;
 
-//    private Camera mCamera;
-//    private int cameraId = 0;
-//    static final int REQUEST_IMAGE_CAPTURE = 1;
 
 
 //            private RecyclerView mRecyclerView;
@@ -245,8 +245,14 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
     private List<Rider> servicesList;
+    private List<Rider> serviceSelectionList;
+
     private RecyclerView recyclerView;
+    private RecyclerView servicesRecyclerView;
+
     private ServiceAdapter sAdapter;
+    private ServiceSelectionAdapter serviceSelectionAdapter;
+
 //    ImageView riderImage;
     //RatingBar ratingBar;
 
@@ -258,8 +264,11 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
     LinearLayout layoutBottomSheet;
-
     BottomSheetBehavior sheetBehavior;
+
+    LinearLayout layoutBottomSheetService;
+    BottomSheetBehavior serviceSheetBehavior;
+
 
     FloatingActionButton btn_service;
     String currentServiceMarker;
@@ -311,6 +320,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         servicesList = new ArrayList<>();
+        serviceSelectionList = new ArrayList<>();
 
 
         //20-Sep-2018
@@ -576,6 +586,18 @@ public class RiderMapActivity extends AppCompatActivity implements
         sAdapter.setClickListener(this);
         //----------------
 
+
+        //-----------recycler for list service selecton-------
+        servicesRecyclerView = (RecyclerView) findViewById(R.id.services_recycler_view);
+        serviceSelectionAdapter = new ServiceSelectionAdapter(serviceSelectionList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        servicesRecyclerView.setLayoutManager(layoutManager);
+        servicesRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        servicesRecyclerView.setAdapter(serviceSelectionAdapter);
+        serviceSelectionAdapter.setClickListener(this);
+        //----------------
+
+
         //recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL));
 
         //Commented for RecyclerView
@@ -603,6 +625,10 @@ public class RiderMapActivity extends AppCompatActivity implements
         // get the bottom sheet view
         layoutBottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+
+        // -----service selection sheet view
+        layoutBottomSheetService = (LinearLayout) findViewById(R.id.bottom_sheet_service);
+        serviceSheetBehavior = BottomSheetBehavior.from(layoutBottomSheetService);
 
 
         /**
@@ -640,9 +666,45 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         //---------end of bottom sheet
 
+
+        //-----------bottom sheet for service selection
+        /**
+         * bottom sheet state change listener
+         * we are changing button text when sheet changed state
+         * */
+        serviceSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+                        //Toast.makeText(RiderMapActivity.this, "Close Sheet", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        //Toast.makeText(RiderMapActivity.this, "Expand Sheet", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        bottomServiceSheetOpen();
+
+        //---------end of bottom sheet
+
+
         //-----
-
-
         //-------bottom nav
         bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
@@ -654,13 +716,15 @@ public class RiderMapActivity extends AppCompatActivity implements
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.action_auto:
+                            case R.id.action_public:
 
                                 item.setCheckable(true);
 
                                 item.setChecked(true);
 
-                                new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, false});
+                                bottomServiceSheetOpen();
+
+                                //new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, false});
 
 
                                 //bottomSheetOpen();
@@ -668,26 +732,25 @@ public class RiderMapActivity extends AppCompatActivity implements
                                 //Toast.makeText(getApplicationContext(),  "Auto clicked", Toast.LENGTH_SHORT).show();
 
                                 break;
-                            case R.id.action_car:
+                            case R.id.action_group:
 
                                 item.setChecked(true);
 
-                                new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, false});
+                                //new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, false});
 
-
-                                //bottomSheetOpen();
-
-                                break;
-                            case R.id.action_tool:
-
-                                item.setChecked(true);
-
-                                new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_PLUMBER, GlobalConstants.UTILITY_SERVICE, false});
+                                //bottomServiceSheetOpen();
 
                                 break;
 //                            case R.id.action_tool:
 //
+//                                item.setChecked(true);
+//
+//                                new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_PLUMBER, GlobalConstants.UTILITY_SERVICE, false});
+//
 //                                break;
+////                            case R.id.action_tool:
+////
+////                                break;
 
                         }
                         return false;
@@ -737,9 +800,35 @@ public class RiderMapActivity extends AppCompatActivity implements
     public void bottomSheetClose() {
         sheetBehavior.setPeekHeight(0);
         sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        clearDriverList();
+        clearServiceList();
 
     }
+
+
+    public void bottomServiceSheetOpen() {
+        serviceSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
+        serviceSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+        serviceSelectionList.clear();
+        serviceSelectionList.add(rider);
+        serviceSelectionAdapter.notifyDataSetChanged();
+
+        if (serviceSelectionAdapter.getItemCount() > 0) {
+            servicesRecyclerView.setVisibility(View.VISIBLE);
+
+        } else {
+            servicesRecyclerView.setVisibility(View.GONE);
+        }
+
+    }
+
+    public void bottomServiceSheetClose() {
+        serviceSheetBehavior.setPeekHeight(0);
+        serviceSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        //clearDriverList();
+
+    }
+
 
     //on item selection
 
@@ -775,7 +864,9 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         Rider rider = servicesList.get(position);
 
-        setDialImage(rider);
+        callTimer();
+
+        //setDialImage(rider);
 
         //Toast.makeText(getApplicationContext(),  driver.driverMobileNo+" "+view.getId()+ " dial is selected!", Toast.LENGTH_SHORT).show();
 
@@ -837,6 +928,82 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     }
 
+    //---------Service Selection Click Events
+    @Override
+    public void onClickCarpenter(View view, int position) {
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_CARPENTER, null, false});
+
+    }
+    @Override
+    public void onClickAutoDriver(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, false});
+
+    }
+    @Override
+    public void onClickCabDriver(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, false});
+
+    }
+    @Override
+    public void onClickElectrician(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_ELECTRICIAN, null, false});
+
+    }
+    @Override
+    public void onClickPlumber(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_PLUMBER, null, false});
+
+    }
+    @Override
+    public void onClickTailor(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_TAILOR, null, false});
+
+    }
+    @Override
+    public void onClickWasher(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_WASHER, null, false});
+
+    }
+    @Override
+    public void onClickCourier(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_COURIER, null, false});
+
+    }
+    @Override
+    public void onClickMerchant(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_MERCHANT, null, false});
+
+    }
+    //--------end of service selection events
+
+
+    //------------------------------
 
     @Override
     public void onPause() {
@@ -916,6 +1083,7 @@ public class RiderMapActivity extends AppCompatActivity implements
             public void onMapClick(LatLng latLng) {
                 Log.d(TAG, "onMapClick");
                 bottomSheetClose();
+                bottomServiceSheetClose();
             }
         });
 
@@ -983,6 +1151,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         bottomNavigationView.setVisibility(View.VISIBLE);
 
 
+        //Marker InfoWindow
         DriverInfoWindowAdapter driverInfoWindowAdapter = new DriverInfoWindowAdapter(this);
         mMap.setInfoWindowAdapter(driverInfoWindowAdapter);
 
@@ -1073,7 +1242,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         Log.d(TAG, "onLocationChanged before fetchDriver");
 
         //default get auto markers on the map
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.TRANSPORT_BUSINESS, GlobalConstants.AUTO_CODE, true});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true});
 
 
     }
@@ -1925,6 +2094,14 @@ public class RiderMapActivity extends AppCompatActivity implements
             NowcabsLog nowcabsLog = new NowcabsLog();
 
 
+            try {
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                r.play();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             // Here, thisActivity is the current activity
             if (ContextCompat.checkSelfPermission(RiderMapActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -2130,372 +2307,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
     }
-//    public void setDriverInfoList_old(){
-//
-//        try{
-//
-//            //remove all views before add
-//
-//            if(((LinearLayout) rootLinearLayout).getChildCount() > 0)
-//                ((LinearLayout) rootLinearLayout).removeAllViews();
-//
-//
-//
-//            Log.d(TAG, "driverTabs length: " + driverTabs.length());
-//
-//            //--to give space betweeen drivers
-//
-//            for (int i = 0; i <= driverTabs.length()-1; i++) {
-//
-//
-//                Log.d(TAG, "driverTabs status: " + driverTabs.optJSONObject(i).getString("status"));
-//                Log.d(TAG, "driverTabs disabled: " + driverTabs.optJSONObject(i).getString("disabled"));
-//
-//                if(driverTabs.optJSONObject(i).getString("status").equals(GlobalConstants.ACTIVE_CODE) && driverTabs.optJSONObject(i).getString("disabled").equals(GlobalConstants.NO_CODE)) {
-//
-//
-//                    driverInfoLinearLayout = new LinearLayout(this);
-//
-//
-//                    TextView tv_mobileNo = new TextView(getApplicationContext());
-//                    TextView tv_destination = new TextView(getApplicationContext());
-//                    TextView tv_driverName = new TextView(getApplicationContext());
-//
-//
-//                    driverInfoLinearLayout.setBackgroundColor(Color.WHITE);
-//
-//
-//                    tv_driverName.setText(driverTabs.optJSONObject(i).getString("driverName"));
-//                    tv_driverName.setPadding(0, 0, 0, 0);
-//                    tv_driverName.setTextColor(Color.DKGRAY);
-//                    tv_driverName.setGravity(Gravity.CENTER);
-//
-//
-//                    tv_destination.setText(driverTabs.optJSONObject(i).getString("destination"));
-//                    tv_destination.setPadding(2, 2, 2, 0);
-//                    tv_destination.setTextColor(Color.RED);
-//                    tv_destination.setGravity(Gravity.CENTER);
-//
-//
-//                    tv_mobileNo.setText(driverTabs.optJSONObject(i).getString("mobileNo"));
-//                    tv_mobileNo.setPadding(2, 2, 2, 2);
-//
-//                    tv_mobileNo.setTextColor(Color.rgb(34,139,34)); //FOREST GREEN
-//                    // Set TextView font/text size to 25 dp
-//                    tv_mobileNo.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
-//                    tv_mobileNo.setGravity(Gravity.CENTER | Gravity.TOP);
-//
-//
-//                    //image adding
-//                    ImageView driverImage = new ImageView(this);
-//                    driverImage.setAdjustViewBounds(true);
-//
-//
-//                    //Log.d(TAG, "driverImage Found "+driverTabs.optJSONObject(i).getString("imageFound"));
-//
-//                    if(driverTabs.optJSONObject(i).getBoolean("imageFound")==true){
-//
-//                        Log.d(TAG, "driverImage Found 1");
-//
-//                        // Receiving side
-//                        byte[] data = Base64.decode(driverTabs.optJSONObject(i).getString("driverImage"), Base64.DEFAULT);
-//
-//                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-//
-//                        driverImage.setImageBitmap(bmp);
-//
-//
-//                    }else {
-//
-//                        driverImage.setImageResource(R.drawable.avatar_black_24dp);
-//
-//                    }
-//
-//                    //driverImage.setPadding(1, 1, 1, 1);
-//                    //driverImage.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-//
-//
-//                    ImageView vehicleImage = new ImageView(this);
-//
-//
-//                    if(driverTabs.optJSONObject(i).getString("vehicleType").equals(GlobalConstants.CAB_CODE)) {
-//
-//                        vehicleImage.setImageResource(R.drawable.caroutline);
-//                    }
-//                    else{
-//                        vehicleImage.setImageResource(R.drawable.autotop_32x32);
-//                    }
-//                    vehicleImage.setAdjustViewBounds(true);
-//                    //vehicleImage.setBackgroundResource(R.drawable.background_circle);
-//                    //vehicleImage.setPadding(1, 1, 1, 1);
-//
-//
-//                    //image adding
-//                    final ImageView dialImage = new ImageView(this);
-//                    dialImage.setImageResource(R.drawable.dialer_icon48x48);
-//                    //dialImage.setPadding(10, 10, 10, 10);
-//
-//                    //ImageButton imageButton = new ImageButton(this);
-//
-//                    //imageButton.setImageResource(R.drawable.dial_icon);
-//
-//                    dialImage.setTag(driverTabs.optJSONObject(i).getString("mobileNo"));
-//
-//                    dialImage.setOnClickListener(new View.OnClickListener() {
-//
-//                        @Override
-//                        public void onClick(View v) {
-//
-//
-//                            Log.d(TAG, "Dial Button Click: ");
-//
-//                            //callIntent.setData(Uri.parse("tel:9030209883"));
-//                            // update Log
-//                            NowcabsLog nowcabsLog=new NowcabsLog();
-//
-//
-//
-//                            // Here, thisActivity is the current activity
-//                            if (ContextCompat.checkSelfPermission(RiderMapActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-//
-//                                // Should we show an explanation?
-//                                if (ActivityCompat.shouldShowRequestPermissionRationale(RiderMapActivity.this, Manifest.permission.CALL_PHONE)) {
-//
-//                                    // Show an explanation to the user *asynchronously* -- don't block
-//                                    // this thread waiting for the user's response! After the user
-//                                    // sees the explanation, try again to request the permission.
-//
-//                                    Intent callIntent = new Intent(Intent.ACTION_CALL);
-//                                    callIntent.setData(Uri.parse("tel:" + dialImage.getTag()));
-//                                    startActivity(callIntent);
-//
-//                                    nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"Dialed to "+dialImage.getTag());
-//
-//                                } else {
-//
-//                                    // No explanation needed, we can request the permission.
-//
-//                                    ActivityCompat.requestPermissions(RiderMapActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
-//
-//                                    Intent callIntent = new Intent(Intent.ACTION_CALL);
-//                                    callIntent.setData(Uri.parse("tel:" + dialImage.getTag()));
-//                                    startActivity(callIntent);
-//
-//                                    nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"Dialed to "+dialImage.getTag());
-//
-//                                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//                                    // app-defined int constant. The callback method gets the
-//                                    // result of the request.
-//                                }
-//                            } else {
-//                                Intent callIntent = new Intent(Intent.ACTION_CALL);
-//                                callIntent.setData(Uri.parse("tel:" + dialImage.getTag()));
-//                                startActivity(callIntent);
-//
-//                                nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"Dialed to "+dialImage.getTag());
-//
-//                            }
-//
-//
-//                            Log.d(TAG, "Dial Button Click end: " + dialImage.getTag());
-//
-//                        }
-//                    });
-//
-//                    //------end of Dial Image
-//
-//
-//                    //-----start sms adding
-//                    final ImageView smsImage = new ImageView(this);
-//                    smsImage.setImageResource(R.drawable.sms_icon48x48);
-//                    //smsImage.setPadding(10, 10, 10, 10);
-//
-//                    final String riderMobileNo = rider.getRiderMobileNo();
-//
-//
-//                    final String driverID = driverTabs.optJSONObject(i).getString("driverID");
-//                    smsImage.setTag(driverID);
-//                    smsImage.setOnClickListener(new View.OnClickListener() {
-//
-//                        @Override
-//                        public void onClick(View v) {
-//
-//
-//                            Log.d(TAG, "SMS Button Click: ");
-//
-//
-//                            new AlertDialog.Builder(RiderMapActivity.this)
-//                                    .setTitle("Book")
-//                                    .setMessage("Do you want to book cab?")
-//                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialogInterface, int i) {
-//
-//
-//
-//                                            Calendar c = Calendar.getInstance();
-//                                            System.out.println("Current time => "+c.getTime());
-//                                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-//                                            String formattedDate = df.format(c.getTime());
-//
-//                                            Map<String, Object> smsMap = new HashMap<>();
-//                                            smsMap.put("riderSMS", riderMobileNo);
-//                                            smsMap.put("datetime", formattedDate);
-//                                            firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_ALERT_PATH+"/"+ driverID).updateChildren(smsMap);
-//
-//                                            // update Log
-//                                            NowcabsLog nowcabsLog=new NowcabsLog();
-//                                            nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"SMS to "+dialImage.getTag());
-//
-//
-//                                        }
-//                                    })
-//                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                                            dialogInterface.dismiss();
-//                                        }
-//                                    })
-//                                    .create()
-//                                    .show();
-//
-//
-//
-//                        }
-//                    });
-//
-//                    //-----end of SMS Image
-//
-//
-//                    driverInfoLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-//                    driverInfoLinearLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-//                    driverInfoLinearLayout.setGravity(Gravity.CENTER);
-//
-//                    driverInfoLinearLayout.addView(vehicleImage);
-//                    driverInfoLinearLayout.addView(driverImage);
-//
-//                    //adding multiple textviews
-//                    LinearLayout ll = new LinearLayout(this);
-//                    ll.setOrientation(LinearLayout.VERTICAL);
-//                    ll.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-//                    ll.setGravity(Gravity.CENTER);
-//                    ll.addView(tv_driverName);
-//                    ll.addView(tv_destination);
-//                    ll.addView(tv_mobileNo);
-//
-//
-//                    //adding multiple textviews
-////                    LinearLayout dialLL = new LinearLayout(this);
-////                    dialLL.setOrientation(LinearLayout.HORIZONTAL);
-////                    dialLL.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-////                    dialLL.setGravity(Gravity.CENTER);
-////                    dialLL.addView(dialImage);
-////                    dialLL.addView(smsImage);
-//
-//
-//                    driverInfoLinearLayout.addView(ll);
-//
-//
-//                    driverInfoLinearLayout.addView(dialImage);
-//                    driverInfoLinearLayout.addView(smsImage);
-//                    //driverInfoLinearLayout.addView(dialLL);
-//
-//
-//                    rootLinearLayout.addView(driverInfoLinearLayout);
-//
-//                    //layoutParams.setMargins(0, 0, 100, 0);
-//
-//
-//                    //int dividerHeight = getResources().getDisplayMetrics().density * 1; // 1dp to pixels
-//                    // viewDivider.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dividerHeight));
-//                } //if condition for disabled
-//
-//            }//for loop
-//
-//
-//
-//
-//
-//        }
-//        catch (Exception e){
-//            Log.d(TAG, "setDriverInfoList Exception");
-//            e.printStackTrace();
-//        }
-//
-//    } //end of setDriverInfoList_old
 
-
-    //---------rightside dotted menu hide it
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//
-//        menu.add(Menu.NONE,R.id.menu_mobileNo,0,rider.getRiderMobileNo()).setIcon(R.drawable.avatar_24dp);
-//        menu.add(Menu.NONE,R.id.menu_name,1,rider.getRiderName());
-//        menu.add(Menu.NONE,R.id.menu_riderID,2,rider.getRiderID());
-//        menu.add(Menu.NONE,R.id.menu_logout,3,"Logout");
-//
-//
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.menu_morevert) {
-//            Toast.makeText(RiderMapActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//
-//        if (id == R.id.menu_logout) {
-//            //Toast.makeText(RiderMapActivity.this, "Action Logout", Toast.LENGTH_LONG).show();
-//
-//            //To clear SharedPreferences
-//            SharedPreferences.Editor editor = sharedPreferences.edit();
-//            //editor.clear();
-//            //Do not clear all as last current lat and current lng required in case onLocationChange is not fired
-////            editor.putString("mobileNoKey", "");
-////            editor.putString("firstNameKey", "");
-////            editor.putString("userGroupKey", "");
-////            editor.putString("idKey", "");
-//            editor.putString("autoLoginKey", GlobalConstants.NO_CODE);
-//            editor.commit();
-//
-//
-//            //update Log
-//            NowcabsLog nowcabsLog=new NowcabsLog();
-//            nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"Logout");
-//
-//
-//            Intent intent = new Intent(RiderMapActivity.this, RiderLoginActivity.class);
-//            startActivity(intent);
-//            finish();
-//
-//
-//
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
-
-//    //05-Oct-2018 --Firebase suppress
-//    @Override
-//    protected void onDestroy(){
-//        super.onDestroy();
-//
-//        if (mChildEventListener != null) {
-//            dbRef.removeEventListener(mChildEventListener);
-//        }
-//
-//    }
 
 
     public String GetAddress(Double lat, Double lng) {
@@ -3037,6 +2849,1347 @@ public class RiderMapActivity extends AppCompatActivity implements
     }
 
 
+
+
+
+    class AddressResultReceiver extends ResultReceiver {
+
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            if (resultData == null) {
+                return;
+            }
+
+            // Display the address string
+            // or an error message sent from the intent service.
+            mAddressOutput = resultData.getString(GlobalConstants.RESULT_DATA_KEY);
+            if (mAddressOutput == null) {
+                mAddressOutput = "";
+            }
+
+            //Log.d(TAG, "Address " + mAddressOutput);
+
+            //autocompleteFragment.setText(mAddressOutput);
+
+            //displayAddressOutput();
+
+            // Show a toast message if an address was found.
+            if (resultCode == GlobalConstants.SUCCESS_RESULT) {
+
+
+                Log.d(TAG, "Address Found " + mAddressOutput);
+
+                autocompleteFragment.setText(mAddressOutput);
+
+                //showToast(getString(R.string.address_found));
+            }
+
+        }
+    }
+
+    private void showReverseGeocoder() {
+
+
+        if (!Geocoder.isPresent()) {
+            Log.d(TAG, "No Geocoder available ");
+
+            return;
+        }
+
+        // Start service and update UI to reflect new location
+        startIntentService();
+
+    }
+//            mFusedLocationClient.getLastLocation()
+//                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                        @Override
+//                        public void onSuccess(Location location) {
+//                            mLastKnownLocation = location;
+//
+//                            // In some rare cases the location returned can be null
+//                            if (mLastKnownLocation == null) {
+//                                return;
+//                            }
+//
+//                            if (!Geocoder.isPresent()) {
+//                                Toast.makeText(RiderMapActivity.this,
+//                                        "no_geocoder_available",
+//                                        Toast.LENGTH_LONG).show();
+//                                return;
+//                            }
+//
+//                            // Start service and update UI to reflect new location
+//                            startIntentService();
+//
+//                            //updateUI();
+//                            //autocompleteFragment.setText(mAddressOutput);
+//
+//                        }
+//                    });
+
+
+    //--------update Rider Location udpate in the backend
+//    public void updateRiderLocation() {
+//
+//
+//        RiderMapActivity.this.runOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+    private class updateRiderLocation extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            //loadingSpinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Object... params) {
+
+
+            try {
+
+
+                //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+
+                //Shared Preferences
+                editor = sharedPreferences.edit();
+
+                editor.putString("userid", rider.getRiderID());
+                editor.putString("deviceToken", rider.getFcmToken());
+                editor.putString("sessionid", "SESSIONID");
+
+                editor.apply();
+
+
+                String methodAction = "updateRiderLocation";
+
+                JSONObject messageJson = new JSONObject();
+                messageJson.put("currentLat", riderLat);
+                messageJson.put("currentLng", riderLng);
+                messageJson.put("currentLocation", riderLocation);
+                messageJson.put("riderRefNo", rider.getRiderRefNo());
+                messageJson.put("riderID", rider.getRiderID());
+
+
+                ConnectHost connectHost = new ConnectHost();
+                responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+                Log.d(TAG, "update rider Location responseData: " + responseData);
+
+
+                if (responseData != null) {
+
+
+                    // Convert String to json object
+                    JSONObject jsonResponseData = new JSONObject(responseData);
+
+                    // get LL json object
+                    JSONObject jsonResult = jsonResponseData.optJSONObject("updateRiderLocation");
+
+                    JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
+
+//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+//
+//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).getString("recordFound"));
+
+                    if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
+
+
+                        //String driverRefNo = wrapperArrayObj.optJSONObject(0).getString("driverRefNo");
+                        //String driverID = wrapperArrayObj.optJSONObject(0).getString("driverID");
+                        //wrapperArrayObj.optJSONObject(0).getString("mobileNo");
+
+
+                        //Log.d(TAG, "Driver Info: " + driverRefNo + " " + driverID);
+
+
+                    } else {
+
+                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+                } else {
+
+                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+            }
+
+            //}// validation
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //loadingSpinner.setVisibility(View.GONE);
+        }
+
+
+}
+//            }//run end
+//
+//        });//runnable end
+//
+//
+//    }//riderlocation update End
+
+
+
+
+    private class fetchServiceLocationProgressTask extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            //loadingSpinner.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Object...params ) {
+
+//            Log.d(TAG, "param[0] "+params[0].toString());
+//            Log.d(TAG, "param[1] "+params[1].toString());
+//            Log.d(TAG, "param[2] "+Boolean.valueOf(params[2].toString()));
+
+            fetchServiceLocation(params[0].toString(),(params[1]==null?null:params[1].toString()),Boolean.valueOf(params[2].toString()));
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //loadingSpinner.setVisibility(View.GONE);
+        }
+    }
+                    //--------fetch service Location  in the backend
+    public void fetchServiceLocation(final String service, final String vehicleType, final boolean switchService) {
+
+
+
+
+        RiderMapActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+
+
+                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    String methodAction = "fetchServiceLocation";
+
+                    JSONObject messageJson = new JSONObject();
+                    messageJson.put("serviceCode", service);
+                    messageJson.put("currentLat", markerLat);
+                    messageJson.put("currentLng", markerLng);
+                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+                    messageJson.put("riderID", rider.getRiderID());
+                    if(vehicleType!=null) {
+                        messageJson.put("vehicleType", vehicleType);
+                    }
+
+
+                    ConnectHost connectHost = new ConnectHost();
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+                    Log.d(TAG, "fetch driver location  Location responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        // Convert String to json object
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+
+                        // get LL json object
+                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchServiceLocation");
+
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
+
+//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+//
+//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).getString("recordFound"));
+
+                        if (jsonResponseData.optString("success") == "true") {
+
+
+                            clearServiceList();
+
+                            Rider rider=null;
+
+                            if(wrapperArrayObj!=null) {
+
+                                for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
+                                    if (wrapperArrayObj.optJSONObject(i).optString("recordFound") == "true") {
+
+                                        rider = new Rider();
+
+                                        rider.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
+                                        rider.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
+                                        rider.setRiderName(wrapperArrayObj.optJSONObject(i).optString("firstName"));
+                                        rider.setRiderMobileNo(wrapperArrayObj.optJSONObject(i).optString("mobileNo"));
+                                        rider.setVehicleNo(wrapperArrayObj.optJSONObject(i).optString("vehicleNo"));
+                                        rider.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
+                                        rider.setVehicleType(wrapperArrayObj.optJSONObject(i).optString("vehicleType"));
+                                        rider.setRiderLat(wrapperArrayObj.optJSONObject(i).getDouble("currentLat"));
+                                        rider.setRiderLng(wrapperArrayObj.optJSONObject(i).getDouble("currentLng"));
+                                        rider.setRiderLocation(wrapperArrayObj.optJSONObject(i).optString("currentLocation"));
+                                        rider.setVacantStatus(wrapperArrayObj.optJSONObject(i).optString("vacantStatus"));
+                                        rider.setDistance(wrapperArrayObj.optJSONObject(i).getDouble("distance"));
+                                        rider.setDuration(wrapperArrayObj.optJSONObject(i).getDouble("duration"));
+                                        rider.setRiderLat(markerLat);
+                                        rider.setRiderLng(markerLng);
+                                        rider.setFavorite(wrapperArrayObj.optJSONObject(i).optString("favorite"));
+                                        rider.setAvgRating(wrapperArrayObj.optJSONObject(i).getDouble("avgRating"));
+                                        rider.setYourRating(wrapperArrayObj.optJSONObject(i).getDouble("yourRating"));
+                                        rider.setServiceCode(wrapperArrayObj.optJSONObject(i).optString("serviceCode"));
+
+                                        Log.d(TAG, "Avg Rating: " + wrapperArrayObj.optJSONObject(i).optString("avgRating"));
+                                        Log.d(TAG, "Your Rating: " + wrapperArrayObj.optJSONObject(i).optString("yourRating"));
+
+                                        JSONArray imageWrappers = wrapperArrayObj.optJSONObject(0).optJSONArray("imageWrappers");
+
+                                        if(imageWrappers!=null)
+                                        {
+
+                                            rider.images = new Image[imageWrappers.length()];
+                                            Image image=null;
+
+                                            for(int j=0;j<imageWrappers.length();j++)
+                                            {
+                                                if(imageWrappers.optJSONObject(j).optString("recordFound")=="true")
+                                                {
+                                                    image = new Image();
+
+                                                    image.setRiderRefNo(imageWrappers.optJSONObject(j).optString("riderRefNo"));
+                                                    image.setRiderID(imageWrappers.optJSONObject(j).optString("riderID"));
+                                                    image.setImageID(imageWrappers.optJSONObject(j).optString("imageID"));
+                                                    image.setImageName(imageWrappers.optJSONObject(j).optString("imageName"));
+                                                    image.setImageFolder(imageWrappers.optJSONObject(j).optString("imageFolder"));
+                                                    image.setStatus(imageWrappers.optJSONObject(j).optString("status"));
+                                                    rider.images[j] = image;
+
+                                                }
+                                            }
+
+                                        }
+
+
+                                        servicesList.add(rider);
+                                        sAdapter.notifyDataSetChanged();
+
+                                        //only if right top button is clicked
+                                        if (switchService == true) {
+                                            setServiceLocation(0, rider);
+                                        }
+
+
+                                    }
+                                }
+
+
+                                if(switchService==false) {
+                                    bottomSheetOpen();
+                                }
+
+                            }//null condition check
+
+                        }
+                        else
+                        {
+
+                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    } else {
+
+                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                }
+
+                //}// validation
+
+            }//run end
+
+        });//runnable end
+
+
+    }//fetch rider location update End
+
+
+
+
+    public void switchServiceMarkers(){
+
+
+
+        //---------first remove all markers from screen
+        Iterator it = markers.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            System.out.println(pair.getKey() + " = " + pair.getValue());
+            //it.remove(); // avoids a ConcurrentModificationException
+            vehicleMarker= (Marker)pair.getValue();
+            vehicleMarker.setVisible(false);
+        }
+        //-----------------
+
+
+        if(currentServiceMarker.equals(GlobalConstants.TRANSPORT_AUTO_SERVICE)) {
+
+            btn_service.setEnabled(false);
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, true});
+            currentServiceMarker = GlobalConstants.TRANSPORT_CAB_SERVICE;
+            btn_service.setImageResource(R.drawable.car_24px);
+            Drawable fabDr= btn_service.getDrawable();
+            DrawableCompat.setTint(fabDr, Color.WHITE);
+            btn_service.setEnabled(true);
+
+        }
+        else if(currentServiceMarker.equals(GlobalConstants.TRANSPORT_CAB_SERVICE)) {
+
+            btn_service.setEnabled(false);
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.UTILITY_SERVICE, true});
+            currentServiceMarker = GlobalConstants.UTILITY_SERVICE;
+            btn_service.setImageResource(R.drawable.tools);
+            Drawable fabDr= btn_service.getDrawable();
+            DrawableCompat.setTint(fabDr, Color.WHITE);
+            btn_service.setEnabled(true);
+
+
+        }
+        else if(currentServiceMarker.equals(GlobalConstants.UTILITY_SERVICE)) {
+
+            btn_service.setEnabled(false);
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true});
+            currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
+            btn_service.setImageResource(R.drawable.auto_24px);
+            Drawable fabDr= btn_service.getDrawable();
+            DrawableCompat.setTint(fabDr, Color.WHITE);
+            btn_service.setEnabled(true);
+
+
+        }
+
+
+    } //------end of switch service markers
+
+
+
+    //-------- insertFavorite  udpate in the backend
+    public void insertFavoriteRating(final int position, final Rider serviceGeo, final String actionType) {
+
+
+
+
+        RiderMapActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+
+
+                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    String methodAction = null;
+
+                    switch (actionType)
+                    {
+                        case GlobalConstants.FAVORITE:
+                        {
+                            methodAction = "insertFavorite";
+                            break;
+                        }
+                        case GlobalConstants.RATING:
+                        {
+                            methodAction = "insertRating";
+                            break;
+                        }
+
+                    }
+
+                    JSONObject messageJson = new JSONObject();
+                    messageJson.put("favoriteRefNo", serviceGeo.getRiderRefNo());
+                    messageJson.put("favoriteID", serviceGeo.getRiderID());
+                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+                    messageJson.put("riderID", rider.getRiderID());
+
+                    switch (actionType)
+                    {
+                        case GlobalConstants.FAVORITE:
+                        {
+                            messageJson.put("favorite", (serviceGeo.getFavorite().equals("N")?"F":"N"));
+                            break;
+                        }
+                        case GlobalConstants.RATING:
+                        {
+                            messageJson.put("rating", serviceGeo.getYourRating());
+                            break;
+                        }
+
+                    }
+
+
+                    ConnectHost connectHost = new ConnectHost();
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+                    Log.d(TAG, "update rider Location responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        // Convert String to json object
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+
+                        // get LL json object
+                        JSONObject jsonResult = null;
+
+                        switch (actionType)
+                        {
+                            case GlobalConstants.FAVORITE:
+                            {
+                                jsonResult = jsonResponseData.optJSONObject("insertFavorite");
+                                break;
+                            }
+                            case GlobalConstants.RATING:
+                            {
+                                jsonResult = jsonResponseData.optJSONObject("insertRating");
+                                break;
+                            }
+
+                        }
+
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("favoriteWrapper");
+
+//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+//
+//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).optString("recordFound"));
+
+                        if (jsonResponseData.getString("success") == "true")
+                        {
+
+                                if(wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
+
+
+//                                    String favoriteRefNo = wrapperArrayObj.optJSONObject(0).getString("favoriteRefNo");
+//                                    String favoriteID = wrapperArrayObj.optJSONObject(0).getString("favoriteID");
+//        //                            wrapperArrayObj.optJSONObject(0).getString("mobileNo");
+//
+//
+//                                    Log.d(TAG, "Driver Info: " + favoriteRefNo + " " + favoriteID);
+
+                                    switch (actionType)
+                                    {
+                                        case GlobalConstants.FAVORITE:
+                                        {
+                                            serviceGeo.setFavorite(wrapperArrayObj.optJSONObject(0).optString("favorite"));
+                                            break;
+                                        }
+                                        case GlobalConstants.RATING:
+                                        {
+                                            serviceGeo.setAvgRating(wrapperArrayObj.optJSONObject(0).optDouble("avgRating"));
+                                            serviceGeo.setYourRating(wrapperArrayObj.optJSONObject(0).optDouble("rating"));
+                                            break;
+                                        }
+
+                                    }
+                                    servicesList.set(position, serviceGeo);
+                                    sAdapter.notifyDataSetChanged();
+
+                                }
+
+
+                        }
+                        else
+                        {
+
+                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    } else {
+
+                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                }
+
+                //}// validation
+
+            }//run end
+
+        });//runnable end
+
+
+    }//insertfavorite update End
+
+
+    //-----rating dialog
+    public void showRatingDialog(final int position, final Rider serviceGeo)
+    {
+
+
+        final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        final RatingBar rating = new RatingBar(this);
+        rating.setNumStars(5);
+        rating.setMax(5);
+        rating.setStepSize(0.5f);
+        linearLayout.addView(rating);
+        linearLayout.setGravity(Gravity.CENTER);
+
+        Resources res = popDialog.getContext().getResources();
+
+//        popDialog.setIcon(android.R.drawable.btn_star_big_on);
+        popDialog.setTitle(res.getString(R.string.rate) + " - " + serviceGeo.getRiderName() + "!!!");
+        popDialog.setView(linearLayout);
+
+        // Button OK
+        popDialog.setPositiveButton(android.R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //tv_Rating.setText(String.valueOf(rating.getProgress()));
+
+                        if(rating.getProgress()>0.0) {
+
+                            serviceGeo.setYourRating(rating.getProgress() / 2.0f);
+
+                            //call to update rating
+                            insertFavoriteRating(position, serviceGeo, GlobalConstants.RATING);
+
+                            Toast.makeText(getApplicationContext(), serviceGeo.getRiderName() + " rating is " + serviceGeo.getYourRating(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        dialog.dismiss();
+                    }
+
+                })
+
+                // Button Cancel
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        popDialog.create();
+        popDialog.show();
+
+    }
+
+
+    public void setLocale()
+    {
+        //---------Language setting-----
+        Locale.setDefault(locale);
+
+        /**
+         * Print the current language
+         */
+        System.out.println("My current language: "
+                + Locale.getDefault());
+
+        config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+
+        //--------end of language setting
+
+    }
+
+    public void showServiceLocation(Rider serviceGeo)
+    {
+
+
+
+        if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_AUTO_SERVICE))
+        {
+            currentServiceMarker = GlobalConstants.UTILITY_SERVICE;
+        }
+        if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_CAB_SERVICE))
+        {
+            currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
+        }
+
+        switchServiceMarkers();
+
+
+        LatLng latLng = new LatLng(serviceGeo.getRiderLat(), serviceGeo.getRiderLng());
+        //move map camera
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoom));
+        bottomSheetClose();
+
+
+    }
+
+    public void clearServiceList(){
+
+        //clear driverlist before getting
+        servicesList.clear();
+        sAdapter.notifyDataSetChanged();
+
+    }
+
+//    private class fetchServiceLocationProgressTask extends AsyncTask<Object, Void, Void> {
+//        @Override
+//        protected void onPreExecute() {
+//            //loadingSpinner.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Object...params ) {
+//
+////            Log.d(TAG, "param[0] "+params[0].toString());
+////            Log.d(TAG, "param[1] "+params[1].toString());
+////            Log.d(TAG, "param[2] "+Boolean.valueOf(params[2].toString()));
+//
+//            fetchServiceLocation(params[0].toString(),params[1].toString(),Boolean.valueOf(params[2].toString()));
+//
+//            return null;
+//
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            //loadingSpinner.setVisibility(View.GONE);
+//        }
+//    }
+    //--------fetch driver Location  in the backend
+//    public void fetchServiceLocation(final String service, final String vehicleType, final boolean switchService) {
+//
+//
+//
+//
+//        RiderMapActivity.this.runOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                try {
+//
+//
+//                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+//
+//
+//                    //Shared Preferences
+//                    editor = sharedPreferences.edit();
+//
+//                    editor.putString("userid", rider.getRiderID());
+//                    editor.putString("deviceToken", rider.getFcmToken());
+//                    editor.putString("sessionid", "SESSIONID");
+//
+//                    editor.apply();
+//
+//
+//                    String methodAction = "fetchServiceLocation";
+//
+//                    JSONObject messageJson = new JSONObject();
+//                    messageJson.put("service", service);
+//                    messageJson.put("currentLat", markerLat);
+//                    messageJson.put("currentLng", markerLng);
+//                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+//                    messageJson.put("riderID", rider.getRiderID());
+//
+//
+//                    ConnectHost connectHost = new ConnectHost();
+//                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+//
+//                    Log.d(TAG, "fetch driver location  Location responseData: " + responseData);
+//
+//
+//                    if (responseData != null) {
+//
+//
+//                        // Convert String to json object
+//                        JSONObject jsonResponseData = new JSONObject(responseData);
+//
+//                        // get LL json object
+//                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchServiceLocation");
+//
+//                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
+//
+////                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+////
+////                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).getString("recordFound"));
+//
+//                        if (jsonResponseData.getString("success") == "true") {
+//
+//
+//                            clearDriverList();
+//
+//                            Driver driver=null;
+//
+//                            if(wrapperArrayObj!=null) {
+//
+//                                for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
+//                                    if (wrapperArrayObj.optJSONObject(i).getString("recordFound") == "true") {
+//
+//                                        driver = new Driver();
+//
+//                                        driver.setDriverRefNo(wrapperArrayObj.optJSONObject(i).getString("driverRefNo"));
+//                                        driver.setDriverID(wrapperArrayObj.optJSONObject(i).getString("driverID"));
+//                                        driver.setDriverName(wrapperArrayObj.optJSONObject(i).getString("firstName"));
+//                                        driver.setDriverMobileNo(wrapperArrayObj.optJSONObject(i).getString("mobileNo"));
+//                                        driver.setDriverVehicleNo(wrapperArrayObj.optJSONObject(i).getString("vehicleNo"));
+//                                        driver.setStatus(wrapperArrayObj.optJSONObject(i).getString("status"));
+//                                        driver.setDriverVehicleType(wrapperArrayObj.optJSONObject(i).getString("vehicleType"));
+//                                        driver.setDriverLat(wrapperArrayObj.optJSONObject(i).getDouble("currentLat"));
+//                                        driver.setDriverLng(wrapperArrayObj.optJSONObject(i).getDouble("currentLng"));
+//                                        driver.setDriverLocation(wrapperArrayObj.optJSONObject(i).getString("currentLocation"));
+//                                        driver.setVacantStatus(wrapperArrayObj.optJSONObject(i).getString("vacantStatus"));
+//                                        driver.setDistance(wrapperArrayObj.optJSONObject(i).getDouble("distance"));
+//                                        driver.setDuration(wrapperArrayObj.optJSONObject(i).getDouble("duration"));
+//                                        driver.setRiderLat(markerLat);
+//                                        driver.setRiderLng(markerLng);
+//                                        driver.setFavorite(wrapperArrayObj.optJSONObject(i).getString("favorite"));
+//                                        driver.setAvgRating(wrapperArrayObj.optJSONObject(i).getDouble("avgRating"));
+//                                        driver.setYourRating(wrapperArrayObj.optJSONObject(i).getDouble("yourRating"));
+//
+//                                        Log.d(TAG, "Avg Rating: " + wrapperArrayObj.optJSONObject(i).getString("avgRating"));
+//                                        Log.d(TAG, "Your Rating: " + wrapperArrayObj.optJSONObject(i).getString("yourRating"));
+//
+//
+//                                        servicesList.add(driver);
+//                                        sAdapter.notifyDataSetChanged();
+//
+//                                        //only if right top button is clicked
+//                                        if (switchService == true) {
+//                                            setDriverLocation(0, driver);
+//                                        }
+//
+//
+//                                    }
+//                                }
+//
+//
+//                                if(switchService==false) {
+//                                    bottomSheetOpen();
+//                                }
+//
+//                            }//null condition check
+//
+//                        }
+//                        else
+//                        {
+//
+//                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//                        }
+//
+//
+//                    } else {
+//
+//                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                //}// validation
+//
+//            }//run end
+//
+//        });//runnable end
+//
+//
+//    }//fetch driver location update End
+
+    public void getGoogleDirections()
+    {
+
+        new AlertDialog.Builder(RiderMapActivity.this)
+                .setTitle(R.string.directions)
+                .setMessage(R.string.directions_confirm)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.dismiss();
+
+                        if (destination==null) {
+
+                            new AlertDialog.Builder(RiderMapActivity.this)
+                                    .setTitle(R.string.destination)
+                                    .setMessage(R.string.please_enter_destination)
+                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                                            dialogInterface.dismiss();
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                        }
+                        else {
+
+
+                            //---------To open Google Maps app-------
+                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(destination) + "&mode=d&avoid=tf");
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                                startActivity(mapIntent);
+                            }
+                            //---------------
+
+                        }
+
+                    }
+                })
+                .create()
+                .show();
+
+    } //------end of google directions
+
+
+
+    public void callTimer()
+    {
+
+        Intent i = new Intent(getApplicationContext(), TimerActivity.class);
+        Bundle bundle = new Bundle();
+        i.putExtras(bundle);
+        startActivity(i);
+
+
+    }
+
+
+
+}//class end
+
+
+//    public void setDriverInfoList_old(){
+//
+//        try{
+//
+//            //remove all views before add
+//
+//            if(((LinearLayout) rootLinearLayout).getChildCount() > 0)
+//                ((LinearLayout) rootLinearLayout).removeAllViews();
+//
+//
+//
+//            Log.d(TAG, "driverTabs length: " + driverTabs.length());
+//
+//            //--to give space betweeen drivers
+//
+//            for (int i = 0; i <= driverTabs.length()-1; i++) {
+//
+//
+//                Log.d(TAG, "driverTabs status: " + driverTabs.optJSONObject(i).getString("status"));
+//                Log.d(TAG, "driverTabs disabled: " + driverTabs.optJSONObject(i).getString("disabled"));
+//
+//                if(driverTabs.optJSONObject(i).getString("status").equals(GlobalConstants.ACTIVE_CODE) && driverTabs.optJSONObject(i).getString("disabled").equals(GlobalConstants.NO_CODE)) {
+//
+//
+//                    driverInfoLinearLayout = new LinearLayout(this);
+//
+//
+//                    TextView tv_mobileNo = new TextView(getApplicationContext());
+//                    TextView tv_destination = new TextView(getApplicationContext());
+//                    TextView tv_driverName = new TextView(getApplicationContext());
+//
+//
+//                    driverInfoLinearLayout.setBackgroundColor(Color.WHITE);
+//
+//
+//                    tv_driverName.setText(driverTabs.optJSONObject(i).getString("driverName"));
+//                    tv_driverName.setPadding(0, 0, 0, 0);
+//                    tv_driverName.setTextColor(Color.DKGRAY);
+//                    tv_driverName.setGravity(Gravity.CENTER);
+//
+//
+//                    tv_destination.setText(driverTabs.optJSONObject(i).getString("destination"));
+//                    tv_destination.setPadding(2, 2, 2, 0);
+//                    tv_destination.setTextColor(Color.RED);
+//                    tv_destination.setGravity(Gravity.CENTER);
+//
+//
+//                    tv_mobileNo.setText(driverTabs.optJSONObject(i).getString("mobileNo"));
+//                    tv_mobileNo.setPadding(2, 2, 2, 2);
+//
+//                    tv_mobileNo.setTextColor(Color.rgb(34,139,34)); //FOREST GREEN
+//                    // Set TextView font/text size to 25 dp
+//                    tv_mobileNo.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
+//                    tv_mobileNo.setGravity(Gravity.CENTER | Gravity.TOP);
+//
+//
+//                    //image adding
+//                    ImageView driverImage = new ImageView(this);
+//                    driverImage.setAdjustViewBounds(true);
+//
+//
+//                    //Log.d(TAG, "driverImage Found "+driverTabs.optJSONObject(i).getString("imageFound"));
+//
+//                    if(driverTabs.optJSONObject(i).getBoolean("imageFound")==true){
+//
+//                        Log.d(TAG, "driverImage Found 1");
+//
+//                        // Receiving side
+//                        byte[] data = Base64.decode(driverTabs.optJSONObject(i).getString("driverImage"), Base64.DEFAULT);
+//
+//                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+//
+//                        driverImage.setImageBitmap(bmp);
+//
+//
+//                    }else {
+//
+//                        driverImage.setImageResource(R.drawable.avatar_black_24dp);
+//
+//                    }
+//
+//                    //driverImage.setPadding(1, 1, 1, 1);
+//                    //driverImage.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+//
+//
+//                    ImageView vehicleImage = new ImageView(this);
+//
+//
+//                    if(driverTabs.optJSONObject(i).getString("vehicleType").equals(GlobalConstants.CAB_CODE)) {
+//
+//                        vehicleImage.setImageResource(R.drawable.caroutline);
+//                    }
+//                    else{
+//                        vehicleImage.setImageResource(R.drawable.autotop_32x32);
+//                    }
+//                    vehicleImage.setAdjustViewBounds(true);
+//                    //vehicleImage.setBackgroundResource(R.drawable.background_circle);
+//                    //vehicleImage.setPadding(1, 1, 1, 1);
+//
+//
+//                    //image adding
+//                    final ImageView dialImage = new ImageView(this);
+//                    dialImage.setImageResource(R.drawable.dialer_icon48x48);
+//                    //dialImage.setPadding(10, 10, 10, 10);
+//
+//                    //ImageButton imageButton = new ImageButton(this);
+//
+//                    //imageButton.setImageResource(R.drawable.dial_icon);
+//
+//                    dialImage.setTag(driverTabs.optJSONObject(i).getString("mobileNo"));
+//
+//                    dialImage.setOnClickListener(new View.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(View v) {
+//
+//
+//                            Log.d(TAG, "Dial Button Click: ");
+//
+//                            //callIntent.setData(Uri.parse("tel:9030209883"));
+//                            // update Log
+//                            NowcabsLog nowcabsLog=new NowcabsLog();
+//
+//
+//
+//                            // Here, thisActivity is the current activity
+//                            if (ContextCompat.checkSelfPermission(RiderMapActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                                // Should we show an explanation?
+//                                if (ActivityCompat.shouldShowRequestPermissionRationale(RiderMapActivity.this, Manifest.permission.CALL_PHONE)) {
+//
+//                                    // Show an explanation to the user *asynchronously* -- don't block
+//                                    // this thread waiting for the user's response! After the user
+//                                    // sees the explanation, try again to request the permission.
+//
+//                                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+//                                    callIntent.setData(Uri.parse("tel:" + dialImage.getTag()));
+//                                    startActivity(callIntent);
+//
+//                                    nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"Dialed to "+dialImage.getTag());
+//
+//                                } else {
+//
+//                                    // No explanation needed, we can request the permission.
+//
+//                                    ActivityCompat.requestPermissions(RiderMapActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+//
+//                                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+//                                    callIntent.setData(Uri.parse("tel:" + dialImage.getTag()));
+//                                    startActivity(callIntent);
+//
+//                                    nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"Dialed to "+dialImage.getTag());
+//
+//                                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//                                    // app-defined int constant. The callback method gets the
+//                                    // result of the request.
+//                                }
+//                            } else {
+//                                Intent callIntent = new Intent(Intent.ACTION_CALL);
+//                                callIntent.setData(Uri.parse("tel:" + dialImage.getTag()));
+//                                startActivity(callIntent);
+//
+//                                nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"Dialed to "+dialImage.getTag());
+//
+//                            }
+//
+//
+//                            Log.d(TAG, "Dial Button Click end: " + dialImage.getTag());
+//
+//                        }
+//                    });
+//
+//                    //------end of Dial Image
+//
+//
+//                    //-----start sms adding
+//                    final ImageView smsImage = new ImageView(this);
+//                    smsImage.setImageResource(R.drawable.sms_icon48x48);
+//                    //smsImage.setPadding(10, 10, 10, 10);
+//
+//                    final String riderMobileNo = rider.getRiderMobileNo();
+//
+//
+//                    final String driverID = driverTabs.optJSONObject(i).getString("driverID");
+//                    smsImage.setTag(driverID);
+//                    smsImage.setOnClickListener(new View.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(View v) {
+//
+//
+//                            Log.d(TAG, "SMS Button Click: ");
+//
+//
+//                            new AlertDialog.Builder(RiderMapActivity.this)
+//                                    .setTitle("Book")
+//                                    .setMessage("Do you want to book cab?")
+//                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialogInterface, int i) {
+//
+//
+//
+//                                            Calendar c = Calendar.getInstance();
+//                                            System.out.println("Current time => "+c.getTime());
+//                                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+//                                            String formattedDate = df.format(c.getTime());
+//
+//                                            Map<String, Object> smsMap = new HashMap<>();
+//                                            smsMap.put("riderSMS", riderMobileNo);
+//                                            smsMap.put("datetime", formattedDate);
+//                                            firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_ALERT_PATH+"/"+ driverID).updateChildren(smsMap);
+//
+//                                            // update Log
+//                                            NowcabsLog nowcabsLog=new NowcabsLog();
+//                                            nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"SMS to "+dialImage.getTag());
+//
+//
+//                                        }
+//                                    })
+//                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                                            dialogInterface.dismiss();
+//                                        }
+//                                    })
+//                                    .create()
+//                                    .show();
+//
+//
+//
+//                        }
+//                    });
+//
+//                    //-----end of SMS Image
+//
+//
+//                    driverInfoLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+//                    driverInfoLinearLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+//                    driverInfoLinearLayout.setGravity(Gravity.CENTER);
+//
+//                    driverInfoLinearLayout.addView(vehicleImage);
+//                    driverInfoLinearLayout.addView(driverImage);
+//
+//                    //adding multiple textviews
+//                    LinearLayout ll = new LinearLayout(this);
+//                    ll.setOrientation(LinearLayout.VERTICAL);
+//                    ll.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+//                    ll.setGravity(Gravity.CENTER);
+//                    ll.addView(tv_driverName);
+//                    ll.addView(tv_destination);
+//                    ll.addView(tv_mobileNo);
+//
+//
+//                    //adding multiple textviews
+////                    LinearLayout dialLL = new LinearLayout(this);
+////                    dialLL.setOrientation(LinearLayout.HORIZONTAL);
+////                    dialLL.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+////                    dialLL.setGravity(Gravity.CENTER);
+////                    dialLL.addView(dialImage);
+////                    dialLL.addView(smsImage);
+//
+//
+//                    driverInfoLinearLayout.addView(ll);
+//
+//
+//                    driverInfoLinearLayout.addView(dialImage);
+//                    driverInfoLinearLayout.addView(smsImage);
+//                    //driverInfoLinearLayout.addView(dialLL);
+//
+//
+//                    rootLinearLayout.addView(driverInfoLinearLayout);
+//
+//                    //layoutParams.setMargins(0, 0, 100, 0);
+//
+//
+//                    //int dividerHeight = getResources().getDisplayMetrics().density * 1; // 1dp to pixels
+//                    // viewDivider.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dividerHeight));
+//                } //if condition for disabled
+//
+//            }//for loop
+//
+//
+//
+//
+//
+//        }
+//        catch (Exception e){
+//            Log.d(TAG, "setDriverInfoList Exception");
+//            e.printStackTrace();
+//        }
+//
+//    } //end of setDriverInfoList_old
+
+
+//---------rightside dotted menu hide it
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//
+//        menu.add(Menu.NONE,R.id.menu_mobileNo,0,rider.getRiderMobileNo()).setIcon(R.drawable.avatar_24dp);
+//        menu.add(Menu.NONE,R.id.menu_name,1,rider.getRiderName());
+//        menu.add(Menu.NONE,R.id.menu_riderID,2,rider.getRiderID());
+//        menu.add(Menu.NONE,R.id.menu_logout,3,"Logout");
+//
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.menu_morevert) {
+//            Toast.makeText(RiderMapActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
+//            return true;
+//        }
+//
+//        if (id == R.id.menu_logout) {
+//            //Toast.makeText(RiderMapActivity.this, "Action Logout", Toast.LENGTH_LONG).show();
+//
+//            //To clear SharedPreferences
+//            SharedPreferences.Editor editor = sharedPreferences.edit();
+//            //editor.clear();
+//            //Do not clear all as last current lat and current lng required in case onLocationChange is not fired
+////            editor.putString("mobileNoKey", "");
+////            editor.putString("firstNameKey", "");
+////            editor.putString("userGroupKey", "");
+////            editor.putString("idKey", "");
+//            editor.putString("autoLoginKey", GlobalConstants.NO_CODE);
+//            editor.commit();
+//
+//
+//            //update Log
+//            NowcabsLog nowcabsLog=new NowcabsLog();
+//            nowcabsLog.updateLog(GlobalConstants.RIDER_CODE,rider.riderID,"Logout");
+//
+//
+//            Intent intent = new Intent(RiderMapActivity.this, RiderLoginActivity.class);
+//            startActivity(intent);
+//            finish();
+//
+//
+//
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+
+
+//    //05-Oct-2018 --Firebase suppress
+//    @Override
+//    protected void onDestroy(){
+//        super.onDestroy();
+//
+//        if (mChildEventListener != null) {
+//            dbRef.removeEventListener(mChildEventListener);
+//        }
+//
+//    }
+
 //        //------------Camera function -----------
 //        public void openFrontCamera() {
 //
@@ -3277,907 +4430,3 @@ public class RiderMapActivity extends AppCompatActivity implements
 //        }
 //        //-------------end of camera function
 //
-
-
-    class AddressResultReceiver extends ResultReceiver {
-
-        public AddressResultReceiver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-
-            if (resultData == null) {
-                return;
-            }
-
-            // Display the address string
-            // or an error message sent from the intent service.
-            mAddressOutput = resultData.getString(GlobalConstants.RESULT_DATA_KEY);
-            if (mAddressOutput == null) {
-                mAddressOutput = "";
-            }
-
-            //Log.d(TAG, "Address " + mAddressOutput);
-
-            //autocompleteFragment.setText(mAddressOutput);
-
-            //displayAddressOutput();
-
-            // Show a toast message if an address was found.
-            if (resultCode == GlobalConstants.SUCCESS_RESULT) {
-
-
-                Log.d(TAG, "Address Found " + mAddressOutput);
-
-                autocompleteFragment.setText(mAddressOutput);
-
-                //showToast(getString(R.string.address_found));
-            }
-
-        }
-    }
-
-    private void showReverseGeocoder() {
-
-
-        if (!Geocoder.isPresent()) {
-            Log.d(TAG, "No Geocoder available ");
-
-            return;
-        }
-
-        // Start service and update UI to reflect new location
-        startIntentService();
-
-
-//            mFusedLocationClient.getLastLocation()
-//                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                        @Override
-//                        public void onSuccess(Location location) {
-//                            mLastKnownLocation = location;
-//
-//                            // In some rare cases the location returned can be null
-//                            if (mLastKnownLocation == null) {
-//                                return;
-//                            }
-//
-//                            if (!Geocoder.isPresent()) {
-//                                Toast.makeText(RiderMapActivity.this,
-//                                        "no_geocoder_available",
-//                                        Toast.LENGTH_LONG).show();
-//                                return;
-//                            }
-//
-//                            // Start service and update UI to reflect new location
-//                            startIntentService();
-//
-//                            //updateUI();
-//                            //autocompleteFragment.setText(mAddressOutput);
-//
-//                        }
-//                    });
-    }
-
-    //--------update Rider Location udpate in the backend
-//    public void updateRiderLocation() {
-//
-//
-//        RiderMapActivity.this.runOnUiThread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-    private class updateRiderLocation extends AsyncTask<Object, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            //loadingSpinner.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Object... params) {
-
-
-            try {
-
-
-                //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
-
-
-                //Shared Preferences
-                editor = sharedPreferences.edit();
-
-                editor.putString("userid", rider.getRiderID());
-                editor.putString("deviceToken", rider.getFcmToken());
-                editor.putString("sessionid", "SESSIONID");
-
-                editor.apply();
-
-
-                String methodAction = "updateRiderLocation";
-
-                JSONObject messageJson = new JSONObject();
-                messageJson.put("currentLat", riderLat);
-                messageJson.put("currentLng", riderLng);
-                messageJson.put("currentLocation", riderLocation);
-                messageJson.put("riderRefNo", rider.getRiderRefNo());
-                messageJson.put("riderID", rider.getRiderID());
-
-
-                ConnectHost connectHost = new ConnectHost();
-                responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-
-                Log.d(TAG, "update rider Location responseData: " + responseData);
-
-
-                if (responseData != null) {
-
-
-                    // Convert String to json object
-                    JSONObject jsonResponseData = new JSONObject(responseData);
-
-                    // get LL json object
-                    JSONObject jsonResult = jsonResponseData.optJSONObject("updateRiderLocation");
-
-                    JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
-
-//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-//
-//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).getString("recordFound"));
-
-                    if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
-
-
-                        //String driverRefNo = wrapperArrayObj.optJSONObject(0).getString("driverRefNo");
-                        //String driverID = wrapperArrayObj.optJSONObject(0).getString("driverID");
-                        //wrapperArrayObj.optJSONObject(0).getString("mobileNo");
-
-
-                        //Log.d(TAG, "Driver Info: " + driverRefNo + " " + driverID);
-
-
-                    } else {
-
-                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-                    }
-
-
-                } else {
-
-                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-            }
-
-            //}// validation
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //loadingSpinner.setVisibility(View.GONE);
-        }
-
-
-}
-//            }//run end
-//
-//        });//runnable end
-//
-//
-//    }//riderlocation update End
-
-
-
-
-    private class fetchServiceLocationProgressTask extends AsyncTask<Object, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            //loadingSpinner.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Void doInBackground(Object...params ) {
-
-//            Log.d(TAG, "param[0] "+params[0].toString());
-//            Log.d(TAG, "param[1] "+params[1].toString());
-//            Log.d(TAG, "param[2] "+Boolean.valueOf(params[2].toString()));
-
-            fetchServiceLocation(params[0].toString(),params[1].toString(),Boolean.valueOf(params[2].toString()));
-
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //loadingSpinner.setVisibility(View.GONE);
-        }
-    }
-                    //--------fetch service Location  in the backend
-    public void fetchServiceLocation(final String service, final String vehicleType, final boolean switchService) {
-
-
-
-
-        RiderMapActivity.this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                try {
-
-
-                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
-
-
-                    //Shared Preferences
-                    editor = sharedPreferences.edit();
-
-                    editor.putString("userid", rider.getRiderID());
-                    editor.putString("deviceToken", rider.getFcmToken());
-                    editor.putString("sessionid", "SESSIONID");
-
-                    editor.apply();
-
-
-                    String methodAction = "fetchServiceLocation";
-
-                    JSONObject messageJson = new JSONObject();
-                    messageJson.put("serviceCode", service);
-                    messageJson.put("currentLat", markerLat);
-                    messageJson.put("currentLng", markerLng);
-                    messageJson.put("riderRefNo", rider.getRiderRefNo());
-                    messageJson.put("riderID", rider.getRiderID());
-                    if(vehicleType!=null) {
-                        messageJson.put("vehicleType", vehicleType);
-                    }
-
-
-                    ConnectHost connectHost = new ConnectHost();
-                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-
-                    Log.d(TAG, "fetch driver location  Location responseData: " + responseData);
-
-
-                    if (responseData != null) {
-
-
-                        // Convert String to json object
-                        JSONObject jsonResponseData = new JSONObject(responseData);
-
-                        // get LL json object
-                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchServiceLocation");
-
-                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
-
-//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-//
-//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).getString("recordFound"));
-
-                        if (jsonResponseData.optString("success") == "true") {
-
-
-                            clearDriverList();
-
-                            Rider rider=null;
-
-                            if(wrapperArrayObj!=null) {
-
-                                for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
-                                    if (wrapperArrayObj.optJSONObject(i).optString("recordFound") == "true") {
-
-                                        rider = new Rider();
-
-                                        rider.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
-                                        rider.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
-                                        rider.setRiderName(wrapperArrayObj.optJSONObject(i).optString("firstName"));
-                                        rider.setRiderMobileNo(wrapperArrayObj.optJSONObject(i).optString("mobileNo"));
-                                        rider.setVehicleNo(wrapperArrayObj.optJSONObject(i).optString("vehicleNo"));
-                                        rider.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
-                                        rider.setVehicleType(wrapperArrayObj.optJSONObject(i).optString("vehicleType"));
-                                        rider.setRiderLat(wrapperArrayObj.optJSONObject(i).getDouble("currentLat"));
-                                        rider.setRiderLng(wrapperArrayObj.optJSONObject(i).getDouble("currentLng"));
-                                        rider.setRiderLocation(wrapperArrayObj.optJSONObject(i).optString("currentLocation"));
-                                        rider.setVacantStatus(wrapperArrayObj.optJSONObject(i).optString("vacantStatus"));
-                                        rider.setDistance(wrapperArrayObj.optJSONObject(i).getDouble("distance"));
-                                        rider.setDuration(wrapperArrayObj.optJSONObject(i).getDouble("duration"));
-                                        rider.setRiderLat(markerLat);
-                                        rider.setRiderLng(markerLng);
-                                        rider.setFavorite(wrapperArrayObj.optJSONObject(i).optString("favorite"));
-                                        rider.setAvgRating(wrapperArrayObj.optJSONObject(i).getDouble("avgRating"));
-                                        rider.setYourRating(wrapperArrayObj.optJSONObject(i).getDouble("yourRating"));
-                                        rider.setServiceCode(wrapperArrayObj.optJSONObject(i).optString("serviceCode"));
-
-                                        Log.d(TAG, "Avg Rating: " + wrapperArrayObj.optJSONObject(i).optString("avgRating"));
-                                        Log.d(TAG, "Your Rating: " + wrapperArrayObj.optJSONObject(i).optString("yourRating"));
-
-
-                                        servicesList.add(rider);
-                                        sAdapter.notifyDataSetChanged();
-
-                                        //only if right top button is clicked
-                                        if (switchService == true) {
-                                            setServiceLocation(0, rider);
-                                        }
-
-
-                                    }
-                                }
-
-
-                                if(switchService==false) {
-                                    bottomSheetOpen();
-                                }
-
-                            }//null condition check
-
-                        }
-                        else
-                        {
-
-                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    } else {
-
-                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-                }
-
-                //}// validation
-
-            }//run end
-
-        });//runnable end
-
-
-    }//fetch rider location update End
-
-
-
-
-    public void switchServiceMarkers(){
-
-
-
-        //---------first remove all markers from screen
-        Iterator it = markers.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            System.out.println(pair.getKey() + " = " + pair.getValue());
-            //it.remove(); // avoids a ConcurrentModificationException
-            vehicleMarker= (Marker)pair.getValue();
-            vehicleMarker.setVisible(false);
-        }
-        //-----------------
-
-
-        if(currentServiceMarker.equals(GlobalConstants.TRANSPORT_AUTO_SERVICE)) {
-
-            btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, true});
-            currentServiceMarker = GlobalConstants.TRANSPORT_CAB_SERVICE;
-            btn_service.setImageResource(R.drawable.car_24px);
-            Drawable fabDr= btn_service.getDrawable();
-            DrawableCompat.setTint(fabDr, Color.WHITE);
-            btn_service.setEnabled(true);
-
-        }
-        else if(currentServiceMarker.equals(GlobalConstants.TRANSPORT_CAB_SERVICE)) {
-
-            btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.UTILITY_SERVICE, true});
-            currentServiceMarker = GlobalConstants.UTILITY_SERVICE;
-            btn_service.setImageResource(R.drawable.tools);
-            Drawable fabDr= btn_service.getDrawable();
-            DrawableCompat.setTint(fabDr, Color.WHITE);
-            btn_service.setEnabled(true);
-
-
-        }
-        else if(currentServiceMarker.equals(GlobalConstants.UTILITY_SERVICE)) {
-
-            btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true});
-            currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
-            btn_service.setImageResource(R.drawable.auto_24px);
-            Drawable fabDr= btn_service.getDrawable();
-            DrawableCompat.setTint(fabDr, Color.WHITE);
-            btn_service.setEnabled(true);
-
-
-        }
-
-
-    } //------end of switch service markers
-
-
-
-    //-------- insertFavorite  udpate in the backend
-    public void insertFavoriteRating(final int position, final Rider driverGeo, final String actionType) {
-
-
-
-
-        RiderMapActivity.this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                try {
-
-
-                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
-
-
-                    //Shared Preferences
-                    editor = sharedPreferences.edit();
-
-                    editor.putString("userid", rider.getRiderID());
-                    editor.putString("deviceToken", "DEVICETOKEN");
-                    editor.putString("sessionid", "SESSIONID");
-
-                    editor.apply();
-
-
-                    String methodAction = null;
-
-                    if(actionType.equals(GlobalConstants.FAVORITE)) {
-                        methodAction = "insertFavorite";
-                    }
-                    else if(actionType.equals(GlobalConstants.RATING))
-                    {
-                        methodAction = "insertRating";
-                    }
-
-                    JSONObject messageJson = new JSONObject();
-                    messageJson.put("driverRefNo", driverGeo.getRiderRefNo());
-                    messageJson.put("driverID", driverGeo.getRiderID());
-                    messageJson.put("riderRefNo", rider.getRiderRefNo());
-                    messageJson.put("riderID", rider.getRiderID());
-
-                    if(actionType.equals(GlobalConstants.FAVORITE)) {
-                        messageJson.put("favorite", (driverGeo.getFavorite().equals("N")?"F":"N"));
-                    }
-                    else if(actionType.equals(GlobalConstants.RATING))
-                    {
-                        messageJson.put("rating", driverGeo.getYourRating());
-                    }
-
-
-
-                    ConnectHost connectHost = new ConnectHost();
-                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-
-                    Log.d(TAG, "update rider Location responseData: " + responseData);
-
-
-                    if (responseData != null) {
-
-
-                        // Convert String to json object
-                        JSONObject jsonResponseData = new JSONObject(responseData);
-
-                        // get LL json object
-                        JSONObject jsonResult = null;
-
-
-                        if(actionType.equals(GlobalConstants.FAVORITE)) {
-                            jsonResult = jsonResponseData.optJSONObject("insertFavorite");
-                        }
-                        else if(actionType.equals(GlobalConstants.RATING))
-                        {
-                            jsonResult = jsonResponseData.optJSONObject("insertRating");
-                        }
-
-
-                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("favoriteWrapper");
-
-//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-//
-//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).optString("recordFound"));
-
-                        if (jsonResponseData.getString("success") == "true")
-                        {
-
-                                if(wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
-
-
-                                    String driverRefNo = wrapperArrayObj.optJSONObject(0).getString("driverRefNo");
-                                    String driverID = wrapperArrayObj.optJSONObject(0).getString("driverID");
-        //                            wrapperArrayObj.optJSONObject(0).getString("mobileNo");
-
-
-                                    Log.d(TAG, "Driver Info: " + driverRefNo + " " + driverID);
-
-                                    if (actionType.equals(GlobalConstants.FAVORITE)) {
-                                        driverGeo.setFavorite(wrapperArrayObj.optJSONObject(0).getString("favorite"));
-                                    } else if (actionType.equals(GlobalConstants.RATING)) {
-                                        driverGeo.setAvgRating(wrapperArrayObj.optJSONObject(0).getDouble("avgRating"));
-                                        driverGeo.setYourRating(wrapperArrayObj.optJSONObject(0).getDouble("rating"));
-                                    }
-
-                                    servicesList.set(position, driverGeo);
-                                    sAdapter.notifyDataSetChanged();
-
-                                }
-
-
-                        }
-                        else
-                        {
-
-                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    } else {
-
-                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-
-                }
-
-                //}// validation
-
-            }//run end
-
-        });//runnable end
-
-
-    }//insertfavorite update End
-
-
-    //-----rating dialog
-    public void showRatingDialog(final int position, final Rider driver)
-    {
-
-
-        final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
-
-        LinearLayout linearLayout = new LinearLayout(this);
-        final RatingBar rating = new RatingBar(this);
-        rating.setNumStars(5);
-        rating.setMax(5);
-        rating.setStepSize(0.5f);
-        linearLayout.addView(rating);
-        linearLayout.setGravity(Gravity.CENTER);
-
-        Resources res = popDialog.getContext().getResources();
-
-//        popDialog.setIcon(android.R.drawable.btn_star_big_on);
-        popDialog.setTitle(res.getString(R.string.rate) + " - " + driver.getRiderName() + "!!!");
-        popDialog.setView(linearLayout);
-
-        // Button OK
-        popDialog.setPositiveButton(android.R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //tv_Rating.setText(String.valueOf(rating.getProgress()));
-
-                        if(rating.getProgress()>0.0) {
-
-                            driver.setYourRating(rating.getProgress() / 2.0f);
-
-                            //call to update rating
-                            insertFavoriteRating(position, driver, GlobalConstants.RATING);
-
-                            Toast.makeText(getApplicationContext(), driver.getRiderName() + " rating is " + driver.getYourRating(), Toast.LENGTH_SHORT).show();
-                        }
-
-                        dialog.dismiss();
-                    }
-
-                })
-
-                // Button Cancel
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-        popDialog.create();
-        popDialog.show();
-
-    }
-
-
-    public void setLocale()
-    {
-        //---------Language setting-----
-        Locale.setDefault(locale);
-
-        /**
-         * Print the current language
-         */
-        System.out.println("My current language: "
-                + Locale.getDefault());
-
-        config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config,
-                getBaseContext().getResources().getDisplayMetrics());
-
-        //--------end of language setting
-
-    }
-
-    public void showServiceLocation(Rider serviceGeo)
-    {
-
-
-
-        if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_AUTO_SERVICE))
-        {
-            currentServiceMarker = GlobalConstants.UTILITY_SERVICE;
-        }
-        if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_CAB_SERVICE))
-        {
-            currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
-        }
-
-        switchServiceMarkers();
-
-
-        LatLng latLng = new LatLng(serviceGeo.getRiderLat(), serviceGeo.getRiderLng());
-        //move map camera
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoom));
-        bottomSheetClose();
-
-
-    }
-
-    public void clearDriverList(){
-
-        //clear driverlist before getting
-        servicesList.clear();
-        sAdapter.notifyDataSetChanged();
-
-    }
-
-//    private class fetchServiceLocationProgressTask extends AsyncTask<Object, Void, Void> {
-//        @Override
-//        protected void onPreExecute() {
-//            //loadingSpinner.setVisibility(View.VISIBLE);
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Object...params ) {
-//
-////            Log.d(TAG, "param[0] "+params[0].toString());
-////            Log.d(TAG, "param[1] "+params[1].toString());
-////            Log.d(TAG, "param[2] "+Boolean.valueOf(params[2].toString()));
-//
-//            fetchServiceLocation(params[0].toString(),params[1].toString(),Boolean.valueOf(params[2].toString()));
-//
-//            return null;
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//            //loadingSpinner.setVisibility(View.GONE);
-//        }
-//    }
-    //--------fetch driver Location  in the backend
-//    public void fetchServiceLocation(final String service, final String vehicleType, final boolean switchService) {
-//
-//
-//
-//
-//        RiderMapActivity.this.runOnUiThread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                try {
-//
-//
-//                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
-//
-//
-//                    //Shared Preferences
-//                    editor = sharedPreferences.edit();
-//
-//                    editor.putString("userid", rider.getRiderID());
-//                    editor.putString("deviceToken", rider.getFcmToken());
-//                    editor.putString("sessionid", "SESSIONID");
-//
-//                    editor.apply();
-//
-//
-//                    String methodAction = "fetchServiceLocation";
-//
-//                    JSONObject messageJson = new JSONObject();
-//                    messageJson.put("service", service);
-//                    messageJson.put("currentLat", markerLat);
-//                    messageJson.put("currentLng", markerLng);
-//                    messageJson.put("riderRefNo", rider.getRiderRefNo());
-//                    messageJson.put("riderID", rider.getRiderID());
-//
-//
-//                    ConnectHost connectHost = new ConnectHost();
-//                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-//
-//                    Log.d(TAG, "fetch driver location  Location responseData: " + responseData);
-//
-//
-//                    if (responseData != null) {
-//
-//
-//                        // Convert String to json object
-//                        JSONObject jsonResponseData = new JSONObject(responseData);
-//
-//                        // get LL json object
-//                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchServiceLocation");
-//
-//                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
-//
-////                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-////
-////                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).getString("recordFound"));
-//
-//                        if (jsonResponseData.getString("success") == "true") {
-//
-//
-//                            clearDriverList();
-//
-//                            Driver driver=null;
-//
-//                            if(wrapperArrayObj!=null) {
-//
-//                                for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
-//                                    if (wrapperArrayObj.optJSONObject(i).getString("recordFound") == "true") {
-//
-//                                        driver = new Driver();
-//
-//                                        driver.setDriverRefNo(wrapperArrayObj.optJSONObject(i).getString("driverRefNo"));
-//                                        driver.setDriverID(wrapperArrayObj.optJSONObject(i).getString("driverID"));
-//                                        driver.setDriverName(wrapperArrayObj.optJSONObject(i).getString("firstName"));
-//                                        driver.setDriverMobileNo(wrapperArrayObj.optJSONObject(i).getString("mobileNo"));
-//                                        driver.setDriverVehicleNo(wrapperArrayObj.optJSONObject(i).getString("vehicleNo"));
-//                                        driver.setStatus(wrapperArrayObj.optJSONObject(i).getString("status"));
-//                                        driver.setDriverVehicleType(wrapperArrayObj.optJSONObject(i).getString("vehicleType"));
-//                                        driver.setDriverLat(wrapperArrayObj.optJSONObject(i).getDouble("currentLat"));
-//                                        driver.setDriverLng(wrapperArrayObj.optJSONObject(i).getDouble("currentLng"));
-//                                        driver.setDriverLocation(wrapperArrayObj.optJSONObject(i).getString("currentLocation"));
-//                                        driver.setVacantStatus(wrapperArrayObj.optJSONObject(i).getString("vacantStatus"));
-//                                        driver.setDistance(wrapperArrayObj.optJSONObject(i).getDouble("distance"));
-//                                        driver.setDuration(wrapperArrayObj.optJSONObject(i).getDouble("duration"));
-//                                        driver.setRiderLat(markerLat);
-//                                        driver.setRiderLng(markerLng);
-//                                        driver.setFavorite(wrapperArrayObj.optJSONObject(i).getString("favorite"));
-//                                        driver.setAvgRating(wrapperArrayObj.optJSONObject(i).getDouble("avgRating"));
-//                                        driver.setYourRating(wrapperArrayObj.optJSONObject(i).getDouble("yourRating"));
-//
-//                                        Log.d(TAG, "Avg Rating: " + wrapperArrayObj.optJSONObject(i).getString("avgRating"));
-//                                        Log.d(TAG, "Your Rating: " + wrapperArrayObj.optJSONObject(i).getString("yourRating"));
-//
-//
-//                                        servicesList.add(driver);
-//                                        sAdapter.notifyDataSetChanged();
-//
-//                                        //only if right top button is clicked
-//                                        if (switchService == true) {
-//                                            setDriverLocation(0, driver);
-//                                        }
-//
-//
-//                                    }
-//                                }
-//
-//
-//                                if(switchService==false) {
-//                                    bottomSheetOpen();
-//                                }
-//
-//                            }//null condition check
-//
-//                        }
-//                        else
-//                        {
-//
-//                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
-//                        }
-//
-//
-//                    } else {
-//
-//                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
-//                }
-//
-//                //}// validation
-//
-//            }//run end
-//
-//        });//runnable end
-//
-//
-//    }//fetch driver location update End
-
-    public void getGoogleDirections()
-    {
-
-        new AlertDialog.Builder(RiderMapActivity.this)
-                .setTitle(R.string.directions)
-                .setMessage(R.string.directions_confirm)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        dialogInterface.dismiss();
-                    }
-                })
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        dialogInterface.dismiss();
-
-                        if (destination==null) {
-
-                            new AlertDialog.Builder(RiderMapActivity.this)
-                                    .setTitle(R.string.destination)
-                                    .setMessage(R.string.please_enter_destination)
-                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                                            dialogInterface.dismiss();
-                                        }
-                                    })
-                                    .create()
-                                    .show();
-                        }
-                        else {
-
-
-                            //---------To open Google Maps app-------
-                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(destination) + "&mode=d&avoid=tf");
-                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                            mapIntent.setPackage("com.google.android.apps.maps");
-                            if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                                startActivity(mapIntent);
-                            }
-                            //---------------
-
-                        }
-
-                    }
-                })
-                .create()
-                .show();
-
-    } //------end of google directions
-
-
-        }//class end

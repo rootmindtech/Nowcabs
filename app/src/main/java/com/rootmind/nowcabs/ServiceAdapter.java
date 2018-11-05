@@ -45,7 +45,7 @@ import org.json.JSONObject;
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHolder> {
 
 
-    private static final String TAG = "ServiceAdapter";
+    private static final String TAG = "ServiceSelectionAdapter";
 
 
     public interface ItemClickListener {
@@ -110,7 +110,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
             tv_vehicleNo= (TextView) view.findViewById(R.id.tv_vehicleNo);
 
-            view.setTag(iv_avatar);
+            //view.setTag(iv_avatar);
 
             iv_avatar.setOnClickListener(this);
 
@@ -366,7 +366,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
 
         //clear values
-        holder.tv_vehicleNo.setText("");
+        holder.tv_vehicleNo.setText(rider.getServiceCode());
 
         //-----set avatar
         CommonService commonService = new CommonService();

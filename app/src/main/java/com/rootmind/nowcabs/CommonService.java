@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,6 +44,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -890,7 +892,7 @@ public  class CommonService {
                     public void onSuccess(Uri uri) {
                         // Got the download URL for 'users/me/profile.png'
 
-                        Log.d(TAG, "onSuccess  " + uri);
+                        //Log.d(TAG, "onSuccess  " + uri);
 
                         setImage(uri, imageView);
                     }
@@ -939,6 +941,84 @@ public  class CommonService {
 //            riderImage.setImageBitmap(bitmap);
 
 
+    }
+
+    public void getMarkerImage(final ImageView imageView, String imageFileName, final Marker marker)
+    {
+
+        try {
+
+            if (imageFileName != null && !imageFileName.trim().equals("")) {
+                if (firebaseStorage == null) {
+                    firebaseStorage = FirebaseStorage.getInstance(GlobalConstants.FIREBASE_URL);
+                }
+
+                StorageReference storageRef = firebaseStorage.getReference();
+
+                final StorageReference avatarRef = storageRef.child(GlobalConstants.FB_IMAGE_FOLDER + imageFileName);
+
+                avatarRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        // Got the download URL for 'users/me/profile.png'
+
+                        if(imageView!=null) {
+                            //Log.d(TAG, "onSuccess  " + uri);
+
+                            Picasso.get()
+                                    .load(uri)
+                                    .placeholder(R.drawable.driver)
+                                    .into(imageView, new MarkerCallback(marker));
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                        int errorCode = ((StorageException) exception).getErrorCode();
+                        String errorMessage = exception.getMessage();
+                        Log.d(TAG, "onFailure  no image found " + errorMessage);
+                        //Toast.makeText(RiderMapActivity.this, "Image download failed", Toast.LENGTH_SHORT).show();
+                        //imageView.setImageResource(R.drawable.avatar_24dp);
+
+                    }
+                });
+            }
+
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            Log.d(TAG, "getImage Exception");
+
+        }
+
+    }
+
+    public class MarkerCallback implements Callback {
+        Marker marker=null;
+
+        MarkerCallback(Marker marker) {
+            this.marker=marker;
+
+        }
+
+        @Override
+        public void onError(Exception ex) {
+            Log.e(getClass().getSimpleName(), "Error loading thumbnail!");
+        }
+
+        @Override
+        public void onSuccess() {
+
+            //Log.d(TAG, "onSuccess Marker1 " +   marker.isInfoWindowShown());
+
+            if (marker != null && marker.isInfoWindowShown()) {
+                marker.hideInfoWindow();
+                marker.showInfoWindow();
+            }
+        }
     }
 
     public Bitmap getCircleBitmap(Bitmap bitmap) {

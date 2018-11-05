@@ -2,24 +2,38 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
+
     <item
-        android:id="@+id/action_auto"
+        android:id="@+id/action_public"
         android:enabled="true"
-        android:icon="@drawable/auto_24px"
-        android:title="@string/text_auto"
+        android:icon="@drawable/location_outline"
+        android:title="Explore"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_car"
+        android:id="@+id/action_group"
         android:enabled="true"
-        android:icon="@drawable/car_24px"
-        android:title="@string/text_car"
+        android:icon="@drawable/group"
+        android:title="Group"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_tool"
-        android:enabled="true"
-        android:icon="@drawable/tools"
-        android:title="@string/text_tool"
-        app:showAsAction="ifRoom" />
+
+    <!--<item-->
+        <!--android:id="@+id/action_auto"-->
+        <!--android:enabled="true"-->
+        <!--android:icon="@drawable/auto_24px"-->
+        <!--android:title="@string/text_auto"-->
+        <!--app:showAsAction="ifRoom" />-->
+    <!--<item-->
+        <!--android:id="@+id/action_car"-->
+        <!--android:enabled="true"-->
+        <!--android:icon="@drawable/car_24px"-->
+        <!--android:title="@string/text_car"-->
+        <!--app:showAsAction="ifRoom" />-->
+    <!--<item-->
+        <!--android:id="@+id/action_tool"-->
+        <!--android:enabled="true"-->
+        <!--android:icon="@drawable/tools"-->
+        <!--android:title="@string/text_tool"-->
+        <!--app:showAsAction="ifRoom" />-->
 
     <!--<item-->
         <!--android:id="@+id/action_tool"-->

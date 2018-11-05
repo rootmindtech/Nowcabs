@@ -83,5 +83,9 @@
 
     <string name="invalid_mobile">மொபைல் எண் சரியாக இல்லை</string>
 
+    <string name="selfie">Selfie</string>
+    <string name="idcard_front">ID Card - Front</string>
+    <string name="idcard_back">ID Card - Back</string>
+
 
 </resources>
