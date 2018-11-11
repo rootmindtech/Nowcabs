@@ -3,11 +3,11 @@ package com.rootmind.nowcabs;
 import android.app.Activity;
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,9 +20,9 @@ import java.util.Map;
 
 public class NowcabsLog {
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference dbRef;
-    private ValueEventListener valueEventListener;
+//    FirebaseDatabase firebaseDatabase;
+//    DatabaseReference dbRef;
+//    private ValueEventListener valueEventListener;
 
     private static final String TAG = "NowcabsLog";
 

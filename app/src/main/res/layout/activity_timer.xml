@@ -83,4 +83,32 @@
         android:layout_marginBottom="30dp"
         android:textSize="35sp"
         android:hint=""/>
+
+    <Button
+        android:id="@+id/btn_accept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@id/progressbar_timerview"
+        android:background="@android:color/transparent"
+        android:text="Accept"
+        android:layout_marginTop="30dp"
+        android:textAllCaps="false"
+        android:textSize="40sp"
+        android:textColor="@color/colorWhite"
+        />
+
+    <Button
+        android:id="@+id/btn_reject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@id/progressbar_timerview"
+        android:background="@android:color/transparent"
+        android:text="Reject"
+        android:layout_marginTop="30dp"
+        android:textAllCaps="false"
+        android:textSize="40sp"
+        android:textColor="@color/colorWhite"
+        />
 </RelativeLayout>

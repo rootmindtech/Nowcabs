@@ -50,12 +50,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.ChildEventListener;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,13 +107,13 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
     LocationRequest mLocationRequest;
     FusedLocationProviderClient mFusedLocationClient;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference dbRef;
-
-    private ChildEventListener mChildEventListener;
-
-
-    private ValueEventListener valueEventListener;
+//    FirebaseDatabase firebaseDatabase;
+//    DatabaseReference dbRef;
+//
+//    private ChildEventListener mChildEventListener;
+//
+//
+//    private ValueEventListener valueEventListener;
 
     TextView tv_location;
 
@@ -178,7 +178,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
 
 
         //To initiate firebase
-        firebaseDatabase = FirebaseDatabase.getInstance();
+//        firebaseDatabase = FirebaseDatabase.getInstance();
 
         //initialize autocomplete to specific area
         //initMapBoundaries();
@@ -300,7 +300,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
                                             @Override
                                             public void onClick(View v) {
 
-                                                setSMSImage(driver);
+                                                //setSMSImage(driver);
 
                                             }
                                         });
@@ -491,7 +491,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
         //initMapBoundaries();
 
         //Don't call tabs until onConnected is called;
-        readDriverLocation();
+        //readDriverLocation();
 
     }
 
@@ -675,155 +675,155 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    public void readDriverLocation(){
-
-        //Log.d(TAG, "readDriverLocation driverID : " + driver.driverID);
-
-        //only for specified driver Id
-        dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_PATH+ "/" +driver.driverID); //"cabs/driver/location/ +"/"+driver.driverID"
-
-        //dbRef.child("VacantStatus").setValue("HIRED");
-
-        valueEventListener = new ValueEventListener() {
-
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                //Post post = dataSnapshot.getValue(Post.class);
-                // ...
-                //Log.d(TAG, "readDriverLocation:" + dataSnapshot);
-
-                Log.d(TAG, "dataSnapshot.getKey() :" + dataSnapshot.getKey());
-                //Log.d(TAG, "dataSnapshot.getValue() :" + dataSnapshot.getValue());
-
-                Driver driverGeo= dataSnapshot.getValue(Driver.class);
-
-                Log.d(TAG, "readDriverLocation onChildChanged driverid:" + driverGeo.getDriverID());
-
-                setDriverLocation(driverGeo);
-
-                //Driver info tabs will create after excution complete of setDriverTabs(driverGeo) method
-                //setDriverInfoList();
-
-
-//                //Create Marker in the center
-//                LatLng latLng = new LatLng(driverGeo.driverLat, driverGeo.driverLng);
-//                createMarker(latLng,driverGeo.driverVehicleType);
+//    public void readDriverLocation(){
 //
-//                //fill current address in the auto complete fragment
-//                autocompleteFragment.setText(GetAddress(driverGeo.driverLat,driverGeo.driverLng));
+//        //Log.d(TAG, "readDriverLocation driverID : " + driver.driverID);
+//
+//        //only for specified driver Id
+//        dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_PATH+ "/" +driver.driverID); //"cabs/driver/location/ +"/"+driver.driverID"
+//
+//        //dbRef.child("VacantStatus").setValue("HIRED");
+//
+//        valueEventListener = new ValueEventListener() {
 //
 //
-//                //move map camera
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,mapZoom));
-
-
-
-
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        };
-        dbRef.addValueEventListener(valueEventListener);
-        //dbRef.removeEventListener(valueEventListener);
-
-
-//        mChildEventListener = new ChildEventListener() {
 //            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-//
-//                Log.d(TAG, "dataSnapshot: " + dataSnapshot);
-//
-//                Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
-//
-//                // A new comment has been added, add it to the displayed list
-//                // Comment comment = dataSnapshot.getValue(Comment.class);
-//
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // Get Post object and use the values to update the UI
+//                //Post post = dataSnapshot.getValue(Post.class);
 //                // ...
+//                //Log.d(TAG, "readDriverLocation:" + dataSnapshot);
 //
-//                Driver driverGeo= dataSnapshot.getValue(Driver.class);
-//
-//                setDriverTabs(driverGeo);
-//                //Driver info tabs will create after excution complete of setDriverTabs(driverGeo) method
-//                //setDriverInfoList(driverGeo);
-//
-//
-//
-//
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-//                Log.d(TAG, "readDriverLocation onChildChanged:" + dataSnapshot.getKey());
-//
-//                // A comment has changed, use the key to determine if we are displaying this
-//                // comment and if so displayed the changed comment.
-//                //Comment newComment = dataSnapshot.getValue(Comment.class);
-//                //String commentKey = dataSnapshot.getKey();
-//
-//                Log.d(TAG, "readDriverLocation onChildChanged value:" + dataSnapshot.getValue());
+//                Log.d(TAG, "dataSnapshot.getKey() :" + dataSnapshot.getKey());
+//                //Log.d(TAG, "dataSnapshot.getValue() :" + dataSnapshot.getValue());
 //
 //                Driver driverGeo= dataSnapshot.getValue(Driver.class);
 //
 //                Log.d(TAG, "readDriverLocation onChildChanged driverid:" + driverGeo.getDriverID());
 //
-//                setDriverTabs(driverGeo);
+//                setDriverLocation(driverGeo);
+//
 //                //Driver info tabs will create after excution complete of setDriverTabs(driverGeo) method
 //                //setDriverInfoList();
 //
 //
-//                // ...
-//            }
+////                //Create Marker in the center
+////                LatLng latLng = new LatLng(driverGeo.driverLat, driverGeo.driverLng);
+////                createMarker(latLng,driverGeo.driverVehicleType);
+////
+////                //fill current address in the auto complete fragment
+////                autocompleteFragment.setText(GetAddress(driverGeo.driverLat,driverGeo.driverLng));
+////
+////
+////                //move map camera
+////                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,mapZoom));
 //
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
 //
-//                // A comment has changed, use the key to determine if we are displaying this
-//                // comment and if so remove it.
-//                String commentKey = dataSnapshot.getKey();
 //
-//                // ...
-//            }
 //
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-//                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
 //
-//                // A comment has changed position, use the key to determine if we are
-//                // displaying this comment and if so move it.
-//                //Comment movedComment = dataSnapshot.getValue(Comment.class);
-//                String commentKey = dataSnapshot.getKey();
 //
-//                // ...
 //            }
 //
 //            @Override
 //            public void onCancelled(DatabaseError databaseError) {
-//                Log.w(TAG, "postComments:onCancelled", databaseError.toException());
-////                Toast.makeText(mContext, "Failed to load comments.",
-////                        Toast.LENGTH_SHORT).show();
+//                // Getting Post failed, log a message
+//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                // ...
 //            }
-//
-//
 //        };
+//        dbRef.addValueEventListener(valueEventListener);
+//        //dbRef.removeEventListener(valueEventListener);
 //
-//        dbRef.addChildEventListener(mChildEventListener);
-
-
-
-
-
-    }
+//
+////        mChildEventListener = new ChildEventListener() {
+////            @Override
+////            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+////
+////                Log.d(TAG, "dataSnapshot: " + dataSnapshot);
+////
+////                Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
+////
+////                // A new comment has been added, add it to the displayed list
+////                // Comment comment = dataSnapshot.getValue(Comment.class);
+////
+////                // ...
+////
+////                Driver driverGeo= dataSnapshot.getValue(Driver.class);
+////
+////                setDriverTabs(driverGeo);
+////                //Driver info tabs will create after excution complete of setDriverTabs(driverGeo) method
+////                //setDriverInfoList(driverGeo);
+////
+////
+////
+////
+////
+////            }
+////
+////            @Override
+////            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+////                Log.d(TAG, "readDriverLocation onChildChanged:" + dataSnapshot.getKey());
+////
+////                // A comment has changed, use the key to determine if we are displaying this
+////                // comment and if so displayed the changed comment.
+////                //Comment newComment = dataSnapshot.getValue(Comment.class);
+////                //String commentKey = dataSnapshot.getKey();
+////
+////                Log.d(TAG, "readDriverLocation onChildChanged value:" + dataSnapshot.getValue());
+////
+////                Driver driverGeo= dataSnapshot.getValue(Driver.class);
+////
+////                Log.d(TAG, "readDriverLocation onChildChanged driverid:" + driverGeo.getDriverID());
+////
+////                setDriverTabs(driverGeo);
+////                //Driver info tabs will create after excution complete of setDriverTabs(driverGeo) method
+////                //setDriverInfoList();
+////
+////
+////                // ...
+////            }
+////
+////            @Override
+////            public void onChildRemoved(DataSnapshot dataSnapshot) {
+////                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+////
+////                // A comment has changed, use the key to determine if we are displaying this
+////                // comment and if so remove it.
+////                String commentKey = dataSnapshot.getKey();
+////
+////                // ...
+////            }
+////
+////            @Override
+////            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+////                Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+////
+////                // A comment has changed position, use the key to determine if we are
+////                // displaying this comment and if so move it.
+////                //Comment movedComment = dataSnapshot.getValue(Comment.class);
+////                String commentKey = dataSnapshot.getKey();
+////
+////                // ...
+////            }
+////
+////            @Override
+////            public void onCancelled(DatabaseError databaseError) {
+////                Log.w(TAG, "postComments:onCancelled", databaseError.toException());
+//////                Toast.makeText(mContext, "Failed to load comments.",
+//////                        Toast.LENGTH_SHORT).show();
+////            }
+////
+////
+////        };
+////
+////        dbRef.addChildEventListener(mChildEventListener);
+//
+//
+//
+//
+//
+//    }
 
     public void setDriverLocation(Driver driverGeo){
 
@@ -1102,66 +1102,66 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    public void setSMSImage(final Driver driverGeo)
-    {
-
-
-        try {
-
-
-            final String riderMobileNo = rider.getRiderMobileNo();
-
-
-            final String driverID = driverGeo.getDriverID();
-
-
-            Log.d(TAG, "SMS Button Click: ");
-
-
-            new AlertDialog.Builder(DriverMoveActivity.this)
-                    .setTitle("Book")
-                    .setMessage("Do you want to book cab?")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-
-                            Calendar c = Calendar.getInstance();
-                            System.out.println("Current time => " + c.getTime());
-                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-                            String formattedDate = df.format(c.getTime());
-
-                            //datetime included to update firebase key with latest date so that driver can read
-                            Map<String, Object> smsMap = new HashMap<>();
-                            smsMap.put("riderSMS", riderMobileNo + "_" + formattedDate);
-                            smsMap.put("datetime", formattedDate);
-                            firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_ALERT_PATH + "/" + driverID).updateChildren(smsMap);
-
-                            // update Log
-                            //NowcabsLog nowcabsLog = new NowcabsLog();
-                            //nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "SMS to " + driverGeo.getDriverID());
-
-
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                            dialogInterface.dismiss();
-                        }
-                    })
-                    .create()
-                    .show();
-
-
-        } catch (Exception e) {
-            Log.d(TAG, "setSMSImage Exception");
-            e.printStackTrace();
-        }
-
-
-    }//end of set SMSImage
+//    public void setSMSImage(final Driver driverGeo)
+//    {
+//
+//
+//        try {
+//
+//
+//            final String riderMobileNo = rider.getRiderMobileNo();
+//
+//
+//            final String driverID = driverGeo.getDriverID();
+//
+//
+//            Log.d(TAG, "SMS Button Click: ");
+//
+//
+//            new AlertDialog.Builder(DriverMoveActivity.this)
+//                    .setTitle("Book")
+//                    .setMessage("Do you want to book cab?")
+//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//
+//
+//                            Calendar c = Calendar.getInstance();
+//                            System.out.println("Current time => " + c.getTime());
+//                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+//                            String formattedDate = df.format(c.getTime());
+//
+//                            //datetime included to update firebase key with latest date so that driver can read
+//                            Map<String, Object> smsMap = new HashMap<>();
+//                            smsMap.put("riderSMS", riderMobileNo + "_" + formattedDate);
+//                            smsMap.put("datetime", formattedDate);
+//                            firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_ALERT_PATH + "/" + driverID).updateChildren(smsMap);
+//
+//                            // update Log
+//                            //NowcabsLog nowcabsLog = new NowcabsLog();
+//                            //nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "SMS to " + driverGeo.getDriverID());
+//
+//
+//                        }
+//                    })
+//                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                            dialogInterface.dismiss();
+//                        }
+//                    })
+//                    .create()
+//                    .show();
+//
+//
+//        } catch (Exception e) {
+//            Log.d(TAG, "setSMSImage Exception");
+//            e.printStackTrace();
+//        }
+//
+//
+//    }//end of set SMSImage
 
 
 
@@ -1579,7 +1579,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
                                     Map<String, Object> smsMap = new HashMap<>();
                                     smsMap.put("riderSMS", riderMobileNo + "_" + formattedDate);
                                     smsMap.put("datetime", formattedDate);
-                                    firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_ALERT_PATH + "/" + driverID).updateChildren(smsMap);
+                                    //firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_ALERT_PATH + "/" + driverID).updateChildren(smsMap);
 
                                     // update Log
                                     NowcabsLog nowcabsLog = new NowcabsLog();
@@ -1693,9 +1693,9 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
     protected void onDestroy(){
         super.onDestroy();
 
-        if (mChildEventListener != null) {
-            dbRef.removeEventListener(mChildEventListener);
-        }
+//        if (mChildEventListener != null) {
+//            dbRef.removeEventListener(mChildEventListener);
+//        }
 
     }
 
@@ -1921,7 +1921,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
         rider.riderLng=riderLng;
         rider.riderLocation=riderLocation;
         Map<String, Object> riderMap = rider.toMap();
-        firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDER_PATH+"/"+ rider.riderID).updateChildren(riderMap);
+        //firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDER_PATH+"/"+ rider.riderID).updateChildren(riderMap);
 
 
 //        dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDER_PATH+"/"+ rider.getRiderID());

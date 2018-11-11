@@ -124,6 +124,24 @@
             android:textColor="#ffffff"
             />
 
+
+        <Switch
+            android:id="@+id/swt_vacant"
+            android:layout_below="@id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:checked="true"
+            android:text="Vacant"
+            android:layout_centerHorizontal="true"
+            android:textOn="On"
+            android:textOff="Off"
+            android:textColor="@color/colorBlack"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:scaleX="2"
+            android:scaleY="2"/>
+
     </RelativeLayout>
 
 

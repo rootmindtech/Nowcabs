@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -36,6 +37,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d("MyFirebaseID", "Refreshed token: " + token);
 
         //Shared Preferences
+        //sharedPreferences initiated
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         editor = sharedPreferences.edit();
         editor.putString("deviceToken", token);
         editor.apply();

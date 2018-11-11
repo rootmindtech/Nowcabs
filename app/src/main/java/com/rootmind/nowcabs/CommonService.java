@@ -17,6 +17,8 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -40,6 +42,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
@@ -271,7 +275,7 @@ public  class CommonService {
 
 
 
-    public void riderAutoLogin(final Listener<Boolean> onCompleteListener, final Activity activity, final Context context, final String mobileNo)
+    public void riderAutoLogin(final Listener<Rider> onCompleteListener, final Activity activity, final Context context, final String mobileNo)
     {
 
         activity.runOnUiThread(new Runnable() {
@@ -283,7 +287,10 @@ public  class CommonService {
                 String fcmToken=null;
                 String locale=null;
 
+                Rider rider = new Rider();
+
                 try {
+
 
                     //sharedPreferences initiated
                     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -357,26 +364,26 @@ public  class CommonService {
                                 SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
                                 final String formattedDate = df.format(c.getTime());
 
-                                Rider rider = new Rider();
 
                                 rider.setRiderRefNo(wrapperArrayObj.optJSONObject(0).optString("riderRefNo"));
                                 rider.setRiderID(wrapperArrayObj.optJSONObject(0).optString("riderID"));
                                 rider.setRiderMobileNo(wrapperArrayObj.optJSONObject(0).optString("mobileNo"));
                                 rider.setRiderName(wrapperArrayObj.optJSONObject(0).optString("firstName"));
                                 rider.setStatus(wrapperArrayObj.optJSONObject(0).optString("status"));
-                                //rider.setImageFound(false);
+                                rider.setRecordFound(wrapperArrayObj.optJSONObject(0).optBoolean("recordFound"));
+                                rider.setCustomToken(wrapperArrayObj.optJSONObject(0).optString("customToken"));
                                 rider.setDatetime(formattedDate);
                                 rider.setFcmToken(fcmToken);
                                 rider.setLocale(wrapperArrayObj.optJSONObject(0).optString("locale"));
 
 
-                                setRiderLogin(activity, context, rider, fcmToken);
+                                //setRiderLogin(activity, context, rider, fcmToken);
 
-                                onCompleteListener.on(true);
+                                onCompleteListener.on(rider);
                             } else {
 
                                 //if valid response and record not found then allow for OTP
-                                onCompleteListener.on(false);
+                                onCompleteListener.on(rider);
 
                             }
 
@@ -384,7 +391,7 @@ public  class CommonService {
 
                             Toast(activity, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
 
-                            onCompleteListener.on(true);
+                            onCompleteListener.on(rider);
 
                         }
 
@@ -392,7 +399,7 @@ public  class CommonService {
                     } else {
 
                         Toast(activity, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
-                        onCompleteListener.on(true);
+                        onCompleteListener.on(rider);
 
                     }
 
@@ -402,7 +409,7 @@ public  class CommonService {
 
                     Toast(activity, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
 
-                    onCompleteListener.on(true);
+                    onCompleteListener.on(rider);
 
                 }
             } //run end
@@ -414,57 +421,57 @@ public  class CommonService {
     }
 
 
-    private void setRiderLogin(Activity activity, Context context,Rider rider, String fcmToken) {
-
-
-        //Shared Preferences
-        editor = sharedPreferences.edit();
-
-        Log.d(GlobalConstants.CommonService, "SharedPreferences putString ");
-
-//        editor.putString("riderMobileNo", rider.getRiderMobileNo());
-//        editor.putString("riderFirstName", rider.getRiderName());
-        editor.putString("userGroup", GlobalConstants.RIDER_CODE);
-        editor.putString("riderRefNo", rider.getRiderRefNo());
-        editor.putString("riderID", rider.getRiderID());
-        editor.putString("autoLogin", GlobalConstants.YES_CODE);
-        editor.putString("fcmToken", fcmToken);
-        editor.putString("locale",CommonService.getLocale(rider.getLocale()).toString());
-        //Log.d(TAG, "fcmToken: " + fcmToken);
-
-        editor.apply();
-
-        setLocale(context,CommonService.getLocale(rider.getLocale()).toString());
-
-        //Log.d(TAG, "Saved Info: " + sharedPreferences.getString("riderMobileNo", "") );
-
-
-        //Log.d(TAG, "Before Change Activity " + rider.getStatus());
-
-
-        if (rider.getStatus().equals(GlobalConstants.ACTIVE_CODE)) {
-
-            Parameter parameter = new Parameter();
-
-            Intent i = new Intent(context, RiderMapActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("Parameter", parameter);
-            bundle.putSerializable("Rider", rider);
-            bundle.putSerializable("locale", CommonService.getLocale(rider.getLocale()).toString());
-            i.putExtras(bundle);
-            context.startActivity(i);
-
-            Log.d(GlobalConstants.CommonService, "Going to RiderMap ");
-        } else {
-
-            Log.d(GlobalConstants.CommonService, "Access Restricted");
-
-            Toast(activity, GlobalConstants.ACCESS_RESTRICTED, Toast.LENGTH_SHORT);
-
-        }
-
-
-    }
+//    private void setRiderLogin(Activity activity, Context context,Rider rider, String fcmToken) {
+//
+//
+//        //Shared Preferences
+//        editor = sharedPreferences.edit();
+//
+//        Log.d(GlobalConstants.CommonService, "SharedPreferences putString ");
+//
+////        editor.putString("riderMobileNo", rider.getRiderMobileNo());
+////        editor.putString("riderFirstName", rider.getRiderName());
+//        editor.putString("userGroup", GlobalConstants.RIDER_CODE);
+//        editor.putString("riderRefNo", rider.getRiderRefNo());
+//        editor.putString("riderID", rider.getRiderID());
+//        editor.putString("autoLogin", GlobalConstants.YES_CODE);
+//        editor.putString("fcmToken", fcmToken);
+//        editor.putString("locale",CommonService.getLocale(rider.getLocale()).toString());
+//        //Log.d(TAG, "fcmToken: " + fcmToken);
+//
+//        editor.apply();
+//
+//        setLocale(context,CommonService.getLocale(rider.getLocale()).toString());
+//
+//        //Log.d(TAG, "Saved Info: " + sharedPreferences.getString("riderMobileNo", "") );
+//
+//
+//        //Log.d(TAG, "Before Change Activity " + rider.getStatus());
+//
+//
+//        if (rider.getStatus().equals(GlobalConstants.ACTIVE_CODE)) {
+//
+//            Parameter parameter = new Parameter();
+//
+//            Intent i = new Intent(context, RiderMapActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable("Parameter", parameter);
+//            bundle.putSerializable("Rider", rider);
+//            bundle.putSerializable("locale", CommonService.getLocale(rider.getLocale()).toString());
+//            i.putExtras(bundle);
+//            context.startActivity(i);
+//
+//            Log.d(GlobalConstants.CommonService, "Going to RiderMap ");
+//        } else {
+//
+//            Log.d(GlobalConstants.CommonService, "Access Restricted");
+//
+//            Toast(activity, GlobalConstants.ACCESS_RESTRICTED, Toast.LENGTH_SHORT);
+//
+//        }
+//
+//
+//    }
 
 
     public boolean driverAutoLogin(Activity activity, Context context, String mobileNo) {
@@ -884,6 +891,8 @@ public  class CommonService {
                 }
 
                 StorageReference storageRef = firebaseStorage.getReference();
+
+                Log.d(TAG, "getImage imageFileName  " + imageFileName);
 
                 final StorageReference avatarRef = storageRef.child(GlobalConstants.FB_IMAGE_FOLDER + imageFileName);
 
@@ -1731,6 +1740,9 @@ public  class CommonService {
                                 rider.setVehicleNo(wrapperArrayObj.optJSONObject(0).optString("vehicleNo"));
                                 rider.setVehicleType(wrapperArrayObj.optJSONObject(0).optString("vehicleType"));
                                 rider.setStatus(wrapperArrayObj.optJSONObject(0).optString("status"));
+                                rider.setVacantStatus(wrapperArrayObj.optJSONObject(0).optString("vacantStatus"));
+
+                                //Log.d(TAG, "setVacantStatus: " + rider.getVacantStatus());
 
                                 JSONArray imageWrappers = wrapperArrayObj.optJSONObject(0).optJSONArray("imageWrappers");
 
@@ -1804,14 +1816,26 @@ public  class CommonService {
     {
         String imageName=null;
 
+        Log.d(GlobalConstants.CommonService, "getImageName function : " + rider.getRiderID());
+
         if(rider!=null && rider.images !=null && rider.images.length>0)
         {
 
+            Log.d(GlobalConstants.CommonService, "getImageName function1 : " + rider.images.length);
+
             for(int i=0; i<rider.images.length;i++)
             {
+
+                Log.d(GlobalConstants.CommonService, "getImage RiderID : " + rider.images[i].getRiderID());
+
+                Log.d(GlobalConstants.CommonService, "getImageID : " + rider.images[i].imageID);
+
                 if(rider.images[i].imageID.equals(imageID))
                 {
                     imageName = rider.images[i].imageName;
+
+                    Log.d(GlobalConstants.CommonService, "getImageName function2 : " + imageName);
+
                     break;
                 }
 
@@ -1822,4 +1846,21 @@ public  class CommonService {
         return imageName;
     }
 
+
+    public static MediaPlayer mediaPlayer(Context context)
+    {
+        MediaPlayer mediaPlayer=null;
+        try {
+
+            if(mediaPlayer==null) {
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+                //ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                mediaPlayer = MediaPlayer.create(context, notification);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return mediaPlayer;
+    }
 }

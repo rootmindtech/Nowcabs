@@ -111,7 +111,7 @@
                             android:text="Carpenter"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -156,7 +156,7 @@
                             android:text="Driver"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -202,7 +202,7 @@
                             android:text="Electrician"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -246,7 +246,7 @@
                             android:text="Plumber"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -282,15 +282,15 @@
                         <ImageView
                             android:src="@drawable/tailor"
                             android:layout_gravity="center_horizontal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
 
 
                         <TextView
                             android:text="Tailor"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -335,7 +335,7 @@
                             android:text="Washer"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -379,7 +379,7 @@
                             android:text="Courier"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -416,15 +416,15 @@
                         <ImageView
                             android:src="@drawable/merchant"
                             android:layout_gravity="center_horizontal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_width="40dp"
+                            android:layout_height="40dp" />
 
 
                         <TextView
                             android:text="Merchant"
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />

@@ -263,6 +263,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         Log.i(TAG, "Rating Adapter "+ rider.getAvgRating());
 
+        Log.i(TAG, "Rating Adapter1 "+ rider.getRiderID());
 
 
 
@@ -370,6 +371,11 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         //-----set avatar
         CommonService commonService = new CommonService();
+
+        Log.d(TAG, "setServiceImage getImageName1  " + rider.getRiderID());
+
+        //Log.d(TAG, "setServiceImage getImageName  " + CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
+
         commonService.getImage(holder.iv_avatar,CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
 
 

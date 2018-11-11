@@ -24,7 +24,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -64,7 +64,7 @@ public class DriverProfileActivity extends AppCompatActivity  {
     SharedPreferences.Editor editor;
 
 
-    FirebaseDatabase firebaseDatabase;
+//    FirebaseDatabase firebaseDatabase;
 
     public String name = null;
     public String vehicleNo=null;
@@ -88,7 +88,7 @@ public class DriverProfileActivity extends AppCompatActivity  {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //To initiate firebase
-        firebaseDatabase = FirebaseDatabase.getInstance();
+//        firebaseDatabase = FirebaseDatabase.getInstance();
 
 
         //navigation bar

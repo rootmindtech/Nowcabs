@@ -13,11 +13,11 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.ValueEventListener;
 
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -56,10 +56,10 @@ public class RidesActivity extends AppCompatActivity implements OnItemClickListe
     RideDetails rideDetails;
 
     SharedPreferences sharedPreferences;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference dbRef;
-
-    private ValueEventListener valueEventListener;
+//    FirebaseDatabase firebaseDatabase;
+//    DatabaseReference dbRef;
+//
+//    private ValueEventListener valueEventListener;
 
     ArrayList<RideDetails> rideDetailsArrayList;
 
@@ -94,7 +94,7 @@ public class RidesActivity extends AppCompatActivity implements OnItemClickListe
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //To initiate firebase
-        firebaseDatabase = FirebaseDatabase.getInstance();
+//        firebaseDatabase = FirebaseDatabase.getInstance();
 
         rideDetailsArrayList = new ArrayList<RideDetails>();
 

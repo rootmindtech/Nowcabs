@@ -29,7 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -64,8 +64,8 @@ public class DriverLoginActivity extends AppCompatActivity {
 //    FirebaseDatabase firebaseDatabase;
 //    DatabaseReference dbRef;
 
-    private ValueEventListener valueEventListener;
-    private ValueEventListener alertValueEventListener;
+//    private ValueEventListener valueEventListener;
+//    private ValueEventListener alertValueEventListener;
 
 
     private ProgressBar loadingSpinner;

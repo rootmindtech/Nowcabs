@@ -64,6 +64,28 @@ public class Rider implements Serializable {
 
     public String serviceCode=null;
 
+    public boolean recordFound=false;
+
+    public String customToken=null;
+
+    public String getCustomToken() {
+        return customToken;
+    }
+
+    public void setCustomToken(String customToken) {
+        this.customToken = customToken;
+    }
+
+
+    public boolean isRecordFound() {
+        return recordFound;
+    }
+
+    public void setRecordFound(boolean recordFound) {
+        this.recordFound = recordFound;
+    }
+
+
 
     public String getServiceCode() {
         return serviceCode;

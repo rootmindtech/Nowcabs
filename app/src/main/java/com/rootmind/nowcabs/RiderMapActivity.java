@@ -87,8 +87,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.ChildEventListener;
+//import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.ChildEventListener;
 import com.squareup.picasso.Picasso;
 
 import android.util.Log;
@@ -176,10 +176,10 @@ public class RiderMapActivity extends AppCompatActivity implements
     //FirebaseStorage firebaseStorage;
 
 
-    private ChildEventListener mChildEventListener;
-
-
-    private ValueEventListener valueEventListener;
+//    private ChildEventListener mChildEventListener;
+//
+//
+//    private ValueEventListener valueEventListener;
 
     //TextView tv_location;
 
@@ -278,6 +278,8 @@ public class RiderMapActivity extends AppCompatActivity implements
     private TextView tv_no_records;
 
 
+    TextView tv_searchService;
+
     Configuration config;
 
     Locale locale;
@@ -347,6 +349,9 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         driverData = new HashMap<>();
+
+        tv_searchService = (TextView) findViewById(R.id.tv_searchService);
+        tv_searchService.setVisibility(View.GONE);
 
 
 //        //05-Oct-2018 --Firebase suppress
@@ -864,9 +869,10 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         Rider rider = servicesList.get(position);
 
-        callTimer();
+        //this opens the ringer tone
+        //callTimer();
 
-        //setDialImage(rider);
+        setDialImage(rider);
 
         //Toast.makeText(getApplicationContext(),  driver.driverMobileNo+" "+view.getId()+ " dial is selected!", Toast.LENGTH_SHORT).show();
 
@@ -3054,6 +3060,9 @@ public class RiderMapActivity extends AppCompatActivity implements
         @Override
         protected void onPreExecute() {
             //loadingSpinner.setVisibility(View.VISIBLE);
+
+            tv_searchService.setVisibility(View.VISIBLE);
+
         }
 
         @Override
@@ -3072,6 +3081,9 @@ public class RiderMapActivity extends AppCompatActivity implements
         @Override
         protected void onPostExecute(Void result) {
             //loadingSpinner.setVisibility(View.GONE);
+
+            tv_searchService.setVisibility(View.GONE);
+
         }
     }
                     //--------fetch service Location  in the backend
@@ -3090,6 +3102,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                     //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
 
+
+//                    tv_searchService.setText("Searching " +   services....");
 
                     //Shared Preferences
                     editor = sharedPreferences.edit();
@@ -3172,7 +3186,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                                         Log.d(TAG, "Avg Rating: " + wrapperArrayObj.optJSONObject(i).optString("avgRating"));
                                         Log.d(TAG, "Your Rating: " + wrapperArrayObj.optJSONObject(i).optString("yourRating"));
 
-                                        JSONArray imageWrappers = wrapperArrayObj.optJSONObject(0).optJSONArray("imageWrappers");
+                                        JSONArray imageWrappers = wrapperArrayObj.optJSONObject(i).optJSONArray("imageWrappers");
 
                                         if(imageWrappers!=null)
                                         {
@@ -3233,6 +3247,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                         Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
                     }
 
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
@@ -3282,15 +3297,15 @@ public class RiderMapActivity extends AppCompatActivity implements
 
             btn_service.setEnabled(false);
             new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.UTILITY_SERVICE, true});
-            currentServiceMarker = GlobalConstants.UTILITY_SERVICE;
-            btn_service.setImageResource(R.drawable.tools);
+            currentServiceMarker = GlobalConstants.SERVICE_MERCHANT;
+            btn_service.setImageResource(R.drawable.merchant);
             Drawable fabDr= btn_service.getDrawable();
             DrawableCompat.setTint(fabDr, Color.WHITE);
             btn_service.setEnabled(true);
 
 
         }
-        else if(currentServiceMarker.equals(GlobalConstants.UTILITY_SERVICE)) {
+        else if(currentServiceMarker.equals(GlobalConstants.SERVICE_MERCHANT)) {
 
             btn_service.setEnabled(false);
             new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true});
@@ -3557,7 +3572,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_AUTO_SERVICE))
         {
-            currentServiceMarker = GlobalConstants.UTILITY_SERVICE;
+            currentServiceMarker = GlobalConstants.SERVICE_MERCHANT;
         }
         if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_CAB_SERVICE))
         {

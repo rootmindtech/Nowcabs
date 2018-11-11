@@ -24,9 +24,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -52,6 +54,8 @@ public class RiderProfileActivity extends AppCompatActivity  {
 
     Button btn_logout;
     Button btn_save;
+    Switch swt_vacant;
+
     Rider rider;
 
     //String responseData = null;
@@ -72,6 +76,8 @@ public class RiderProfileActivity extends AppCompatActivity  {
     ImageView iv_avatar;
 
     CommonService commonService=null;
+    String responseData = null;
+
 
     @SuppressLint("ResourceType")
     @Override
@@ -123,6 +129,8 @@ public class RiderProfileActivity extends AppCompatActivity  {
 
         btn_logout = (Button) findViewById(R.id.btn_logout);
         btn_save = (Button) findViewById(R.id.btn_save);
+        swt_vacant = (Switch) findViewById(R.id.swt_vacant);
+
 
 
         //--disable text boxes
@@ -241,6 +249,27 @@ public class RiderProfileActivity extends AppCompatActivity  {
             }
         });
 
+        swt_vacant.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+
+                if(isChecked)
+                {
+                    updateVacantStatus(GlobalConstants.VACANT_CODE);
+                    swt_vacant.setText(GlobalConstants.VACANT_CODE);
+
+                }
+                else
+                {
+                    updateVacantStatus(GlobalConstants.HIRED_CODE);
+                    swt_vacant.setText(GlobalConstants.HIRED_CODE);
+
+                }
+
+            }
+        });
+
 
     }
 
@@ -343,6 +372,20 @@ public class RiderProfileActivity extends AppCompatActivity  {
                     dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
 
                     commonService.getImage(iv_avatar,CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
+
+                    Log.d(TAG, "getVacantStatus: " + rider.getVacantStatus());
+
+                    if(rider.getVacantStatus().equals(GlobalConstants.HIRED_CODE))
+                    {
+                        swt_vacant.setText(GlobalConstants.HIRED_CODE);
+                        swt_vacant.setChecked(false);
+                    }
+                    else
+                    {
+                        swt_vacant.setText(GlobalConstants.VACANT_CODE);
+                        swt_vacant.setChecked(true);
+
+                    }
 
                 }
                 else
@@ -650,6 +693,105 @@ public class RiderProfileActivity extends AppCompatActivity  {
 
     }
 
+    //--------update Driver Vacant Status in the backend
+    public void updateVacantStatus(final String vacantStatus) {
 
+
+
+
+        RiderProfileActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+
+
+                    //Log.d(TAG, "driverLocation: " + driverLocation );
+
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    String methodAction = "updateVacantStatus";
+
+                    JSONObject messageJson = new JSONObject();
+                    messageJson.put("currentLat", rider.getRiderLat());
+                    messageJson.put("currentLng", rider.getRiderLng());
+                    messageJson.put("currentLocation", rider.getRiderLocation());
+                    messageJson.put("vacantStatus", vacantStatus);
+                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+                    messageJson.put("riderID", rider.getRiderID());
+
+
+                    ConnectHost connectHost = new ConnectHost();
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+                    Log.d(TAG, "updateVacantStatus responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        // Convert String to json object
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+
+                        // get LL json object
+                        JSONObject jsonResult = jsonResponseData.getJSONObject("updateVacantStatus");
+
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
+
+//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+//
+//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.getJSONObject(0).getString("recordFound"));
+
+                        if (jsonResponseData.getString("success") == "true" && wrapperArrayObj.getJSONObject(0).getString("recordFound") == "true") {
+
+
+                            //String driverRefNo = wrapperArrayObj.getJSONObject(0).getString("driverRefNo");
+                            //String driverID = wrapperArrayObj.getJSONObject(0).getString("driverID");
+                            //wrapperArrayObj.getJSONObject(0).getString("mobileNo");
+
+
+                            //Log.d(TAG, "Driver Info: " + driverRefNo + " " + driverID);
+
+
+
+
+                        }
+                        else
+                        {
+
+                            Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    } else {
+
+                        Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(RiderProfileActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                }
+
+                //}// validation
+
+            }//run end
+
+        });//runnable end
+
+
+    }//updateVacantStatus End
 
 }

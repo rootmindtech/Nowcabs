@@ -5,7 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.hardware.Camera;
+//import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
@@ -34,8 +34,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.ChildEventListener;
+//import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -102,9 +102,9 @@ public class RiderLoginActivity extends AppCompatActivity {
 //    FirebaseDatabase firebaseDatabase;
 //    DatabaseReference dbRef;
 
-    private ChildEventListener mChildEventListener;
-
-    private ValueEventListener valueEventListener;
+//    private ChildEventListener mChildEventListener;
+//
+//    private ValueEventListener valueEventListener;
 
     Rider rider = null;
 

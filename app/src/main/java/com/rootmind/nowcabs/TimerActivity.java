@@ -32,6 +32,9 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
     //Ringtone ringtone=null;
     MediaPlayer mediaPlayer=null;
 
+    Button btn_accept;
+    Button btn_reject;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,14 +56,31 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
         edtTimerValue.setEnabled(false);
         edtTimerValue.setText("20");
 
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-            //ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
-            mediaPlayer= MediaPlayer.create(getApplicationContext(), notification);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+        mediaPlayer = CommonService.mediaPlayer(getApplicationContext());
+
+
+        btn_accept = (Button) findViewById(R.id.btn_accept);
+        btn_reject = (Button) findViewById(R.id.btn_reject);
+
+
+        btn_accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finishPlayer();
+            }
+        });
+
+        btn_accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finishPlayer();
+            }
+        });
+
+        onClick(findViewById(R.id.button_timerview_start));
 
     }
 
@@ -71,7 +91,7 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
             setTimer();
 
             buttonStartTime.setVisibility(View.INVISIBLE);
-            buttonStopTime.setVisibility(View.VISIBLE);
+            buttonStopTime.setVisibility(View.INVISIBLE);
             mProgressBar.setVisibility(View.INVISIBLE);
 
             startTimer();
@@ -117,19 +137,8 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
             }
             @Override
             public void onFinish() {
-                if(mediaPlayer!=null) {
 
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    mediaPlayer=null;
-                }
-                textViewShowTime.setText("00:00");
-                textViewShowTime.setVisibility(View.VISIBLE);
-                buttonStartTime.setVisibility(View.VISIBLE);
-                buttonStopTime.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.VISIBLE);
-                mProgressBar1.setVisibility(View.GONE);
-
+                finishPlayer();
             }
         }.start();
     }
@@ -140,5 +149,24 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
         } else {
             ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(500);
         }
+    }
+
+    public void finishPlayer()
+    {
+        if(mediaPlayer!=null) {
+
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer=null;
+        }
+        textViewShowTime.setText("00:00");
+        textViewShowTime.setVisibility(View.VISIBLE);
+        buttonStartTime.setVisibility(View.VISIBLE);
+        buttonStopTime.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar1.setVisibility(View.GONE);
+
+        finish();
+
     }
 }

@@ -138,7 +138,7 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
 //    DatabaseReference dbRef;
 
 
-    private ValueEventListener valueEventListener;
+//    private ValueEventListener valueEventListener;
 
 
     private static final String TAG = "DriverMapActivity";
@@ -175,7 +175,7 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
 
     String destination=null;
 
-    private ChildEventListener mChildEventListener;
+//    private ChildEventListener mChildEventListener;
 
     private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE=1;
 

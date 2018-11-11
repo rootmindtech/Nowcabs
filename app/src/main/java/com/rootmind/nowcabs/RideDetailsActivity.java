@@ -16,11 +16,11 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.ValueEventListener;
 
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -61,10 +61,10 @@ public class RideDetailsActivity extends AppCompatActivity {
     RideDetails rideDetails;
 
     SharedPreferences sharedPreferences;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference dbRef;
-
-    private ValueEventListener valueEventListener;
+//    FirebaseDatabase firebaseDatabase;
+//    DatabaseReference dbRef;
+//
+//    private ValueEventListener valueEventListener;
 
     ImageView driverImage;
 
@@ -96,7 +96,7 @@ public class RideDetailsActivity extends AppCompatActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //To initiate firebase
-        firebaseDatabase = FirebaseDatabase.getInstance();
+       // firebaseDatabase = FirebaseDatabase.getInstance();
 
 
         //navigation bar
@@ -141,53 +141,53 @@ public class RideDetailsActivity extends AppCompatActivity {
         //final Vector<Object> vector=new Vector<Object>();
 
 
-        try{
-
-
-            dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_PATH + "/" + rideDetails.driverID);
-
-
-            Log.d(TAG, "get details driverID "+ rideDetails.driverID);
-
-
-
-            valueEventListener = new ValueEventListener() {
-
-
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Get Post object and use the values to update the UI
-                    //Post post = dataSnapshot.getValue(Post.class);
-                    // ...
-                    //Log.d(TAG, "dataSnapshot driverID : " + dataSnapshot);
-
-                    Log.d(TAG, "dataSnapshot.getKey() :" + dataSnapshot.getKey());
-                    //Log.d(TAG, "dataSnapshot.getValue() :" + dataSnapshot.getValue());
-
-
-                    driver = dataSnapshot.getValue(Driver.class);
-
-
-
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting Post failed, log a message
-                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    // ...
-                }
-            };
-            dbRef.addListenerForSingleValueEvent(valueEventListener);
-            dbRef.removeEventListener(valueEventListener);
-
-
-        }
-        catch (Exception e) {
-            Log.d(TAG, "In updateFirebase Exception");
-            e.printStackTrace();
-        }
+//        try{
+//
+//
+//            dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_DRIVER_PATH + "/" + rideDetails.driverID);
+//
+//
+//            Log.d(TAG, "get details driverID "+ rideDetails.driverID);
+//
+//
+//
+//            valueEventListener = new ValueEventListener() {
+//
+//
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    // Get Post object and use the values to update the UI
+//                    //Post post = dataSnapshot.getValue(Post.class);
+//                    // ...
+//                    //Log.d(TAG, "dataSnapshot driverID : " + dataSnapshot);
+//
+//                    Log.d(TAG, "dataSnapshot.getKey() :" + dataSnapshot.getKey());
+//                    //Log.d(TAG, "dataSnapshot.getValue() :" + dataSnapshot.getValue());
+//
+//
+//                    driver = dataSnapshot.getValue(Driver.class);
+//
+//
+//
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    // Getting Post failed, log a message
+//                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                    // ...
+//                }
+//            };
+//            dbRef.addListenerForSingleValueEvent(valueEventListener);
+//            dbRef.removeEventListener(valueEventListener);
+//
+//
+//        }
+//        catch (Exception e) {
+//            Log.d(TAG, "In updateFirebase Exception");
+//            e.printStackTrace();
+//        }
 
 
 
@@ -200,56 +200,56 @@ public class RideDetailsActivity extends AppCompatActivity {
         //final Vector<Object> vector=new Vector<Object>();
 
 
-        try{
-
-
-            dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDER_PATH + "/" + rideDetails.riderID);
-
-
-            Log.d(TAG, "get details driverID "+ rideDetails.driverID);
-
-
-
-            valueEventListener = new ValueEventListener() {
-
-
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Get Post object and use the values to update the UI
-                    //Post post = dataSnapshot.getValue(Post.class);
-                    // ...
-                    //Log.d(TAG, "dataSnapshot RiderID : " + dataSnapshot);
-
-                    Log.d(TAG, "dataSnapshot.getKey() :" + dataSnapshot.getKey());
-                    //Log.d(TAG, "dataSnapshot.getValue() :" + dataSnapshot.getValue());
-
-
-                    rider = dataSnapshot.getValue(Rider.class);
-
-
-
-                    //--After get login details call setLoginDetails()
-                    setRideDetails();
-
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting Post failed, log a message
-                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    // ...
-                }
-            };
-            dbRef.addListenerForSingleValueEvent(valueEventListener);
-            dbRef.removeEventListener(valueEventListener);
-
-
-        }
-        catch (Exception e) {
-            Log.d(TAG, "In updateFirebase Exception");
-            e.printStackTrace();
-        }
+//        try{
+//
+//
+//            dbRef = firebaseDatabase.getReference(GlobalConstants.FIREBASE_RIDER_PATH + "/" + rideDetails.riderID);
+//
+//
+//            Log.d(TAG, "get details driverID "+ rideDetails.driverID);
+//
+//
+//
+//            valueEventListener = new ValueEventListener() {
+//
+//
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    // Get Post object and use the values to update the UI
+//                    //Post post = dataSnapshot.getValue(Post.class);
+//                    // ...
+//                    //Log.d(TAG, "dataSnapshot RiderID : " + dataSnapshot);
+//
+//                    Log.d(TAG, "dataSnapshot.getKey() :" + dataSnapshot.getKey());
+//                    //Log.d(TAG, "dataSnapshot.getValue() :" + dataSnapshot.getValue());
+//
+//
+//                    rider = dataSnapshot.getValue(Rider.class);
+//
+//
+//
+//                    //--After get login details call setLoginDetails()
+//                    setRideDetails();
+//
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    // Getting Post failed, log a message
+//                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                    // ...
+//                }
+//            };
+//            dbRef.addListenerForSingleValueEvent(valueEventListener);
+//            dbRef.removeEventListener(valueEventListener);
+//
+//
+//        }
+//        catch (Exception e) {
+//            Log.d(TAG, "In updateFirebase Exception");
+//            e.printStackTrace();
+//        }
 
 
 

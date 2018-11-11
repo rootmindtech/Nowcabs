@@ -1,6 +1,7 @@
 package com.rootmind.nowcabs;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -29,6 +30,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.hbb20.CountryCodePicker;
@@ -85,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
     CountryCodePicker ccp;
     EditText editTextCarrierNumber;
 
+    CommonService commonService=null;
 //    Button btn_english;
 //    Button btn_telugu;
 
@@ -148,6 +152,8 @@ public class LoginActivity extends AppCompatActivity {
         fcmToken = sharedPreferences.getString("fcmToken","");
 
         Log.d(TAG, "fcm token shared " + fcmToken);
+
+        commonService = new CommonService();
 
 
 //        //FCM -----to get token
@@ -237,14 +243,18 @@ public class LoginActivity extends AppCompatActivity {
 
                         //auto login
                         CommonService commonService = new CommonService();
-                        commonService.riderAutoLogin(new Listener<Boolean>() {
+                        commonService.riderAutoLogin(new Listener<Rider>() {
                             @Override
-                            public void on(Boolean arg) {
+                            public void on(Rider rider) {
 
-                                if(arg==false)
+                                if(rider.isRecordFound()==false)
                                 {
 
                                     setComponentView();
+                                }
+                                else
+                                {
+                                    firebaseCustomerTokenAuth(rider);
                                 }
 
                             }
@@ -361,12 +371,11 @@ public class LoginActivity extends AppCompatActivity {
 //            }
 
             //button click event
-            CommonService commonService = new CommonService();
-            commonService.riderAutoLogin(new Listener<Boolean>() {
+            commonService.riderAutoLogin(new Listener<Rider>() {
                 @Override
-                public void on(Boolean arg) {
+                public void on(Rider rider) {
 
-                    if(arg==false)
+                    if(rider.isRecordFound()==false)
                     {
 
                         //parameter = new Parameter();
@@ -381,6 +390,10 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(i);
 
                     }
+                    else
+                    {
+                        firebaseCustomerTokenAuth(rider);
+                    }
 
                 }
             }, LoginActivity.this, getApplicationContext(), mobileNo);
@@ -394,6 +407,93 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             loadingSpinner.setVisibility(View.GONE);
         }
+    }
+
+    private void setRiderLogin(Rider rider) {
+
+
+        //Shared Preferences
+        editor = sharedPreferences.edit();
+
+        Log.d(GlobalConstants.CommonService, "SharedPreferences putString ");
+
+//        editor.putString("riderMobileNo", rider.getRiderMobileNo());
+//        editor.putString("riderFirstName", rider.getRiderName());
+        editor.putString("userGroup", GlobalConstants.RIDER_CODE);
+        editor.putString("riderRefNo", rider.getRiderRefNo());
+        editor.putString("riderID", rider.getRiderID());
+        editor.putString("autoLogin", GlobalConstants.YES_CODE);
+        editor.putString("fcmToken", fcmToken);
+        editor.putString("locale",CommonService.getLocale(rider.getLocale()).toString());
+        //Log.d(TAG, "fcmToken: " + fcmToken);
+
+        editor.apply();
+
+        commonService.setLocale(this,CommonService.getLocale(rider.getLocale()).toString());
+
+        //Log.d(TAG, "Saved Info: " + sharedPreferences.getString("riderMobileNo", "") );
+
+
+        //Log.d(TAG, "Before Change Activity " + rider.getStatus());
+
+
+        if (rider.getStatus().equals(GlobalConstants.ACTIVE_CODE)) {
+
+            Parameter parameter = new Parameter();
+
+            Intent i = new Intent(getApplicationContext(), RiderMapActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("Parameter", parameter);
+            bundle.putSerializable("Rider", rider);
+            bundle.putSerializable("locale", CommonService.getLocale(rider.getLocale()).toString());
+            i.putExtras(bundle);
+            startActivity(i);
+
+            Log.d(GlobalConstants.CommonService, "Going to RiderMap ");
+        } else {
+
+            Log.d(GlobalConstants.CommonService, "Access Restricted");
+
+            CommonService.Toast(this, GlobalConstants.ACCESS_RESTRICTED, Toast.LENGTH_SHORT);
+
+        }
+
+
+    }
+
+    public void firebaseCustomerTokenAuth(final Rider rider) {
+
+        if(rider.getCustomToken()!=null)
+        {
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+            firebaseAuth.signInWithCustomToken(rider.getCustomToken())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            //Log.d(TAG, "signInWithCustomToken:success");
+                            //FirebaseUser user = mAuth.getCurrentUser();
+                            //updateUI(user);
+
+                            setRiderLogin(rider);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            //Log.w(TAG, "signInWithCustomToken:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+                    }
+                });
+        }
+        else
+        {
+            Toast.makeText(LoginActivity.this, "Invalid custom token.", Toast.LENGTH_SHORT).show();
+
+        }
+
     }
 
 

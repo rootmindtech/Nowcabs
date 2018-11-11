@@ -155,74 +155,129 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
         @Override
         public void onClick(View view) {
             if (mClickListener != null) {
-                mClickListener.onClickCarpenter(view, getAdapterPosition());
 
                 Log.i(TAG, "get ID "+ view.getId());
 
+                switch (view.getId())
+                {
 
-                if(view.getId()==cv_carpenter.getId()){
-
-
-                    mClickListener.onClickCarpenter(view, getAdapterPosition());
-
-
-                }
-                if(view.getId()==cv_autoDriver.getId()){
+                    case R.id.carpenter_cardView:{
 
 
-                    mClickListener.onClickAutoDriver(view, getAdapterPosition());
+                        mClickListener.onClickCarpenter(view, getAdapterPosition());
+                        break;
+                    }
+                    case R.id.auto_driver_cardView:{
 
+                        mClickListener.onClickAutoDriver(view, getAdapterPosition());
+                        break;
+                    }
+                    case R.id.cab_driver_cardView:{
 
-                }
-                if(view.getId()==cv_cabDriver.getId()){
+                        mClickListener.onClickCabDriver(view, getAdapterPosition());
+                        break;
 
+                    }
+                    case R.id.electrician_cardView:{
 
-                    mClickListener.onClickCabDriver(view, getAdapterPosition());
+                        mClickListener.onClickElectrician(view, getAdapterPosition());
+                        break;
+                    }
+                    case R.id.plumber_cardView:{
 
+                        mClickListener.onClickPlumber(view, getAdapterPosition());
+                        break;
+                    }
+                    case R.id.tailor_cardView:{
 
-                }
-                if(view.getId()==cv_electrician.getId()){
+                        mClickListener.onClickTailor(view, getAdapterPosition());
+                        break;
+                    }
+                    case R.id.washer_cardView:{
 
+                        mClickListener.onClickWasher(view, getAdapterPosition());
+                        break;
+                    }
+                    case R.id.courier_cardView:{
 
-                    mClickListener.onClickElectrician(view, getAdapterPosition());
+                        mClickListener.onClickCourier(view, getAdapterPosition());
+                        break;
+                    }
+                    case R.id.merchant_cardView:{
 
+                        mClickListener.onClickMerchant(view, getAdapterPosition());
+                        break;
 
-                }
-                if(view.getId()==cv_plumber.getId()){
-
-
-                    mClickListener.onClickPlumber(view, getAdapterPosition());
-
-
-                }
-                if(view.getId()==cv_tailor.getId()){
-
-
-                    mClickListener.onClickTailor(view, getAdapterPosition());
-
-
-                }
-                if(view.getId()==cv_washer.getId()){
-
-
-                    mClickListener.onClickWasher(view, getAdapterPosition());
-
-
-                }
-                if(view.getId()==cv_courier.getId()){
-
-
-                    mClickListener.onClickCourier(view, getAdapterPosition());
-
+                    }
 
                 }
-                if(view.getId()==cv_merchant.getId()){
 
 
-                    mClickListener.onClickMerchant(view, getAdapterPosition());
 
 
-                }
+//                if(view.getId()==cv_carpenter.getId()){
+//
+//
+//                    mClickListener.onClickCarpenter(view, getAdapterPosition());
+//
+//
+//                }
+//                if(view.getId()==cv_autoDriver.getId()){
+//
+//
+//                    mClickListener.onClickAutoDriver(view, getAdapterPosition());
+//
+//
+//                }
+//                if(view.getId()==cv_cabDriver.getId()){
+//
+//
+//                    mClickListener.onClickCabDriver(view, getAdapterPosition());
+//
+//
+//                }
+//                if(view.getId()==cv_electrician.getId()){
+//
+//
+//                    mClickListener.onClickElectrician(view, getAdapterPosition());
+//
+//
+//                }
+//                if(view.getId()==cv_plumber.getId()){
+//
+//
+//                    mClickListener.onClickPlumber(view, getAdapterPosition());
+//
+//
+//                }
+//                if(view.getId()==cv_tailor.getId()){
+//
+//
+//                    mClickListener.onClickTailor(view, getAdapterPosition());
+//
+//
+//                }
+//                if(view.getId()==cv_washer.getId()){
+//
+//
+//                    mClickListener.onClickWasher(view, getAdapterPosition());
+//
+//
+//                }
+//                if(view.getId()==cv_courier.getId()){
+//
+//
+//                    mClickListener.onClickCourier(view, getAdapterPosition());
+//
+//
+//                }
+//                if(view.getId()==cv_merchant.getId()){
+//
+//
+//                    mClickListener.onClickMerchant(view, getAdapterPosition());
+//
+//
+//                }
 
 
 

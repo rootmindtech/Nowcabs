@@ -141,6 +141,21 @@
             <!--android:layout_margin="10dp" />-->
 
 
+        <TextView
+            android:id="@+id/tv_searchService"
+            android:layout_above="@id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="Searching services....."
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:textStyle="italic"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            />
+
+
         <!--22-Sep-2018-->
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/bottom_navigation"
