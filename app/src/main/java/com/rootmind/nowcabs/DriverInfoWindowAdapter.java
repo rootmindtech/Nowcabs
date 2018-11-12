@@ -78,16 +78,32 @@ class DriverInfoWindowAdapter implements InfoWindowAdapter {
             Rider rider = (Rider) marker.getTag();
 
             //-----set avatar
-            if(rider!=null && rider.images!=null && rider.images.length>0) {
+            if(rider!=null) {
 
                 //Log.d("InfoWindow", "InfoWindow " + rider.images[0].getImageName());
 
                 tv_serviceName.setText(rider.getServiceCode());
-                ratingBar.setRating((float)rider.getAvgRating());
-                CommonService commonService = new CommonService();
-                commonService.getMarkerImage(icon, CommonService.getImageName(rider, GlobalConstants.IMAGE_AVATAR), marker);
+                ratingBar.setRating((float) rider.getAvgRating());
+                icon.setImageResource(R.drawable.avatar_outline48);
 
-            }
+
+                if(rider.images!=null && rider.images.length>0)
+                {
+                    CommonService commonService = new CommonService();
+                    String imageFileName = CommonService.getImageName(rider, GlobalConstants.IMAGE_AVATAR);
+                    if(imageFileName!=null && !imageFileName.trim().equals("")) {
+                        commonService.getMarkerImage(icon, imageFileName, marker);
+                    }
+                    else
+                    {
+                        icon.setImageResource(R.drawable.avatar_outline48);
+                    }
+
+                }
+
+
+        }
+
 
 
 //            if (image == null) {

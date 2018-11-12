@@ -930,7 +930,6 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         //showRatingDialog(position, driver);
 
-        //Toast.makeText(getApplicationContext(),  driver.getDriverName()+ " rating is selected!", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -1248,7 +1247,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         Log.d(TAG, "onLocationChanged before fetchDriver");
 
         //default get auto markers on the map
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true});
+        //new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true});
 
 
     }
@@ -1479,6 +1478,16 @@ public class RiderMapActivity extends AppCompatActivity implements
 
             Log.d(TAG, "driverGeo: " + riderGeo.riderID + " " + riderGeo.status + " " + riderGeo.vacantStatus);
 
+            //---------first remove all markers from screen
+            Iterator it = markers.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                System.out.println(pair.getKey() + " = " + pair.getValue());
+                //it.remove(); // avoids a ConcurrentModificationException
+                vehicleMarker= (Marker)pair.getValue();
+                vehicleMarker.setVisible(false);
+            }
+            //-----------------
 
             //13-Sep-2018
             if (riderGeo.status.equals(GlobalConstants.ACTIVE_CODE) && riderGeo.vacantStatus.equals(GlobalConstants.VACANT_CODE)) {
@@ -1501,12 +1510,80 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                     vehicleMarker.setTag(riderGeo);
 
-                    if (riderGeo.getVehicleType().equals(GlobalConstants.CAB_CODE)) {
-                        //for cab image
-                        vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cartop));
-                    } else {
-                        //For auto image
-                        vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.autotop_32x32));
+//                    if (riderGeo.getVehicleType().equals(GlobalConstants.CAB_CODE)) {
+//                        //for cab image
+//                        vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cartop));
+//                    } else {
+//                        //For auto image
+//                        vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.autotop_32x32));
+//                    }
+
+                    //------set profession image
+                    switch (riderGeo.getServiceCode()) {
+
+                        case GlobalConstants.SERVICE_CARPENTER:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.carpenter));
+                            break;
+                        }
+                        case GlobalConstants.SERVICE_COURIER:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.courier));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_DRIVER:
+                        {
+
+                            switch (riderGeo.getVehicleType()){
+
+                                case GlobalConstants.AUTO_CODE:
+                                {
+                                    vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.auto_blue48px));
+                                    break;
+
+                                }
+                                case GlobalConstants.CAB_CODE:
+                                {
+                                    vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.taxi_blue48px));
+                                    break;
+
+                                }
+
+
+                            }
+                            break;
+                        }
+                        case GlobalConstants.SERVICE_ELECTRICIAN:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.electrician));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_MERCHANT:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.merchant));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_PLUMBER:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.plumber));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_TAILOR:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.tailor));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_WASHER:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.washer));
+                            break;
+
+                        }
                     }
 
                     //extend the bounds to include each marker's position
@@ -3176,8 +3253,8 @@ public class RiderMapActivity extends AppCompatActivity implements
                                         rider.setVacantStatus(wrapperArrayObj.optJSONObject(i).optString("vacantStatus"));
                                         rider.setDistance(wrapperArrayObj.optJSONObject(i).getDouble("distance"));
                                         rider.setDuration(wrapperArrayObj.optJSONObject(i).getDouble("duration"));
-                                        rider.setRiderLat(markerLat);
-                                        rider.setRiderLng(markerLng);
+                                        //rider.setRiderLat(markerLat);
+                                        //rider.setRiderLng(markerLng);
                                         rider.setFavorite(wrapperArrayObj.optJSONObject(i).optString("favorite"));
                                         rider.setAvgRating(wrapperArrayObj.optJSONObject(i).getDouble("avgRating"));
                                         rider.setYourRating(wrapperArrayObj.optJSONObject(i).getDouble("yourRating"));
@@ -3213,6 +3290,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                                         }
 
+
+                                        //Log.d(TAG, "before servicelist add: " + rider.getRiderLat() + " : " + rider.getRiderLng());
 
                                         servicesList.add(rider);
                                         sAdapter.notifyDataSetChanged();
@@ -3392,7 +3471,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                     ConnectHost connectHost = new ConnectHost();
                     responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
 
-                    Log.d(TAG, "update rider Location responseData: " + responseData);
+                    Log.d(TAG, "insertFavoriteRating responseData: " + responseData);
 
 
                     if (responseData != null) {
@@ -3570,17 +3649,21 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
 
-        if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_AUTO_SERVICE))
-        {
-            currentServiceMarker = GlobalConstants.SERVICE_MERCHANT;
-        }
-        if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_CAB_SERVICE))
-        {
-            currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
-        }
+//        if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_AUTO_SERVICE))
+//        {
+//            currentServiceMarker = GlobalConstants.SERVICE_MERCHANT;
+//        }
+//        if(serviceGeo.getVehicleType().equals(GlobalConstants.TRANSPORT_CAB_SERVICE))
+//        {
+//            currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
+//        }
+//
+//        switchServiceMarkers();
 
-        switchServiceMarkers();
 
+//        Log.d(TAG, "showServiceLocation: " + serviceGeo.getRiderLat() + " : " + serviceGeo.getRiderLng());
+
+        setServiceLocation(0,serviceGeo);
 
         LatLng latLng = new LatLng(serviceGeo.getRiderLat(), serviceGeo.getRiderLng());
         //move map camera

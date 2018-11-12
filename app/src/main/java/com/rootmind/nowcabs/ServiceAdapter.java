@@ -149,57 +149,49 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
                 Log.i(TAG, "get ID "+ view.getId());
 
 
-                if(view.getId()==iv_avatar.getId()){
+                switch (view.getId()) {
+
+                    case R.id.iv_avatar: {
+
+                        mClickListener.onClickAvatarImage(view, getAdapterPosition());
+                        break;
+                    }
+
+                    case R.id.iv_dialImage: {
 
 
-                    mClickListener.onClickAvatarImage(view, getAdapterPosition());
+                        mClickListener.onClickDialImage(view, getAdapterPosition());
+                        break;
+                    }
 
-
-                }
-
-                if(view.getId()==iv_dialImage.getId()){
-
-
-                    mClickListener.onClickDialImage(view, getAdapterPosition());
-
-
-                }
-
-                //13-Sep-2018
-//                if(view.getId()==iv_smsImage.getId()){
+//                    case R.id.iv_smsImage:{
 //
-//                    mClickListener.onClickSMSImage(view, getAdapterPosition());
-//                }
+//                        mClickListener.onClickSMSImage(view, getAdapterPosition());
+//                        break;
+//                    }
 
+                    case R.id.btn_favorite: {
 
-                if(view.getId()==ib_favorite.getId()){
+                        view.setEnabled(false);
+                        mClickListener.onClickFavorite(view, getAdapterPosition());
+                        view.setEnabled(true);
+                        break;
+                    }
+                    case R.id.btn_rating: {
 
+                        view.setEnabled(false);
+                        mClickListener.onClickRating(view, getAdapterPosition());
+                        view.setEnabled(true);
+                        break;
+                    }
+                    case R.id.btn_location: {
 
-                    view.setEnabled(false);
-                    mClickListener.onClickFavorite(view, getAdapterPosition());
-                    view.setEnabled(true);
-
-
+                        view.setEnabled(false);
+                        mClickListener.onClickLocation(view, getAdapterPosition());
+                        view.setEnabled(true);
+                        break;
+                    }
                 }
-                if(view.getId()==ib_rating.getId()){
-
-
-                    view.setEnabled(false);
-                    mClickListener.onClickRating(view, getAdapterPosition());
-                    view.setEnabled(true);
-
-
-                }
-                if(view.getId()==ib_location.getId()){
-
-
-                    view.setEnabled(false);
-                    mClickListener.onClickLocation(view, getAdapterPosition());
-                    view.setEnabled(true);
-
-
-                }
-
 
 
 
@@ -259,12 +251,6 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         holder.ratingBar.setRating((float)rider.getAvgRating());
 
         holder.tv_yourRating.setText(res.getString(R.string.you_rated) + " " + String.valueOf(rider.getYourRating()));
-
-
-        Log.i(TAG, "Rating Adapter "+ rider.getAvgRating());
-
-        Log.i(TAG, "Rating Adapter1 "+ rider.getRiderID());
-
 
 
         setServiceImage(holder, rider);
@@ -372,12 +358,23 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         //-----set avatar
         CommonService commonService = new CommonService();
 
-        Log.d(TAG, "setServiceImage getImageName1  " + rider.getRiderID());
+        //Log.d(TAG, "setServiceImage getImageName1  " + rider.getRiderID());
 
         //Log.d(TAG, "setServiceImage getImageName  " + CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
 
-        commonService.getImage(holder.iv_avatar,CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
+        String imageFileName= CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR);
 
+        Log.d(TAG, "setServiceImage getImage ID  " + rider.getRiderID());
+
+        Log.d(TAG, "setServiceImage getImageName  " + imageFileName);
+
+        if(imageFileName!=null && !imageFileName.trim().equals("")) {
+            commonService.getImage(holder.iv_avatar, imageFileName);
+        }
+        else
+        {
+            holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
+        }
 
         //------set profession image
         switch (rider.getServiceCode()) {
@@ -528,4 +525,55 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 //        return mDataset.length;
 //    }
 
+
+//                   if(view.getId()==iv_avatar.getId()){
+//
+//
+//        mClickListener.onClickAvatarImage(view, getAdapterPosition());
+//
+//
+//    }
+//
+//                if(view.getId()==iv_dialImage.getId()){
+//
+//
+//        mClickListener.onClickDialImage(view, getAdapterPosition());
+//
+//
+//    }
+//
+//    //13-Sep-2018
+////                if(view.getId()==iv_smsImage.getId()){
+////
+////                    mClickListener.onClickSMSImage(view, getAdapterPosition());
+////                }
+//
+//
+//                if(view.getId()==ib_favorite.getId()){
+//
+//
+//        view.setEnabled(false);
+//        mClickListener.onClickFavorite(view, getAdapterPosition());
+//        view.setEnabled(true);
+//
+//
+//    }
+//                if(view.getId()==ib_rating.getId()){
+//
+//
+//        view.setEnabled(false);
+//        mClickListener.onClickRating(view, getAdapterPosition());
+//        view.setEnabled(true);
+//
+//
+//    }
+//                if(view.getId()==ib_location.getId()){
+//
+//
+//        view.setEnabled(false);
+//        mClickListener.onClickLocation(view, getAdapterPosition());
+//        view.setEnabled(true);
+//
+//
+//    }
 }

@@ -892,7 +892,7 @@ public  class CommonService {
 
                 StorageReference storageRef = firebaseStorage.getReference();
 
-                Log.d(TAG, "getImage imageFileName  " + imageFileName);
+                //Log.d(TAG, "getImage imageFileName  " + imageFileName);
 
                 final StorageReference avatarRef = storageRef.child(GlobalConstants.FB_IMAGE_FOLDER + imageFileName);
 
@@ -976,7 +976,7 @@ public  class CommonService {
 
                             Picasso.get()
                                     .load(uri)
-                                    .placeholder(R.drawable.driver)
+                                    .placeholder(R.drawable.avatar_outline48)
                                     .into(imageView, new MarkerCallback(marker));
                         }
 
@@ -1816,26 +1816,14 @@ public  class CommonService {
     {
         String imageName=null;
 
-        Log.d(GlobalConstants.CommonService, "getImageName function : " + rider.getRiderID());
-
         if(rider!=null && rider.images !=null && rider.images.length>0)
         {
 
-            Log.d(GlobalConstants.CommonService, "getImageName function1 : " + rider.images.length);
-
             for(int i=0; i<rider.images.length;i++)
             {
-
-                Log.d(GlobalConstants.CommonService, "getImage RiderID : " + rider.images[i].getRiderID());
-
-                Log.d(GlobalConstants.CommonService, "getImageID : " + rider.images[i].imageID);
-
                 if(rider.images[i].imageID.equals(imageID))
                 {
                     imageName = rider.images[i].imageName;
-
-                    Log.d(GlobalConstants.CommonService, "getImageName function2 : " + imageName);
-
                     break;
                 }
 
