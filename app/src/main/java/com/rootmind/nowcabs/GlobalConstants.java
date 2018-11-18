@@ -13,8 +13,9 @@ public  final class GlobalConstants {
     public static final String  FIREBASE_LOG_PATH = "cabs/log/";
     public static final String  FIREBASE_RIDES_PATH = "cabs/rides/";
     public static final String  FIREBASE_DRIVER_ALERT_PATH = "cabs/driver/alert";
-    public static final String  HOST_URL = "https://nowcabs-dot-maabadi-219919.appspot.com/NowcabsWeb/Nowcabs";
-    //public static final String  HOST_URL = "https://rootmindtech.ddns.net/NowcabsWeb/Nowcabs";
+    //public static final String  HOST_URL = "https://nowcabs-dot-maabadi-219919.appspot.com/NowcabsWeb/Nowcabs";
+    //public static final String  HOST_URL = "https://api.nowcabs.rootmindtech.com";
+    public static final String  HOST_URL = "https://rootmindtech.ddns.net/NowcabsWeb/Nowcabs";
     //public static final String  HOST_URL = "http://192.168.1.110:8084/NowcabsWeb/Nowcabs";
     public static final String SYSTEM_ERROR="Network unavailable, please try again";
 
@@ -98,5 +99,18 @@ public  final class GlobalConstants {
 
     //------------
 
+    //-----------dialing status
+    public static final String CALLING_STATUS="CALLING";
+    public static final String ABORTED_STATUS="ABORTED";
+    public static final String ACCEPTED_STATUS="ACCEPTED";
+    public static final String REJECTED_STATUS="REJECTED";
+    public static final String NORESPONSE_STATUS="NORESPONSE";
+
+    //------
+
+    //-----------ridetype status
+    public static final String RIDER_TYPE="RIDER";
+    public static final String SERVICER_TYPE="SERVICER";
+    //-----
 
 }

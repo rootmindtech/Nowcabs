@@ -16,11 +16,16 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -44,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -57,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
     String responseData = null;
 
 
-
     private EditText txt_mobileNo;
     Button btn_login;
 
@@ -69,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     //Shared Preferences
     SharedPreferences.Editor editor;
 
-    public ProgressBar loadingSpinner;
+    public LinearLayout loadingSpinner;
 
     //Rider rider = null;
     Driver driver = null;
@@ -88,7 +93,9 @@ public class LoginActivity extends AppCompatActivity {
     CountryCodePicker ccp;
     EditText editTextCarrierNumber;
 
-    CommonService commonService=null;
+    CommonService commonService = null;
+//     AlertDialog.Builder dialogBuilder;
+
 //    Button btn_english;
 //    Button btn_telugu;
 
@@ -101,7 +108,12 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-        setContentView(R.layout.activity_login);
+        //setContentView(R.layout.activity_login);
+//        setContentView(R.layout.activity_splash_screen);
+//        loadingSpinner = ((LinearLayout)findViewById(R.id.progressBarLayout));
+//
+//        hideProgressBar();
+
 
 
         //Flow 27-Oct-2018
@@ -111,10 +123,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //findViewById(R.id.loginActivity).setOnTouchListener(LoginActivity.this);
-
-
-
-
 
 
 //        news.setText(R.string.note);
@@ -144,14 +152,21 @@ public class LoginActivity extends AppCompatActivity {
 //        editor.apply();
 
 
-        loadingSpinner = (ProgressBar) findViewById(R.id.progressBar);
-        loadingSpinner.setVisibility(View.GONE);
+
+        //loadingSpinner = (LinearLayout) findViewById(R.id.progressBarLayout);
+        //loadingSpinner.setVisibility(View.INVISIBLE);
 
 
 
-        fcmToken = sharedPreferences.getString("fcmToken","");
+        fcmToken = sharedPreferences.getString("fcmToken", "");
 
         Log.d(TAG, "fcm token shared " + fcmToken);
+
+//        String manufacturer = Build.MANUFACTURER;
+//        String model = Build.MODEL;
+//        int version = Build.VERSION.SDK_INT;
+//        String versionRelease = Build.VERSION.RELEASE;
+
 
         commonService = new CommonService();
 
@@ -190,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
-            String channelId  = "default_notification_channel_id"; //getString(R.string.default_notification_channel_id);
+            String channelId = "default_notification_channel_id"; //getString(R.string.default_notification_channel_id);
             String channelName = "default_notification_channel_name"; //getString(R.string.default_notification_channel_name);
             NotificationManager notificationManager =
                     getSystemService(NotificationManager.class);
@@ -205,110 +220,92 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-        // Get token
-        FirebaseInstanceId.getInstance().getInstanceId()
-        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-            @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (!task.isSuccessful()) {
-                    Log.w(TAG, "getInstanceId failed", task.getException());
-                    return;
-                }
-
-                // Get new Instance ID token
-                String fcmToken = task.getResult().getToken();
-
-                editor = sharedPreferences.edit();
-                editor.putString("fcmToken", fcmToken);
-                editor.putString("deviceToken", fcmToken);
-                editor.apply();
-
-
-                Log.d(TAG, "fcm token " + fcmToken);
-
-                //check for userGroup
-                //if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE)) {
-
-                    //check for sharedPreferences values
-                    //if( sharedPreferences.getString("riderMobileNo","") !=null &&  sharedPreferences.getString("riderFirstName","") !=null)
-                    if (sharedPreferences.getString("autoLogin", "").equals(GlobalConstants.YES_CODE)) {
 
 
 
-                        setContentView(R.layout.activity_splash_screen);
+         // Get token
+         FirebaseInstanceId.getInstance().getInstanceId()
+                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                     @Override
+                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                         if (!task.isSuccessful()) {
+                             Log.w(TAG, "getInstanceId failed", task.getException());
+                             return;
+                         }
 
-                        mobileNo = sharedPreferences.getString("mobileNo", "");
+                         // Get new Instance ID token
+                         String fcmToken = task.getResult().getToken();
 
-                        //riderLogin(true);
-
-                        //auto login
-                        CommonService commonService = new CommonService();
-                        commonService.riderAutoLogin(new Listener<Rider>() {
-                            @Override
-                            public void on(Rider rider) {
-
-                                if(rider.isRecordFound()==false)
-                                {
-
-                                    setComponentView();
-                                }
-                                else
-                                {
-                                    firebaseCustomerTokenAuth(rider);
-                                }
-
-                            }
-                        }, LoginActivity.this, getApplicationContext(), mobileNo);
-
-                    } else {
-
-                        //to show components
-                        setComponentView();
-
-                    } //end of if condition for view components
+                         editor = sharedPreferences.edit();
+                         editor.putString("fcmToken", fcmToken);
+                         editor.putString("deviceToken", fcmToken);
+                         editor.apply();
 
 
-                //}
+                         Log.d(TAG, "fcm token " + fcmToken);
 
-// else if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.DRIVER_CODE)) {
-//
-//
-//                    if (sharedPreferences.getString("autoLogin", "").equals(GlobalConstants.YES_CODE)) {
-//
-////                locale = CommonService.getLocale(sharedPreferences.getString("locale", "")).toString();
-//
-//                        setContentView(R.layout.activity_splash_screen);
-//
-//                        mobileNo = sharedPreferences.getString("driverMobileNo", "");
-//
-//                        driverLogin(true);
-//
-//
-//                    } else {
-//
-//                        //to show components
-//                        setComponentView();
-//
-//                    } //end of if condition for view components
-//
-//
-//                }
-//                    else {
-//
-//                    //to show components, if no sharedPreferences are stored
-//                    setComponentView();
-//
-//
-//                }
+                         //check for userGroup
+                         //if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE)) {
+
+                         //check for sharedPreferences values
+                         //if( sharedPreferences.getString("riderMobileNo","") !=null &&  sharedPreferences.getString("riderFirstName","") !=null)
+                         if (sharedPreferences.getString("autoLogin", "").equals(GlobalConstants.YES_CODE)) {
 
 
-                // Log and toast
-                //String msg = getString(R.string.msg_token_fmt, token);
-                //Log.d(TAG, msg);
-                //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-            }
-        });
+                             setContentView(R.layout.activity_splash_screen);
 
+                             mobileNo = sharedPreferences.getString("mobileNo", "");
+
+                             //riderLogin(true);
+
+                             //CommonService.showProgressDialog(LoginActivity.this, getApplicationContext());
+
+                             //auto login
+                             //CommonService commonService = new CommonService();
+                             //showProgressBar();
+
+                             commonService.riderAutoLogin(new Listener<Rider>() {
+                                 @Override
+                                 public void on(Rider rider) {
+
+                                     //CommonService.hideProgressDialog();
+
+                                     //hideProgressBar();
+
+                                     if (rider.isHostResponse()) {
+
+
+                                         if (rider.isRecordFound() == false) {
+
+                                             setComponentView();
+
+                                         } else {
+                                             firebaseCustomerTokenAuth(rider);
+                                         }
+                                     } else {
+                                         setComponentView();
+                                     }
+
+                                 }
+                             }, LoginActivity.this, getApplicationContext(), mobileNo);
+
+                         } else {
+
+                             //to show components
+                             //hideProgressBar();
+
+                             setComponentView();
+
+                             //CommonService.hideProgressDialog();
+
+                         } //end of if condition for view components
+
+
+                         //}
+
+
+                     }
+                 });
 
 
 //        // [START subscribe_topics]
@@ -330,15 +327,17 @@ public class LoginActivity extends AppCompatActivity {
         locale = CommonService.getLocale(sharedPreferences.getString("locale", "")).toString();
 
 
-
-
     }
 
 
     private class ProgressTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-            loadingSpinner.setVisibility(View.VISIBLE);
+
+
+
+            showProgressBar();
+
         }
 
         @Override
@@ -370,29 +369,30 @@ public class LoginActivity extends AppCompatActivity {
 //                driverLogin(true);
 //            }
 
+
             //button click event
             commonService.riderAutoLogin(new Listener<Rider>() {
                 @Override
                 public void on(Rider rider) {
 
-                    if(rider.isRecordFound()==false)
-                    {
+                    if(rider.isHostResponse()) {
 
-                        //parameter = new Parameter();
+                        if (!rider.isRecordFound()) {
 
-                        Intent i = new Intent(getApplicationContext(), OTPActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("mobileNo", mobileNo);
-                        //bundle.putSerializable("Parameter", parameter);
-                        bundle.putSerializable("locale", locale);
+                            //parameter = new Parameter();
 
-                        i.putExtras(bundle);
-                        startActivity(i);
+                            Intent i = new Intent(getApplicationContext(), OTPActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("mobileNo", mobileNo);
+                            //bundle.putSerializable("Parameter", parameter);
+                            bundle.putSerializable("locale", locale);
 
-                    }
-                    else
-                    {
-                        firebaseCustomerTokenAuth(rider);
+                            i.putExtras(bundle);
+                            startActivity(i);
+
+                        } else {
+                            firebaseCustomerTokenAuth(rider);
+                        }
                     }
 
                 }
@@ -405,7 +405,10 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            loadingSpinner.setVisibility(View.GONE);
+
+
+            hideProgressBar();
+
         }
     }
 
@@ -424,12 +427,12 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("riderID", rider.getRiderID());
         editor.putString("autoLogin", GlobalConstants.YES_CODE);
         editor.putString("fcmToken", fcmToken);
-        editor.putString("locale",CommonService.getLocale(rider.getLocale()).toString());
+        editor.putString("locale", CommonService.getLocale(rider.getLocale()).toString());
         //Log.d(TAG, "fcmToken: " + fcmToken);
 
         editor.apply();
 
-        commonService.setLocale(this,CommonService.getLocale(rider.getLocale()).toString());
+        commonService.setLocale(this, CommonService.getLocale(rider.getLocale()).toString());
 
         //Log.d(TAG, "Saved Info: " + sharedPreferences.getString("riderMobileNo", "") );
 
@@ -463,33 +466,30 @@ public class LoginActivity extends AppCompatActivity {
 
     public void firebaseCustomerTokenAuth(final Rider rider) {
 
-        if(rider.getCustomToken()!=null)
-        {
+        if (rider.getCustomToken() != null) {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
             firebaseAuth.signInWithCustomToken(rider.getCustomToken())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "signInWithCustomToken:success");
-                            //FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                //Log.d(TAG, "signInWithCustomToken:success");
+                                //FirebaseUser user = mAuth.getCurrentUser();
+                                //updateUI(user);
 
-                            setRiderLogin(rider);
+                                setRiderLogin(rider);
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            //Log.w(TAG, "signInWithCustomToken:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                //Log.w(TAG, "signInWithCustomToken:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                //updateUI(null);
+                            }
                         }
-                    }
-                });
-        }
-        else
-        {
+                    });
+        } else {
             Toast.makeText(LoginActivity.this, "Invalid custom token.", Toast.LENGTH_SHORT).show();
 
         }
@@ -900,17 +900,14 @@ public class LoginActivity extends AppCompatActivity {
 //            mobileNo = txt_mobileNo.getText().toString().trim();
 //        }
 
-        if(ccp.isValidFullNumber())
-        {
+        if (ccp.isValidFullNumber()) {
             mobileNo = ccp.getFullNumber();
 
             Log.d(TAG, "checkValidation: " + mobileNo);
-            ret=true;
+            ret = true;
 
-        }
-        else
-        {
-            ret=false;
+        } else {
+            ret = false;
             Toast.makeText(LoginActivity.this, R.string.invalid_mobile, Toast.LENGTH_SHORT).show();
 
 
@@ -918,7 +915,6 @@ public class LoginActivity extends AppCompatActivity {
 
         return ret;
     }
-
 
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -953,10 +949,14 @@ public class LoginActivity extends AppCompatActivity {
 
             tv_versionCode = (TextView) findViewById(R.id.tv_versionCode);
 
+
+            loadingSpinner = ((LinearLayout)findViewById(R.id.progressBarLayout));
+            hideProgressBar();
+
+
 //        locale = CommonService.getLocale(sharedPreferences.getString("locale", "")).toString();
 
 //        txt_mobileNo.setText(sharedPreferences.getString("mobileNo", ""));
-
 
 
             mobileNo = sharedPreferences.getString("mobileNo", "");
@@ -964,7 +964,6 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "mobileNo shared: " + mobileNo);
 
             ccp.setFullNumber(mobileNo);
-
 
 
             //check for sharedPreferences values
@@ -991,7 +990,6 @@ public class LoginActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
 
-
                     Log.d(TAG, "onClick: " + mobileNo);
 
 
@@ -1013,8 +1011,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onValidityChanged(boolean isValidNumber) {
                     // your code
-                    if(isValidNumber)
-                    {
+                    if (isValidNumber) {
                         editTextCarrierNumber.clearFocus();
                         CommonService.hideKeyboard(LoginActivity.this);
                     }
@@ -1046,43 +1043,11 @@ public class LoginActivity extends AppCompatActivity {
             });
 
 
-            tv_versionCode.setText("v " + BuildConfig.VERSION_NAME + "."+ BuildConfig.VERSION_CODE);
+            tv_versionCode.setText("v " + BuildConfig.VERSION_NAME + "." + BuildConfig.VERSION_CODE);
 
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-
-//        btn_english.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//
-//                Log.d(TAG, "onClick: English");
-//
-//                currentLanguage=GlobalConstants.ENGLISH_LOCALE;
-//
-//                updateResourcesLocale(LoginActivity.this, new Locale(GlobalConstants.ENGLISH_LOCALE));
-//
-//            }
-//        });
-//
-//        btn_telugu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//
-//                Log.d(TAG, "onClick: Telugu");
-//
-//                currentLanguage=GlobalConstants.TELUGU_LOCALE;
-//                updateResourcesLocale(LoginActivity.this, new Locale(GlobalConstants.TELUGU_LOCALE));
-//
-//            }
-//        });
-
-
 
 
     } //end of setComponentView
@@ -1097,6 +1062,7 @@ public class LoginActivity extends AppCompatActivity {
             int hasCameraPermission = checkSelfPermission(Manifest.permission.CAMERA);
             int hasLocationPermission = checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION);
             int hasCallPhonePermission = checkSelfPermission(android.Manifest.permission.CALL_PHONE);
+//            int hasStatePhonePermission = checkSelfPermission(Manifest.permission.READ_PHONE_STATE);
 
 
             List<String> permissions = new ArrayList<String>();
@@ -1116,6 +1082,11 @@ public class LoginActivity extends AppCompatActivity {
 
             }
 
+
+//            if (hasStatePhonePermission != PackageManager.PERMISSION_GRANTED) {
+//                permissions.add(Manifest.permission.READ_PHONE_STATE);
+//
+//            }
 
 
             if (!permissions.isEmpty()) {
@@ -1154,65 +1125,96 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
-
     //-----locale dialog
-    public void showLocale()
-    {
+    public void showLocale() {
 
         locale = sharedPreferences.getString("locale", "");
 
-        if(CommonService.isEmpty(locale))
-        {
+        if (CommonService.isEmpty(locale)) {
 
-                String[] values=getResources().getStringArray(R.array.locale_array);
+            String[] values = getResources().getStringArray(R.array.locale_array);
 
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.select_language)
-                        .setSingleChoiceItems(values, -1, null)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                int selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
-                                if(selectedPosition>=0) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.select_language)
+                    .setSingleChoiceItems(values, -1, null)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                            if (selectedPosition >= 0) {
 
-                                    dialog.dismiss();
+                                dialog.dismiss();
 
-                                    // Do something useful withe the position of the selected radio button
-                                    locale = CommonService.selectLocale(selectedPosition);
+                                // Do something useful withe the position of the selected radio button
+                                locale = CommonService.selectLocale(selectedPosition);
 
-                                    editor = sharedPreferences.edit();
-                                    editor.putString("locale", locale);
-                                    editor.apply();
+                                editor = sharedPreferences.edit();
+                                editor.putString("locale", locale);
+                                editor.apply();
 
-                                    dialog.dismiss();
-                                    new LoginActivity.ProgressTask().execute();
-                                }
-                                else
-                                {
-                                    Toast.makeText(LoginActivity.this, R.string.select_language, Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
 
-                                }
+                                new LoginActivity.ProgressTask().execute();
+                            } else {
+                                Toast.makeText(LoginActivity.this, R.string.select_language, Toast.LENGTH_SHORT).show();
 
                             }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dialog.cancel();
-                            }
-                        })
 
-                        .show();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.cancel();
+                        }
+                    })
 
-        }
-        else
-        {
+                    .show();
+
+        } else {
+
             new LoginActivity.ProgressTask().execute();
 
-        }
 
+        }
 
 
     }
+
+    public  void showProgressBar() {
+
+        loadingSpinner.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
+
+    public  void hideProgressBar()
+    {
+
+        loadingSpinner.setVisibility(View.GONE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
+
+
+    private String getUUID(){
+        TelephonyManager teleManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+
+        ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+        String tmSerial = teleManager.getSimSerialNumber();
+        String tmDeviceId  = teleManager.getDeviceId();
+
+        String androidId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        if (tmSerial  == null) tmSerial   = "1";
+        if (tmDeviceId== null) tmDeviceId = "1";
+        if (androidId == null) androidId  = "1";
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDeviceId.hashCode() << 32) | tmSerial.hashCode());
+        String uniqueId = deviceUuid.toString();
+        return uniqueId;
+    }
+}
+
+
+
 
 
 //
@@ -1256,5 +1258,66 @@ public class LoginActivity extends AppCompatActivity {
 //    }
 
 
+//        btn_english.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//
+//                Log.d(TAG, "onClick: English");
+//
+//                currentLanguage=GlobalConstants.ENGLISH_LOCALE;
+//
+//                updateResourcesLocale(LoginActivity.this, new Locale(GlobalConstants.ENGLISH_LOCALE));
+//
+//            }
+//        });
+//
+//        btn_telugu.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//
+//                Log.d(TAG, "onClick: Telugu");
+//
+//                currentLanguage=GlobalConstants.TELUGU_LOCALE;
+//                updateResourcesLocale(LoginActivity.this, new Locale(GlobalConstants.TELUGU_LOCALE));
+//
+//            }
+//        });
 
-}
+// else if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.DRIVER_CODE)) {
+//
+//
+//                    if (sharedPreferences.getString("autoLogin", "").equals(GlobalConstants.YES_CODE)) {
+//
+////                locale = CommonService.getLocale(sharedPreferences.getString("locale", "")).toString();
+//
+//                        setContentView(R.layout.activity_splash_screen);
+//
+//                        mobileNo = sharedPreferences.getString("driverMobileNo", "");
+//
+//                        driverLogin(true);
+//
+//
+//                    } else {
+//
+//                        //to show components
+//                        setComponentView();
+//
+//                    } //end of if condition for view components
+//
+//
+//                }
+//                    else {
+//
+//                    //to show components, if no sharedPreferences are stored
+//                    setComponentView();
+//
+//
+//                }
+
+
+                // Log and toast
+                //String msg = getString(R.string.msg_token_fmt, token);
+                //Log.d(TAG, msg);
+                //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();

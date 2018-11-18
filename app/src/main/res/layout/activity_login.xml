@@ -14,6 +14,7 @@
     <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/reativeLayout"
         >
 
 
@@ -145,33 +146,37 @@
         android:gravity="center"
         android:layout_centerInParent="true"
         android:imeOptions="actionDone"
+        android:textAllCaps="false"
         />
 
         <!--android:textAllCaps="false"-->
 
         <!--android:layout_marginTop="20dp"-->
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleSmall"
+    <!--<ProgressBar-->
+        <!--style="?android:attr/progressBarStyleSmall"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/progressBar"-->
+        <!--android:progressDrawable="@drawable/circular_progress_bar"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--/>-->
+
+    <TextView
+        android:id="@+id/tv_versionCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        />
+        android:layout_below="@id/btn_login"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:text="version"
+        android:textColor="@color/colorGrey"
+        android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/tv_versionCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btn_login"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="70dp"
-            android:text="version"
-            android:textColor="@color/colorGrey"
-            android:textSize="12sp" />
+
 
     </RelativeLayout>
+
+    <include layout="@layout/progress_bar" />
 
 </android.support.constraint.ConstraintLayout>

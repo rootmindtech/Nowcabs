@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:background="@color/colorWhite"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp">
+
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="5dp">
+
+        <RelativeLayout
+            android:id="@+id/layoutLeft"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/driver_list_margin"
+            android:layout_marginTop="@dimen/driver_list_margin"
+            android:layout_marginRight="@dimen/driver_list_margin"
+            >
+
+            <ImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:src="@drawable/avatar_outline48" />
+
+            <ImageView
+                android:id="@+id/iv_vehicleImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="150dp"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:src="@drawable/auto_outline"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_vehicleNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_vehicleImage"
+                android:text="1234"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginStart="148dp"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_servicerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_avatar"
+                android:layout_marginTop="10dp"
+                android:gravity="start"
+                android:text="Amit Kumar"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#212121"
+                android:textSize="20sp"/>
+
+            <ImageView
+                android:id="@+id/iv_dialImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_vehicleImage"
+                android:layout_gravity="end"
+                android:maxHeight="48dp"
+                android:maxWidth="48dp"
+                android:layout_marginStart="150dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/dial_blue48px"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_servicerMobileNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_servicerName"
+                android:layout_marginTop="5dp"
+                android:layout_alignStart="@id/tv_servicerName"
+                android:gravity="start"
+                android:text="Bhimavaram"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_serviceCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_servicerMobileNo"
+                android:layout_toRightOf="@id/btn_location"
+                android:layout_marginTop="10dp"
+                android:text="12.00 km"
+                android:textSize="12sp" />
+
+
+            <TextView
+                android:id="@+id/tv_call"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_dialImage"
+                android:layout_marginTop="5dp"
+                android:text="@string/call"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginStart="150dp"
+                android:textColor="#212121"/>
+
+            <TextView
+                android:id="@+id/tv_rideStartDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_serviceCode"
+                android:layout_marginTop="5dp"
+                android:layout_alignStart="@id/tv_servicerName"
+                android:gravity="start"
+                android:text="StartDate"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="12sp" />
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/btn_location"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:layout_marginEnd="5dp"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:layout_below="@id/tv_destination"-->
+                <!--android:background="@null"-->
+                <!--android:src="@drawable/location_outline" />-->
+
+            <!--13-Sep-2018-->
+            <TextView
+                android:id="@+id/tv_rideStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_rideStartDate"
+                android:layout_marginTop="5dp"
+                android:gravity="start"
+                android:text="@string/vacant"
+                android:textSize="12sp"
+                />
+
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
+

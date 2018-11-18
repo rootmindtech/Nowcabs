@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.RegionIterator;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.graphics.Color;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -61,6 +65,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     String responseData = null;
 
+    private ProgressBar loadingSpinner;
+
+
     ArrayList<String> serviceArrayList = new ArrayList<String>();
     ArrayList<String> activeServiceArrayList = new ArrayList<String>();
 
@@ -99,7 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                register();
+                new RegisterActivity.registerProgressTask().execute();
             }
         });
 
@@ -226,8 +233,12 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
 
+        loadingSpinner = (ProgressBar) findViewById(R.id.progressBar);
+        hideProgressBar();
 
-        fetchService();
+
+        new RegisterActivity.fetchServiceProgressTask().execute();
+
 
 //        riderButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -260,6 +271,32 @@ public class RegisterActivity extends AppCompatActivity {
         onBackPressed();
 
         return true;
+    }
+
+    private class registerProgressTask extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+
+            showProgressBar();
+
+        }
+
+        @Override
+        protected Void doInBackground(Object...params ) {
+
+
+            register();
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            hideProgressBar();
+
+        }
     }
 
     public void register() {
@@ -317,6 +354,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             }//run
         });//runnable
+
     }
 
     public void skip()
@@ -396,10 +434,13 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-        RegisterActivity.this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
+//        showProgressBar();
+//
+//
+//        RegisterActivity.this.runOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
 
 
 
@@ -494,21 +535,53 @@ public class RegisterActivity extends AppCompatActivity {
 
                 //}//validation
 
-            }//run end
 
-        });//runnable end
+//            }//run end
+//
+//        });//runnable end
+//
+//        hideProgressBar();
 
 
     }//end of update service
 
-    public void fetchService() {
+
+    private class fetchServiceProgressTask extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+
+            showProgressBar();
+
+        }
+
+        @Override
+        protected Void doInBackground(Object...params ) {
 
 
-        RegisterActivity.this.runOnUiThread(new Runnable() {
+            String result =fetchService();
 
-            @Override
-            public void run() {
+            return null;
 
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            hideProgressBar();
+
+            if(result!=null)
+            {
+                CommonService.Toast(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+            }
+
+        }
+    }
+
+    public String fetchService() {
+
+
+                String result=null;
 
                 try {
 
@@ -524,8 +597,6 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                     //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
-
-                    //loadingSpinner.setVisibility(View.VISIBLE);
 
                     String methodAction = "fetchService";
 
@@ -583,55 +654,32 @@ public class RegisterActivity extends AppCompatActivity {
 
                             setService();
 
-//                            JSONArray imageWrappers = wrapperArrayObj.getJSONObject(0).getJSONArray("imageWrappers");
-//
-//                            if(imageWrappers!=null)
-//                            {
-//
-//                                for(int i=0;i<imageWrappers.length();i++)
-//                                {
-//                                    if(imageWrappers.getJSONObject(i).optString("recordFound")=="true" &&
-//                                            imageWrappers.getJSONObject(i).optString("imageID").equals(GlobalConstants.IMAGE_AVATAR))
-//                                    {
-//
-//                                        rider.setImageName(imageWrappers.getJSONObject(i).optString("imageName"));
-//                                        //Toast.makeText(RiderProfileActivity.this, rider.getImageName(), Toast.LENGTH_SHORT).show();
-//
-////                                        commonService.getImage(iv_avatar,rider.getImageName());
-//                                        break;
-//                                    }
-//                                }
-//
-//                            }
-
-
-
                         } else {
 
-                            Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                            result = GlobalConstants.SYSTEM_ERROR;
 
                         }
 
 
                     } else {
 
-                        Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                        result = GlobalConstants.SYSTEM_ERROR;
+
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
                     btn_login.setVisibility(View.GONE);
+                    result = GlobalConstants.SYSTEM_ERROR;
+
 
                 }
 
 
-                //}//validation
-
-            }//run end
-
-        });//runnable end
-
+                return result;
 
     } //-------end of fetch service
 
@@ -719,6 +767,22 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
         }
+
+    }
+
+
+    public  void showProgressBar() {
+
+        loadingSpinner.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
+
+    public  void hideProgressBar()
+    {
+
+        loadingSpinner.setVisibility(View.GONE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
     }
 

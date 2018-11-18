@@ -68,6 +68,17 @@ public class Rider implements Serializable {
 
     public String customToken=null;
 
+    public boolean hostResponse=false;
+
+    public boolean isHostResponse() {
+        return hostResponse;
+    }
+
+    public void setHostResponse(boolean hostResponse) {
+        this.hostResponse = hostResponse;
+    }
+
+
     public String getCustomToken() {
         return customToken;
     }

@@ -1,12 +1,15 @@
 package com.rootmind.nowcabs;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 import android.util.Log;
 
 
@@ -14,21 +17,25 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class FetchAddressIntentService extends IntentService {
+public class FetchAddressIntentService extends JobIntentService {
 
 
     protected ResultReceiver mReceiver;
 
+    public static final int JOB_ID = 1;
 
-    public FetchAddressIntentService()
-    {
-        super("FetchAddressIntentService");
+//    public FetchAddressIntentService()
+//    {
+//        super("FetchAddressIntentService");
+//
+//    }
 
+    public static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, FetchAddressIntentService.class, JOB_ID, work);
     }
 
-
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleWork(@NonNull Intent intent) {
 
         mReceiver = intent.getParcelableExtra(GlobalConstants.RECEIVER);
 

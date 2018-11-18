@@ -127,14 +127,14 @@
         android:layout_height="match_parent"
         android:layout_below="@id/progressBar"
         android:layout_marginTop="30dp"
-        >
+       >
 
         <Button
-            android:id="@+id/btn_accept"
+            android:id="@+id/btn_dial"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_alignParentStart="true"
-            android:background="@drawable/accept"
+            android:background="@drawable/dial_blue48px"
             android:maxWidth="80dp"
             android:maxHeight="80dp"
             android:layout_marginLeft="40dp"
@@ -142,11 +142,11 @@
 
 
         <Button
-            android:id="@+id/btn_reject"
+            android:id="@+id/btn_stop"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_alignParentEnd="true"
-            android:background="@drawable/reject"
+            android:background="@drawable/dial_red48px"
             android:maxWidth="80dp"
             android:maxHeight="80dp"
             android:layout_marginRight="40dp"
@@ -155,44 +155,44 @@
     </RelativeLayout>
 
     <!--<EditText-->
-    <!--android:id="@+id/textview_timerview_back"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:gravity="center"-->
-    <!--android:padding="5dp"-->
-    <!--android:layout_marginBottom="30dp"-->
-    <!--android:textSize="35sp"-->
-    <!--android:hint=""/>-->
+        <!--android:id="@+id/textview_timerview_back"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:gravity="center"-->
+        <!--android:padding="5dp"-->
+        <!--android:layout_marginBottom="30dp"-->
+        <!--android:textSize="35sp"-->
+        <!--android:hint=""/>-->
 
     <!--<include layout="@layout/progress_bar" />-->
 
 
     <!--<Button-->
-    <!--android:id="@+id/btn_accept"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_alignLeft="@id/progressbar_timerview"-->
-    <!--android:background="@android:color/transparent"-->
-    <!--android:text="Accept"-->
-    <!--android:layout_marginTop="30dp"-->
-    <!--android:textAllCaps="false"-->
-    <!--android:textSize="40sp"-->
-    <!--android:textColor="@color/colorWhite"-->
-    <!--/>-->
+        <!--android:id="@+id/btn_accept"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignLeft="@id/progressbar_timerview"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:text="Accept"-->
+        <!--android:layout_marginTop="30dp"-->
+        <!--android:textAllCaps="false"-->
+        <!--android:textSize="40sp"-->
+        <!--android:textColor="@color/colorWhite"-->
+        <!--/>-->
 
     <!--<Button-->
-    <!--android:id="@+id/btn_reject"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_alignRight="@id/progressbar_timerview"-->
-    <!--android:background="@android:color/transparent"-->
-    <!--android:text="Reject"-->
-    <!--android:layout_marginTop="30dp"-->
-    <!--android:textAllCaps="false"-->
-    <!--android:textSize="40sp"-->
-    <!--android:textColor="@color/colorWhite"-->
-    <!--/>-->
+        <!--android:id="@+id/btn_reject"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignRight="@id/progressbar_timerview"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:text="Reject"-->
+        <!--android:layout_marginTop="30dp"-->
+        <!--android:textAllCaps="false"-->
+        <!--android:textSize="40sp"-->
+        <!--android:textColor="@color/colorWhite"-->
+        <!--/>-->
 </RelativeLayout>

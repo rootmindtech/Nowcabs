@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,10 +24,12 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -42,7 +45,7 @@ import java.util.Locale;
 
 //implements NavigationView.OnNavigationItemSelectedListener
 
-public class RiderProfileActivity extends AppCompatActivity  {
+public class RiderProfileActivity extends AppCompatActivity {
 
     public Toolbar toolbar;
     //public DrawerLayout drawer;
@@ -71,12 +74,13 @@ public class RiderProfileActivity extends AppCompatActivity  {
     //public String mobileNo = null;
     public String name = null;
 
-    public String locale=null;
+    public String locale = null;
 
     ImageView iv_avatar;
 
-    CommonService commonService=null;
+    CommonService commonService = null;
     String responseData = null;
+    public LinearLayout loadingSpinner;
 
 
     @SuppressLint("ResourceType")
@@ -132,12 +136,15 @@ public class RiderProfileActivity extends AppCompatActivity  {
         swt_vacant = (Switch) findViewById(R.id.swt_vacant);
 
 
+        loadingSpinner = ((LinearLayout) findViewById(R.id.progressBarLayout));
+
+        hideProgressBar();
+
 
         //--disable text boxes
         txt_mobileNo.setEnabled(false);
         //txt_name.setEnabled(false);
 
-        fetchProfile();
 
 
         btn_logout.setOnClickListener(new View.OnClickListener() {
@@ -220,7 +227,7 @@ public class RiderProfileActivity extends AppCompatActivity  {
                     rider.setRiderName(name);
                     rider.setLocale(locale);
 
-                    updateProfile();
+                    new RiderProfileActivity.updateProfileProgressTask().execute();
                     //updateFBProfile();
                 }
 
@@ -234,7 +241,7 @@ public class RiderProfileActivity extends AppCompatActivity  {
                 if (!hasFocus) {
                     txt_name.clearFocus();
                     Log.d(TAG, "RiderLogin onFocusChange:");
-                    CommonService.hideKeyboardView(RiderProfileActivity.this,txt_name);
+                    CommonService.hideKeyboardView(RiderProfileActivity.this, txt_name);
                 }
             }
         });
@@ -254,15 +261,13 @@ public class RiderProfileActivity extends AppCompatActivity  {
                 // do something, the isChecked will be
                 // true if the switch is in the On position
 
-                if(isChecked)
-                {
-                    updateVacantStatus(GlobalConstants.VACANT_CODE);
+                if (isChecked) {
+                    new RiderProfileActivity.VacantProgressTask().execute(GlobalConstants.VACANT_CODE, null, null);
                     swt_vacant.setText(GlobalConstants.VACANT_CODE);
 
-                }
-                else
-                {
-                    updateVacantStatus(GlobalConstants.HIRED_CODE);
+                } else {
+
+                    new RiderProfileActivity.VacantProgressTask().execute(GlobalConstants.HIRED_CODE, null, null);
                     swt_vacant.setText(GlobalConstants.HIRED_CODE);
 
                 }
@@ -270,6 +275,7 @@ public class RiderProfileActivity extends AppCompatActivity  {
             }
         });
 
+        new RiderProfileActivity.ProfileProgressTask().execute(null,null,null);
 
     }
 
@@ -357,52 +363,71 @@ public class RiderProfileActivity extends AppCompatActivity  {
 //    }
 
 
-    public void fetchProfile()
-    {
-        //button click event
-        final CommonService commonService = new CommonService();
-        commonService.fetchRider(new Listener<Boolean>() {
-            @Override
-            public void on(Boolean arg) {
+    private class ProfileProgressTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
 
-                if(arg)
-                {
-                    txt_mobileNo.setText(rider.getRiderMobileNo());
-                    txt_name.setText(rider.getRiderName());
-                    dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
+            //showProgressBar();
 
-                    commonService.getImage(iv_avatar,CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
+        }
 
-                    Log.d(TAG, "getVacantStatus: " + rider.getVacantStatus());
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            //my stuff is here
 
-                    if(rider.getVacantStatus().equals(GlobalConstants.HIRED_CODE))
-                    {
-                        swt_vacant.setText(GlobalConstants.HIRED_CODE);
-                        swt_vacant.setChecked(false);
+
+            //button click event
+            final CommonService commonService = new CommonService();
+            commonService.fetchRider(new Listener<Boolean>() {
+                @Override
+                public void on(Boolean arg) {
+
+                    if (arg) {
+                        txt_mobileNo.setText(rider.getRiderMobileNo());
+                        txt_name.setText(rider.getRiderName());
+                        dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
+
+                        commonService.getImage(iv_avatar, CommonService.getImageName(rider, GlobalConstants.IMAGE_AVATAR));
+
+                        Log.d(TAG, "getVacantStatus: " + rider.getVacantStatus());
+
+                        if (rider.getVacantStatus().equals(GlobalConstants.HIRED_CODE)) {
+                            swt_vacant.setText(GlobalConstants.HIRED_CODE);
+                            swt_vacant.setChecked(false);
+                        } else {
+                            swt_vacant.setText(GlobalConstants.VACANT_CODE);
+                            swt_vacant.setChecked(true);
+
+                        }
+
+                    } else {
+                        btn_save.setVisibility(View.GONE);
                     }
-                    else
-                    {
-                        swt_vacant.setText(GlobalConstants.VACANT_CODE);
-                        swt_vacant.setChecked(true);
 
-                    }
 
                 }
-                else
-                {
-                    btn_save.setVisibility(View.GONE);
-                }
+
+            }, RiderProfileActivity.this, getApplicationContext(), rider);
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
 
 
+            //hideProgressBar();
 
-            }
-
-        }, RiderProfileActivity.this, getApplicationContext(), rider);
-
-
+        }
 
 
     }
+
+
+
+
+
 
 
 //    public void fetchProfile() {
@@ -528,19 +553,84 @@ public class RiderProfileActivity extends AppCompatActivity  {
 //    } //-------end of fetch profile
 
 
-    public void updateProfile()
-    {
-        //button click event
-        CommonService commonService = new CommonService();
-        commonService.updateRider(new Listener<Boolean>() {
-            @Override
-            public void on(Boolean arg) {
+    private class updateProfileProgressTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+
+            showProgressBar();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            //my stuff is here
 
 
+            try {
+                //button click event
+                CommonService.hideKeyboardView(RiderProfileActivity.this, btn_save);
+
+
+                CommonService commonService = new CommonService();
+                commonService.updateRider(new Listener<Boolean>() {
+                    @Override
+                    public void on(Boolean arg) {
+
+
+                    }
+                }, RiderProfileActivity.this, getApplicationContext(), rider);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        }, RiderProfileActivity.this, getApplicationContext(), rider);
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+
+            hideProgressBar();
+
+        }
+
 
     }
+
+
+//    public void updateProfile()
+//    {
+//
+//        RiderProfileActivity.this.runOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                try {
+//                    //button click event
+//                    showProgressBar();
+//                    CommonService.hideKeyboardView(RiderProfileActivity.this, btn_save);
+//
+//
+//                    CommonService commonService = new CommonService();
+//                    commonService.updateRider(new Listener<Boolean>() {
+//                        @Override
+//                        public void on(Boolean arg) {
+//
+//
+//                            hideProgressBar();
+//
+//                        }
+//                    }, RiderProfileActivity.this, getApplicationContext(), rider);
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                    hideProgressBar();
+//                }
+//            }
+//        });
+//
+//    }
 //    public void updateProfile() {
 //
 //
@@ -693,16 +783,39 @@ public class RiderProfileActivity extends AppCompatActivity  {
 
     }
 
+    private class VacantProgressTask extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+
+            showProgressBar();
+
+        }
+
+        @Override
+        protected Void doInBackground(Object... arg0) {
+            //my stuff is here
+
+
+            updateVacantStatus((String) arg0[0]);
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+
+            hideProgressBar();
+
+        }
+    }
+
     //--------update Driver Vacant Status in the backend
     public void updateVacantStatus(final String vacantStatus) {
 
 
 
-
-        RiderProfileActivity.this.runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
 
                 try {
 
@@ -787,11 +900,23 @@ public class RiderProfileActivity extends AppCompatActivity  {
 
                 //}// validation
 
-            }//run end
-
-        });//runnable end
 
 
     }//updateVacantStatus End
+
+    public  void showProgressBar() {
+
+        loadingSpinner.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
+
+    public  void hideProgressBar()
+    {
+
+        loadingSpinner.setVisibility(View.GONE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
 
 }

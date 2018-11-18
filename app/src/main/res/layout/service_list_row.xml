@@ -19,8 +19,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
         android:layout_marginBottom="20dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
         android:layout_marginTop="5dp"
         card_view:cardCornerRadius="10dp"
         card_view:cardElevation="5dp">
@@ -96,7 +96,7 @@
                 android:layout_marginStart="150dp"
                 android:maxHeight="48dp"
                 android:maxWidth="48dp"
-                android:src="@drawable/auto_blue48px"
+                android:src="@drawable/auto_outline"
                 />
 
 
@@ -155,8 +155,9 @@
                 android:id="@+id/tv_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_destination"
-                android:layout_marginTop="5dp"
+                android:layout_below="@id/tv_destination"
+                android:layout_toRightOf="@id/btn_location"
+                android:layout_marginTop="10dp"
                 android:text="12.00 km"
                 android:textSize="12sp" />
 
@@ -174,6 +175,16 @@
                 android:layout_marginStart="150dp"
                 android:textColor="#212121"/>
 
+            <ImageButton
+                android:id="@+id/btn_location"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/tv_destination"
+                android:background="@null"
+                android:src="@drawable/location_outline" />
 
             <!--13-Sep-2018-->
             <TextView
@@ -184,7 +195,8 @@
                 android:layout_marginTop="5dp"
                 android:gravity="start"
                 android:text="@string/vacant"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone"/>
 
 
             <!--<TextView-->
@@ -221,16 +233,6 @@
             android:background="@null"
             android:src="@drawable/rating_pink" />
 
-        <ImageButton
-            android:id="@+id/btn_location"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="110dp"
-            android:layout_below="@id/btn_rating"
-            android:background="@null"
-            android:src="@drawable/location_outline" />
 
 
 

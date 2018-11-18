@@ -397,13 +397,13 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
                     case GlobalConstants.AUTO_CODE:
                     {
-                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_blue48px);
+                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
                         break;
 
                     }
                     case GlobalConstants.CAB_CODE:
                     {
-                        holder.iv_vehicleImage.setImageResource(R.drawable.taxi_blue48px);
+                        holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
                         break;
 
                     }

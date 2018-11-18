@@ -1,29 +1,29 @@
 package com.rootmind.nowcabs;
 
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-//import com.google.firebase.storage.FirebaseStorage;
-//import com.google.firebase.storage.StorageReference;
-//import com.google.firebase.storage.UploadTask;
-//import com.rootmind.nowcabs.ServiceAdapter.ItemClickListener;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-//import android.hardware.Camera;
 import android.location.Location;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -35,6 +35,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -89,6 +90,13 @@ import java.util.*;
 
 //import com.google.firebase.database.ValueEventListener;
 //import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.squareup.picasso.Picasso;
 
 import android.util.Log;
@@ -122,17 +130,17 @@ import java.io.IOException;
 import android.location.Criteria;
 
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import android.util.Base64;
+//import android.graphics.Bitmap;
+//import android.graphics.BitmapFactory;
+//
+//import android.util.Base64;
 
 
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.view.GravityCompat;
 
-import static com.rootmind.nowcabs.DriverMapActivity.getCroppedBitmap;
+//import static com.rootmind.nowcabs.DriverMapActivity.getCroppedBitmap;
 
 
 import android.support.design.widget.BottomSheetBehavior;
@@ -163,11 +171,14 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     GoogleApiClient mGoogleApiClient;
     Location mCurrentLocation;
-    Location mLastLocation;
+    Location mLastKnownLocation;
     Marker mCurrLocationMarker;
     Location mMarkerLocation;
     LocationRequest mLocationRequest;
     FusedLocationProviderClient mFusedLocationClient;
+    LocationCallback mLocationCallback;
+    ListenerRegistration registration;
+
 
 //    //05-Oct-2018 --Firebase suppress
 //    FirebaseDatabase firebaseDatabase;
@@ -217,7 +228,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     Double currentLat = 0.0;
     Double currentLng = 0.0;
-    int driverRadius = 0;
+//    int driverRadius = 0;
     int mapZoom = 0;
 
 
@@ -250,7 +261,7 @@ public class RiderMapActivity extends AppCompatActivity implements
     private RecyclerView recyclerView;
     private RecyclerView servicesRecyclerView;
 
-    private ServiceAdapter sAdapter;
+    private ServiceAdapter serviceAdapter;
     private ServiceSelectionAdapter serviceSelectionAdapter;
 
 //    ImageView riderImage;
@@ -286,6 +297,10 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     String destination = null;
 
+    public LinearLayout loadingSpinner;
+    FirebaseFirestore firebaseFirestore;
+
+
     protected void startIntentService() {
 
         if (mMarkerLocation != null) {
@@ -293,7 +308,8 @@ public class RiderMapActivity extends AppCompatActivity implements
             Intent intent = new Intent(this, FetchAddressIntentService.class);
             intent.putExtra(GlobalConstants.RECEIVER, mResultReceiver);
             intent.putExtra(GlobalConstants.LOCATION_DATA_EXTRA, mMarkerLocation);
-            startService(intent);
+            //startService(intent);
+            FetchAddressIntentService.enqueueWork(this, intent);
 
             Log.d(TAG, "startIntentService started ");
         }
@@ -321,8 +337,19 @@ public class RiderMapActivity extends AppCompatActivity implements
         mapFragment.getMapAsync(this);
 
 
+        if (firebaseFirestore == null)
+        {
+            firebaseFirestore = FirebaseFirestore.getInstance();
+            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                    .setTimestampsInSnapshotsEnabled(true)
+                    .build();
+            firebaseFirestore.setFirestoreSettings(settings);
+        }
+
+
         servicesList = new ArrayList<>();
         serviceSelectionList = new ArrayList<>();
+
 
 
         //20-Sep-2018
@@ -419,6 +446,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         //--- set parameters
         setParameters();
 
+        firestoreListener();
 
         buildGoogleApiClient();
 
@@ -428,20 +456,14 @@ public class RiderMapActivity extends AppCompatActivity implements
         currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
 
 
-        //---------Try to set in onCreate itself
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mLocationRequest = new LocationRequest();
-        // Use high accuracy
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        // Set the update interval to 5 seconds
-        mLocationRequest.setInterval(5000);
-        // Set the fastest update interval to 1 second
-        mLocationRequest.setFastestInterval(1000);
-
-        //-----------
 
         // location permission for map to load
         checkLocationPermission();
+
+        loadingSpinner = ((LinearLayout)findViewById(R.id.progressBarLayout));
+
+        hideProgressBar();
+
 
 
         //LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -583,12 +605,12 @@ public class RiderMapActivity extends AppCompatActivity implements
         //------------------
         recyclerView = (RecyclerView) findViewById(R.id.driver_recycler_view);
         tv_no_records = (TextView) findViewById(R.id.tv_no_records);
-        sAdapter = new ServiceAdapter(servicesList);
+        serviceAdapter = new ServiceAdapter(servicesList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(sAdapter);
-        sAdapter.setClickListener(this);
+        recyclerView.setAdapter(serviceAdapter);
+        serviceAdapter.setClickListener(this);
         //----------------
 
 
@@ -791,7 +813,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         sheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
         sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-        if (sAdapter.getItemCount() > 0) {
+        if (serviceAdapter.getItemCount() > 0) {
             recyclerView.setVisibility(View.VISIBLE);
             tv_no_records.setVisibility(View.GONE);
 
@@ -850,6 +872,18 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
     @Override
+    public void onInfoWindowClick(Marker marker) {
+        //Toast.makeText(this, "Info window clicked",Toast.LENGTH_SHORT).show();
+
+        Rider driverGeo = (Rider) marker.getTag();
+
+        setDialImage(driverGeo);
+
+        //marker.showInfoWindow();
+    }
+
+
+    @Override
     public void onClickAvatarImage(View view, int position) {
 
 
@@ -867,12 +901,12 @@ public class RiderMapActivity extends AppCompatActivity implements
     public void onClickDialImage(View view, int position) {
 
 
-        Rider rider = servicesList.get(position);
+        Rider serviceGeo = servicesList.get(position);
 
         //this opens the ringer tone
-        //callTimer();
+        callDialer(serviceGeo);
 
-        setDialImage(rider);
+        //setDialImage(rider);
 
         //Toast.makeText(getApplicationContext(),  driver.driverMobileNo+" "+view.getId()+ " dial is selected!", Toast.LENGTH_SHORT).show();
 
@@ -1099,14 +1133,56 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
     protected synchronized void buildGoogleApiClient() {
+
+        //---------Try to set in onCreate itself
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+
+        connectGoogleClient();
+
+        mLocationRequest = new LocationRequest();
+        // Use high accuracy
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(1000);
+        //mLocationRequest.setSmallestDisplacement(10);
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                mCurrentLocation = locationResult.getLastLocation();
+                //onLocationChanged(mCurrentLocation);
+//                for (Location location : locationResult.getLocations()) {
+//                    // Update UI with location data
+//                }
+            }
+
+            ;
+        };
+        //-----------
+
+
+
     }
 
+    private void connectGoogleClient() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int resultCode = googleAPI.isGooglePlayServicesAvailable(this);
+        if (resultCode == ConnectionResult.SUCCESS) {
+            mGoogleApiClient.connect();
+        } else {
+            int REQUEST_GOOGLE_PLAY_SERVICE = 988;
+            googleAPI.getErrorDialog(this, resultCode, REQUEST_GOOGLE_PLAY_SERVICE);
+        }
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -1124,27 +1200,61 @@ public class RiderMapActivity extends AppCompatActivity implements
 
             if (mGoogleApiClient != null) {
 
-                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
             }
         }
 
 
-        //get last known location
-        if (mGoogleApiClient != null) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            if (mLastLocation != null) {
-                currentLat = mLastLocation.getLatitude();
-                currentLng = mLastLocation.getLongitude();
-                mCurrentLocation = mLastLocation;
+//        //get last known location
+//        if (mGoogleApiClient != null) {
+//            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+//                    mGoogleApiClient);
+//            if (mLastLocation != null) {
+//                currentLat = mLastLocation.getLatitude();
+//                currentLng = mLastLocation.getLongitude();
+//                mCurrentLocation = mLastLocation;
+//
+//                //21-Sep-2018
+//                mMarkerLocation = mLastLocation;
+//
+//                LatLng latLng = new LatLng(currentLat, currentLng);
+//                Log.i(TAG, "GoogleAPI Zoom ");
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoom));
+//            }
+//        }
 
-                //21-Sep-2018
-                mMarkerLocation = mLastLocation;
 
-                LatLng latLng = new LatLng(currentLat, currentLng);
-                Log.i(TAG, "GoogleAPI Zoom ");
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoom));
-            }
+        if(mGoogleApiClient !=null) {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            mLastKnownLocation = location;
+
+                            // In some rare cases the location returned can be null
+                            if (mLastKnownLocation == null) {
+                                return;
+                            }
+
+                            currentLat = mLastKnownLocation.getLatitude();
+                            currentLng = mLastKnownLocation.getLongitude();
+                            mCurrentLocation = mLastKnownLocation;
+
+                            rider.setRiderLat(currentLat);
+                            rider.setRiderLng(currentLng);
+                            //rider.setRiderLocation(mCurrentLocation);
+
+                            //21-Sep-2018
+                            mMarkerLocation = mLastKnownLocation;
+
+                            LatLng latLng = new LatLng(currentLat, currentLng);
+                            Log.i(TAG, "GoogleAPI Zoom ");
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoom));
+
+                        }
+                    });
+
         }
 
         //20-Sep-2018
@@ -1174,7 +1284,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         Log.i(TAG, "App onLocationChanged: ");
 
-        mLastLocation = location;
+        mLastKnownLocation = location;
 
 
 //        21-Sep-2018
@@ -1225,6 +1335,10 @@ public class RiderMapActivity extends AppCompatActivity implements
             riderLng = location.getLongitude();
 
 
+            rider.setRiderLat(riderLat);
+            rider.setRiderLng(riderLng);
+            rider.setRiderLocation(riderLocation);
+
             new RiderMapActivity.updateRiderLocation().execute(new Object[]{null, null, false});
 
 
@@ -1236,10 +1350,12 @@ public class RiderMapActivity extends AppCompatActivity implements
         }
 
 
-        //stop location updates
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
+//        //stop location updates
+//        if (mGoogleApiClient != null) {
+//            //LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+//            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+//
+//        }
 
         //21-Sep-2018
         showReverseGeocoder();
@@ -1305,18 +1421,6 @@ public class RiderMapActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this, "Info window clicked",
-                Toast.LENGTH_SHORT).show();
-
-
-        Rider driverGeo = (Rider) marker.getTag();
-
-        setDialImage(driverGeo);
-
-        //marker.showInfoWindow();
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -1369,6 +1473,17 @@ public class RiderMapActivity extends AppCompatActivity implements
         }
     }
 
+
+    @Override
+    protected void onDestroy() {
+        //Remove location update callback here
+        if(registration!=null)
+        {
+            registration.remove();
+        }
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        super.onDestroy();
+    }
 
 //    //05-Oct-2018 --Firebase suppress
 //    public void readDriverLocation(){
@@ -1835,7 +1950,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 //
 //                    //Add to Horizontal list
 //                    driversList.add(driverGeo);
-//                    sAdapter.notifyDataSetChanged();
+//                    serviceAdapter.notifyDataSetChanged();
 //
 //
 //                    //new driver
@@ -1999,7 +2114,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 //
 //                //Add to Horizontal list
 //                servicesList.add(driverGeo);
-//                sAdapter.notifyDataSetChanged();
+//                serviceAdapter.notifyDataSetChanged();
 //
 //
 //            } //if condition
@@ -2008,12 +2123,12 @@ public class RiderMapActivity extends AppCompatActivity implements
 //
 //                Log.d(TAG, "setDriverInfoList Remove: " + driverGeo.getStatus() + " count " + servicesList.size() + "contains " + servicesList.contains(driverGeo));
 //
-//                int position = sAdapter.getItemPosition(driverGeo);
+//                int position = serviceAdapter.getItemPosition(driverGeo);
 //                if (position >= 0) {
 //                    servicesList.remove(position);
-//                    sAdapter.notifyItemRemoved(position);
-//                    sAdapter.notifyItemChanged(position, sAdapter.getItemCount() - position);
-//                    sAdapter.notifyDataSetChanged();
+//                    serviceAdapter.notifyItemRemoved(position);
+//                    serviceAdapter.notifyItemChanged(position, serviceAdapter.getItemCount() - position);
+//                    serviceAdapter.notifyDataSetChanged();
 //                }
 //
 //            }
@@ -2543,6 +2658,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         mMarkerLocation = markerLocation;
 
 
+
 //        circle = mMap.addCircle(new CircleOptions()
 //                .center(new LatLng(latLng.latitude, latLng.longitude))
 //                .radius(200)
@@ -2635,8 +2751,8 @@ public class RiderMapActivity extends AppCompatActivity implements
         Log.d(TAG, "setParameters");
 
         try {
-            String country = parameter.getCountry();
-            driverRadius = parameter.getDriverRadius();
+            //String country = parameter.getCountry();
+            //driverRadius = parameter.getDriverRadius();
             mapZoom = parameter.getMapZoom();
 
 //            //13-OCt-2018
@@ -2816,21 +2932,12 @@ public class RiderMapActivity extends AppCompatActivity implements
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        showProgressBar();
+
 
         switch (id) {
 
 
-//                case R.id.nav_rides: {
-//
-//                    Intent i = new Intent(getApplicationContext(), RidesActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("Rider", rider);
-//                    i.putExtras(bundle);
-//                    startActivity(i);
-//                    break;
-//
-//
-//                }
 
             case R.id.nav_profile: {
 
@@ -2839,7 +2946,6 @@ public class RiderMapActivity extends AppCompatActivity implements
                 bundle.putSerializable("Rider", rider);
                 bundle.putSerializable("RegisterFlag", false);
                 i.putExtras(bundle);
-                //i.putExtra("UserGroup", GlobalConstants.RIDER_CODE);
                 startActivity(i);
                 break;
 
@@ -2852,25 +2958,10 @@ public class RiderMapActivity extends AppCompatActivity implements
                 bundle.putSerializable("Rider", rider);
                 bundle.putSerializable("RegisterFlag", false);
                 i.putExtras(bundle);
-                //i.putExtra("UserGroup", GlobalConstants.RIDER_CODE);
                 startActivity(i);
                 break;
 
             }
-//                case R.id.nav_avatar: {
-//
-//                    Log.i("inside avatar nav id", Integer.toString(R.id.nav_avatar));
-//
-//                    Intent i = new Intent(getApplicationContext(), AvatarActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("Rider", rider);
-//                    bundle.putSerializable("RegisterFlag", false);
-//                    i.putExtras(bundle);
-//                    //i.putExtra("UserGroup", GlobalConstants.RIDER_CODE);
-//                    startActivity(i);
-//                    break;
-//
-//                }
             case R.id.nav_idcard: {
 
                 Intent i = new Intent(getApplicationContext(), IDCardActivity.class);
@@ -2878,14 +2969,11 @@ public class RiderMapActivity extends AppCompatActivity implements
                 bundle.putSerializable("Rider", rider);
                 bundle.putSerializable("RegisterFlag", false);
                 i.putExtras(bundle);
-                //i.putExtra("UserGroup", GlobalConstants.RIDER_CODE);
                 startActivity(i);
                 break;
 
             }
             case R.id.nav_service: {
-
-                Log.i("inside service nav id", Integer.toString(R.id.nav_service));
 
 
                 Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
@@ -2893,11 +2981,35 @@ public class RiderMapActivity extends AppCompatActivity implements
                 bundle.putSerializable("Rider", rider);
                 bundle.putSerializable("RegisterFlag", false);
                 i.putExtras(bundle);
-                //i.putExtra("UserGroup", GlobalConstants.RIDER_CODE);
                 startActivity(i);
                 break;
 
             }
+
+            case R.id.nav_myRequests: {
+
+
+                Intent i = new Intent(getApplicationContext(), RidesActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Rider", rider);
+                i.putExtras(bundle);
+                startActivity(i);
+                break;
+
+            }
+            case R.id.nav_myService: {
+
+                Intent i = new Intent(getApplicationContext(), RidesActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Rider", rider);
+                i.putExtras(bundle);
+                startActivity(i);
+                break;
+
+            }
+
+
+
 
         }
 
@@ -2918,6 +3030,9 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        hideProgressBar();
+
         return true;
     }
 
@@ -2969,6 +3084,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                 autocompleteFragment.setText(mAddressOutput);
 
+
                 //showToast(getString(R.string.address_found));
             }
 
@@ -2987,33 +3103,36 @@ public class RiderMapActivity extends AppCompatActivity implements
         // Start service and update UI to reflect new location
         startIntentService();
 
-    }
-//            mFusedLocationClient.getLastLocation()
-//                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//                        @Override
-//                        public void onSuccess(Location location) {
-//                            mLastKnownLocation = location;
+
+//        mFusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        mLastKnownLocation = location;
 //
-//                            // In some rare cases the location returned can be null
-//                            if (mLastKnownLocation == null) {
-//                                return;
-//                            }
-//
-//                            if (!Geocoder.isPresent()) {
-//                                Toast.makeText(RiderMapActivity.this,
-//                                        "no_geocoder_available",
-//                                        Toast.LENGTH_LONG).show();
-//                                return;
-//                            }
-//
-//                            // Start service and update UI to reflect new location
-//                            startIntentService();
-//
-//                            //updateUI();
-//                            //autocompleteFragment.setText(mAddressOutput);
-//
+//                        // In some rare cases the location returned can be null
+//                        if (mLastKnownLocation == null) {
+//                            return;
 //                        }
-//                    });
+//
+////                        if (!Geocoder.isPresent()) {
+////                            Toast.makeText(RiderMapActivity.this,
+////                                    "no_geocoder_available",
+////                                    Toast.LENGTH_LONG).show();
+////                            return;
+////                        }
+////
+////                        // Start service and update UI to reflect new location
+////                        startIntentService();
+////
+////                        //updateUI();
+////                        //autocompleteFragment.setText(mAddressOutput);
+//
+//                    }
+//                });
+    }
+
+
 
 
     //--------update Rider Location udpate in the backend
@@ -3138,7 +3257,8 @@ public class RiderMapActivity extends AppCompatActivity implements
         protected void onPreExecute() {
             //loadingSpinner.setVisibility(View.VISIBLE);
 
-            tv_searchService.setVisibility(View.VISIBLE);
+            showProgressBar();
+            //tv_searchService.setVisibility(View.VISIBLE);
 
         }
 
@@ -3159,7 +3279,8 @@ public class RiderMapActivity extends AppCompatActivity implements
         protected void onPostExecute(Void result) {
             //loadingSpinner.setVisibility(View.GONE);
 
-            tv_searchService.setVisibility(View.GONE);
+            hideProgressBar();
+            //tv_searchService.setVisibility(View.GONE);
 
         }
     }
@@ -3253,8 +3374,6 @@ public class RiderMapActivity extends AppCompatActivity implements
                                         rider.setVacantStatus(wrapperArrayObj.optJSONObject(i).optString("vacantStatus"));
                                         rider.setDistance(wrapperArrayObj.optJSONObject(i).getDouble("distance"));
                                         rider.setDuration(wrapperArrayObj.optJSONObject(i).getDouble("duration"));
-                                        //rider.setRiderLat(markerLat);
-                                        //rider.setRiderLng(markerLng);
                                         rider.setFavorite(wrapperArrayObj.optJSONObject(i).optString("favorite"));
                                         rider.setAvgRating(wrapperArrayObj.optJSONObject(i).getDouble("avgRating"));
                                         rider.setYourRating(wrapperArrayObj.optJSONObject(i).getDouble("yourRating"));
@@ -3294,7 +3413,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                                         //Log.d(TAG, "before servicelist add: " + rider.getRiderLat() + " : " + rider.getRiderLng());
 
                                         servicesList.add(rider);
-                                        sAdapter.notifyDataSetChanged();
+                                        serviceAdapter.notifyDataSetChanged();
 
                                         //only if right top button is clicked
                                         if (switchService == true) {
@@ -3307,7 +3426,18 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
                                 if(switchService==false) {
-                                    bottomSheetOpen();
+
+
+                                    if (serviceAdapter.getItemCount() > 0) {
+                                        bottomServiceSheetClose();
+                                        bottomSheetOpen();
+                                    }
+                                    else
+                                    {
+                                        bottomSheetClose();
+                                        CommonService.Toast(RiderMapActivity.this,"No service found near to your location !!!",Toast.LENGTH_SHORT);
+                                        bottomServiceSheetOpen();
+                                    }
                                 }
 
                             }//null condition check
@@ -3316,20 +3446,20 @@ public class RiderMapActivity extends AppCompatActivity implements
                         else
                         {
 
-                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                            CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
 
                         }
 
 
                     } else {
 
-                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                        CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
                     }
 
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
 
                 }
 
@@ -3533,7 +3663,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                                     }
                                     servicesList.set(position, serviceGeo);
-                                    sAdapter.notifyDataSetChanged();
+                                    serviceAdapter.notifyDataSetChanged();
 
                                 }
 
@@ -3677,176 +3807,11 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         //clear driverlist before getting
         servicesList.clear();
-        sAdapter.notifyDataSetChanged();
+        serviceAdapter.notifyDataSetChanged();
 
     }
 
-//    private class fetchServiceLocationProgressTask extends AsyncTask<Object, Void, Void> {
-//        @Override
-//        protected void onPreExecute() {
-//            //loadingSpinner.setVisibility(View.VISIBLE);
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Object...params ) {
-//
-////            Log.d(TAG, "param[0] "+params[0].toString());
-////            Log.d(TAG, "param[1] "+params[1].toString());
-////            Log.d(TAG, "param[2] "+Boolean.valueOf(params[2].toString()));
-//
-//            fetchServiceLocation(params[0].toString(),params[1].toString(),Boolean.valueOf(params[2].toString()));
-//
-//            return null;
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//            //loadingSpinner.setVisibility(View.GONE);
-//        }
-//    }
-    //--------fetch driver Location  in the backend
-//    public void fetchServiceLocation(final String service, final String vehicleType, final boolean switchService) {
-//
-//
-//
-//
-//        RiderMapActivity.this.runOnUiThread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                try {
-//
-//
-//                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
-//
-//
-//                    //Shared Preferences
-//                    editor = sharedPreferences.edit();
-//
-//                    editor.putString("userid", rider.getRiderID());
-//                    editor.putString("deviceToken", rider.getFcmToken());
-//                    editor.putString("sessionid", "SESSIONID");
-//
-//                    editor.apply();
-//
-//
-//                    String methodAction = "fetchServiceLocation";
-//
-//                    JSONObject messageJson = new JSONObject();
-//                    messageJson.put("service", service);
-//                    messageJson.put("currentLat", markerLat);
-//                    messageJson.put("currentLng", markerLng);
-//                    messageJson.put("riderRefNo", rider.getRiderRefNo());
-//                    messageJson.put("riderID", rider.getRiderID());
-//
-//
-//                    ConnectHost connectHost = new ConnectHost();
-//                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
-//
-//                    Log.d(TAG, "fetch driver location  Location responseData: " + responseData);
-//
-//
-//                    if (responseData != null) {
-//
-//
-//                        // Convert String to json object
-//                        JSONObject jsonResponseData = new JSONObject(responseData);
-//
-//                        // get LL json object
-//                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchServiceLocation");
-//
-//                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("riderWrapper");
-//
-////                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-////
-////                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).getString("recordFound"));
-//
-//                        if (jsonResponseData.getString("success") == "true") {
-//
-//
-//                            clearDriverList();
-//
-//                            Driver driver=null;
-//
-//                            if(wrapperArrayObj!=null) {
-//
-//                                for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
-//                                    if (wrapperArrayObj.optJSONObject(i).getString("recordFound") == "true") {
-//
-//                                        driver = new Driver();
-//
-//                                        driver.setDriverRefNo(wrapperArrayObj.optJSONObject(i).getString("driverRefNo"));
-//                                        driver.setDriverID(wrapperArrayObj.optJSONObject(i).getString("driverID"));
-//                                        driver.setDriverName(wrapperArrayObj.optJSONObject(i).getString("firstName"));
-//                                        driver.setDriverMobileNo(wrapperArrayObj.optJSONObject(i).getString("mobileNo"));
-//                                        driver.setDriverVehicleNo(wrapperArrayObj.optJSONObject(i).getString("vehicleNo"));
-//                                        driver.setStatus(wrapperArrayObj.optJSONObject(i).getString("status"));
-//                                        driver.setDriverVehicleType(wrapperArrayObj.optJSONObject(i).getString("vehicleType"));
-//                                        driver.setDriverLat(wrapperArrayObj.optJSONObject(i).getDouble("currentLat"));
-//                                        driver.setDriverLng(wrapperArrayObj.optJSONObject(i).getDouble("currentLng"));
-//                                        driver.setDriverLocation(wrapperArrayObj.optJSONObject(i).getString("currentLocation"));
-//                                        driver.setVacantStatus(wrapperArrayObj.optJSONObject(i).getString("vacantStatus"));
-//                                        driver.setDistance(wrapperArrayObj.optJSONObject(i).getDouble("distance"));
-//                                        driver.setDuration(wrapperArrayObj.optJSONObject(i).getDouble("duration"));
-//                                        driver.setRiderLat(markerLat);
-//                                        driver.setRiderLng(markerLng);
-//                                        driver.setFavorite(wrapperArrayObj.optJSONObject(i).getString("favorite"));
-//                                        driver.setAvgRating(wrapperArrayObj.optJSONObject(i).getDouble("avgRating"));
-//                                        driver.setYourRating(wrapperArrayObj.optJSONObject(i).getDouble("yourRating"));
-//
-//                                        Log.d(TAG, "Avg Rating: " + wrapperArrayObj.optJSONObject(i).getString("avgRating"));
-//                                        Log.d(TAG, "Your Rating: " + wrapperArrayObj.optJSONObject(i).getString("yourRating"));
-//
-//
-//                                        servicesList.add(driver);
-//                                        sAdapter.notifyDataSetChanged();
-//
-//                                        //only if right top button is clicked
-//                                        if (switchService == true) {
-//                                            setDriverLocation(0, driver);
-//                                        }
-//
-//
-//                                    }
-//                                }
-//
-//
-//                                if(switchService==false) {
-//                                    bottomSheetOpen();
-//                                }
-//
-//                            }//null condition check
-//
-//                        }
-//                        else
-//                        {
-//
-//                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
-//                        }
-//
-//
-//                    } else {
-//
-//                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-//
-//                }
-//
-//                //}// validation
-//
-//            }//run end
-//
-//        });//runnable end
-//
-//
-//    }//fetch driver location update End
+
 
     public void getGoogleDirections()
     {
@@ -3905,17 +3870,109 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
 
-    public void callTimer()
+    public void callTimer(Ride ride)
     {
 
         Intent i = new Intent(getApplicationContext(), TimerActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putSerializable("Ride", ride);
+        bundle.putSerializable("Rider", rider);
         i.putExtras(bundle);
         startActivity(i);
 
 
     }
 
+    public void callDialer(Rider serviceGeo)
+    {
+
+        Log.d(TAG, "callDialer data: " + rider.getRiderLat() + ":" + rider.getRiderLng() + ":" + rider.getRiderLocation());
+
+        Intent i = new Intent(getApplicationContext(), DialerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("ServiceGeo", serviceGeo);
+        bundle.putSerializable("Rider", rider);
+        i.putExtras(bundle);
+        startActivity(i);
+
+    }
+
+
+    public  void showProgressBar() {
+
+        loadingSpinner.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
+
+    public  void hideProgressBar()
+    {
+
+        loadingSpinner.setVisibility(View.GONE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
+
+
+    public void firestoreListener()
+    {
+
+        try {
+
+            //-------delete all listeners while log-in
+            firebaseFirestore.collection("service").document(rider.getRiderID())
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error deleting document", e);
+                        }
+                    });
+
+            //-------then listen for call
+            final DocumentReference docRef = firebaseFirestore.collection("service").document(rider.getRiderID());
+            registration = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                    @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        Log.d(TAG, "Current data: " + snapshot.getData());
+
+                        //CommonService.Toast(RiderMapActivity.this,snapshot.getData().toString(),Toast.LENGTH_SHORT);
+
+                        Ride ride = new Ride();
+                        ride.setRideRefNo(snapshot.getData().get("rideRefNo").toString());
+                        ride.setRiderID(snapshot.getData().get("riderID").toString());
+                        ride.setServicerID(snapshot.getData().get("servicerID").toString());
+                        ride.setRideStatus(snapshot.getData().get("rideStatus").toString());
+
+                        //if calling status then call the service provider
+                        if(ride.getRideStatus().equals(GlobalConstants.CALLING_STATUS)) {
+                            callTimer(ride);
+                        }
+
+                    } else {
+                        Log.d(TAG, "Current data: null");
+                    }
+                }
+            });
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 
 
 }//class end

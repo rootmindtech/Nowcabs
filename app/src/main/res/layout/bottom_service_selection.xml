@@ -50,7 +50,8 @@
                     android:src="@drawable/carpenter"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:layout_height="40dp"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView
@@ -96,7 +97,8 @@
                     android:src="@drawable/auto_outline"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:layout_height="40dp"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView
@@ -140,7 +142,8 @@
                     android:src="@drawable/cab_outline"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:layout_height="40dp"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView
@@ -186,7 +189,8 @@
                     android:src="@drawable/electrician"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:layout_height="40dp"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView
@@ -231,7 +235,8 @@
                     android:src="@drawable/plumber"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:layout_height="40dp"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView
@@ -276,7 +281,8 @@
                     android:src="@drawable/tailor"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView
@@ -322,7 +328,8 @@
                     android:src="@drawable/washer"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:layout_height="40dp"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView
@@ -367,7 +374,8 @@
                     android:src="@drawable/courier"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:layout_height="40dp"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView
@@ -413,7 +421,8 @@
                     android:src="@drawable/merchant"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:tint="@color/colorLightGreen"/>
 
 
                 <TextView

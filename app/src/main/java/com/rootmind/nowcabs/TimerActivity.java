@@ -1,30 +1,54 @@
 package com.rootmind.nowcabs;
 
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TimerActivity extends AppCompatActivity implements OnClickListener {
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class TimerActivity extends AppCompatActivity  {
+
+    private static final String TAG = "TimerActivity";
 
     int i = -1;
     ProgressBar mProgressBar, mProgressBar1;
 
-    private Button buttonStartTime, buttonStopTime;
-    private EditText edtTimerValue;
     private TextView textViewShowTime;
     private CountDownTimer countDownTimer;
     private long totalTimeCountInMilliseconds;
@@ -34,28 +58,41 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
 
     Button btn_accept;
     Button btn_reject;
+    FirebaseFirestore firebaseFirestore;
+
+    //Rider serviceGeo;
+    Rider rider;
+    Ride ride=null;
+    ListenerRegistration registration;
+
+    String responseData = null;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
+
+
+    String rideStatus=GlobalConstants.NORESPONSE_STATUS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
 
-        buttonStartTime = (Button) findViewById(R.id.button_timerview_start);
-        buttonStopTime = (Button) findViewById(R.id.button_timerview_stop);
 
         textViewShowTime = (TextView)
-                findViewById(R.id.textView_timerview_time);
-        edtTimerValue = (EditText) findViewById(R.id.textview_timerview_back);
+                findViewById(R.id.tv_time);
 
-        buttonStartTime.setOnClickListener(this);
-        buttonStopTime.setOnClickListener(this);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mProgressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.progressbar_timerview);
-        mProgressBar1 = (ProgressBar) findViewById(R.id.progressbar1_timerview);
+        //sharedPreferences initiated
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        edtTimerValue.setEnabled(false);
-        edtTimerValue.setText("20");
+        ride = (Ride) getIntent().getSerializableExtra("Ride");
+        rider = (Rider) getIntent().getSerializableExtra("Rider");
 
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         mediaPlayer = CommonService.mediaPlayer(getApplicationContext());
 
@@ -68,61 +105,50 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
             @Override
             public void onClick(View v) {
 
-                finishPlayer();
+                acceptRequest();
             }
         });
 
-        btn_accept.setOnClickListener(new View.OnClickListener() {
+        btn_reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                finishPlayer();
+                rejectRequest();
             }
         });
 
-        onClick(findViewById(R.id.button_timerview_start));
+
+        startRinger();
+
 
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.button_timerview_start) {
-
-            setTimer();
-
-            buttonStartTime.setVisibility(View.INVISIBLE);
-            buttonStopTime.setVisibility(View.INVISIBLE);
-            mProgressBar.setVisibility(View.INVISIBLE);
-
-            startTimer();
-            mProgressBar1.setVisibility(View.VISIBLE);
 
 
-        } else if (v.getId() == R.id.button_timerview_stop) {
-            countDownTimer.cancel();
-            countDownTimer.onFinish();
-            mProgressBar1.setVisibility(View.GONE);
-            mProgressBar.setVisibility(View.VISIBLE);
-            edtTimerValue.setVisibility(View.VISIBLE);
-            buttonStartTime.setVisibility(View.VISIBLE);
-            buttonStopTime.setVisibility(View.INVISIBLE);
-        }
+    private void startRinger()
+    {
+
+
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mProgressBar1.setVisibility(View.VISIBLE);
+        setTimer();
+        startTimer();
+
+
     }
+
     private void setTimer(){
-        int time = 0;
-        if (!edtTimerValue.getText().toString().equals("")) {
-            time = Integer.parseInt(edtTimerValue.getText().toString());
-        } else
-            Toast.makeText(TimerActivity.this, "Please Enter Minutes...",
-                    Toast.LENGTH_LONG).show();
+        int time = 20;
         totalTimeCountInMilliseconds =  time * 1000;
         mProgressBar1.setMax( time * 1000);
     }
     private void startTimer() {
 
         try {
+
             mediaPlayer.start();
             vibrate();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,6 +179,32 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
 
     public void finishPlayer()
     {
+
+        //update backend
+        new TimerActivity.updateRideProgressTask().execute();
+
+        Map<String, Object> serviceMap = new HashMap<>();
+        serviceMap.put("rideStatus", rideStatus);
+        serviceMap.put("datetime", FieldValue.serverTimestamp());
+
+
+        // Add a new document with a generated ID
+        firebaseFirestore.collection("service")
+                .document(ride.getServicerID())
+                .update(serviceMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+
         if(mediaPlayer!=null) {
 
             mediaPlayer.stop();
@@ -161,12 +213,192 @@ public class TimerActivity extends AppCompatActivity implements OnClickListener 
         }
         textViewShowTime.setText("00:00");
         textViewShowTime.setVisibility(View.VISIBLE);
-        buttonStartTime.setVisibility(View.VISIBLE);
-        buttonStopTime.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressBar1.setVisibility(View.GONE);
 
         finish();
 
     }
+
+
+    public void acceptRequest(){
+
+
+        rideStatus = GlobalConstants.ACCEPTED_STATUS;
+
+        finishPlayer();
+
+    }
+
+    public void rejectRequest(){
+
+        rideStatus = GlobalConstants.REJECTED_STATUS;
+
+        finishPlayer();
+
+    }
+
+    private class updateRideProgressTask extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Void doInBackground(Object...params ) {
+
+            updateRide();
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+        }
+    }
+    //--------insert Ride   in the backend
+    public void updateRide() {
+
+
+
+
+        TimerActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+        try {
+
+
+            //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+
+            //Shared Preferences
+            editor = sharedPreferences.edit();
+
+            editor.putString("userid", rider.getRiderID());
+            editor.putString("deviceToken", rider.getFcmToken());
+            editor.putString("sessionid", "SESSIONID");
+
+            editor.apply();
+
+
+            String methodAction = "updateRide";
+
+            JSONObject messageJson = new JSONObject();
+            messageJson.put("rideStatus", rideStatus);
+            messageJson.put("rideRefNo", ride.getRideRefNo());
+
+
+            ConnectHost connectHost = new ConnectHost();
+            responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+            Log.d(TAG, "update Ride responseData: " + responseData);
+
+
+            if (responseData != null) {
+
+
+                // Convert String to json object
+                JSONObject jsonResponseData = new JSONObject(responseData);
+
+                // get LL json object
+                JSONObject jsonResult = jsonResponseData.optJSONObject("updateRide");
+
+                JSONArray wrapperArrayObj = jsonResult.getJSONArray("rideWrapper");
+
+//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
+//
+//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).getString("recordFound"));
+
+                if (jsonResponseData.getString("success") == "true") {
+
+
+//                    if(wrapperArrayObj!=null) {
+//
+//                        if (wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
+//
+//
+//
+//                        }
+//
+//
+//
+//                    }//null condition check
+
+                }
+                else
+                {
+
+                    //Toast.makeText(DialerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                }
+
+
+            } else {
+
+                //Toast.makeText(DialerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Toast.makeText(DialerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+        }
+
+        //}// validation
+
+            }//run end
+
+        });//runnable end
+
+
+    }//insert ride
+
+//    public void firestoreListener()
+//    {
+//
+//        try {
+//
+//
+//            //-------then listen for call
+//            final DocumentReference docRef = firebaseFirestore.collection("service").document(rider.getRiderID());
+//            registration = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//                @Override
+//                public void onEvent(@Nullable DocumentSnapshot snapshot,
+//                                    @Nullable FirebaseFirestoreException e) {
+//                    if (e != null) {
+//                        Log.w(TAG, "Listen failed.", e);
+//                        return;
+//                    }
+//
+//                    if (snapshot != null && snapshot.exists()) {
+//                        Log.d(TAG, "Current data: " + snapshot.getData());
+//
+//                        //CommonService.Toast(RiderMapActivity.this,snapshot.getData().toString(),Toast.LENGTH_SHORT);
+//
+//                        Ride ride = new Ride();
+//                        ride.setRideRefNo(snapshot.getData().get("rideRefNo").toString());
+//                        ride.setRiderID(snapshot.getData().get("riderID").toString());
+//                        ride.setDriverID(snapshot.getData().get("serviceID").toString());
+//                        ride.setRideStatus(snapshot.getData().get("rideStatus").toString());
+//
+//                        //if calling status then call the service provider
+//                        if(ride.getRideStatus().equals(GlobalConstants.CALLING_STATUS)) {
+//                            callTimer(ride);
+//                        }
+//
+//                    } else {
+//                        Log.d(TAG, "Current data: null");
+//                    }
+//                }
+//            });
+//        }
+//        catch(Exception ex)
+//        {
+//            ex.printStackTrace();
+//        }
+//    }
+
 }

@@ -21,8 +21,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -68,7 +70,7 @@ public class DriverLoginActivity extends AppCompatActivity {
 //    private ValueEventListener alertValueEventListener;
 
 
-    private ProgressBar loadingSpinner;
+    private LinearLayout loadingSpinner;
 
 
     //Shared Preferences
@@ -179,7 +181,8 @@ public class DriverLoginActivity extends AppCompatActivity {
     private class ProgressTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-            loadingSpinner.setVisibility(View.VISIBLE);
+
+            showProgressBar();
 
         }
 
@@ -201,7 +204,8 @@ public class DriverLoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
 
-            loadingSpinner.setVisibility(View.GONE);
+
+            hideProgressBar();
 
         }
     }
@@ -948,8 +952,8 @@ public class DriverLoginActivity extends AppCompatActivity {
 //            txt_name.setEnabled(false);
 
             //Progressbar
-            loadingSpinner = (ProgressBar) findViewById(R.id.progressBar);
-            loadingSpinner.setVisibility(View.GONE);
+            loadingSpinner = (LinearLayout) findViewById(R.id.progressBarLayout);
+            hideProgressBar();
 
 
             fetchProfile();
@@ -1280,6 +1284,21 @@ public class DriverLoginActivity extends AppCompatActivity {
 
 
 
+
+    }
+
+    public  void showProgressBar() {
+
+        loadingSpinner.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+    }
+
+    public  void hideProgressBar()
+    {
+
+        loadingSpinner.setVisibility(View.GONE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
     }
 

@@ -306,6 +306,7 @@ public class RiderLoginActivity extends AppCompatActivity {
                     messageJson.put("firstName", name);
                     messageJson.put("fcmToken", fcmToken);
                     messageJson.put("locale", locale);
+                    messageJson.put("deviceInfo", CommonService.getDeviceInfo());
 
 
 

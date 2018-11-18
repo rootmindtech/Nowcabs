@@ -1,6 +1,7 @@
 package com.rootmind.nowcabs;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,18 +21,16 @@ import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.media.ExifInterface;
 import android.util.Base64;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -41,9 +40,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
@@ -55,10 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -78,6 +71,7 @@ public  class CommonService {
     private static final String TAG = "CommonService";
 
     FirebaseStorage firebaseStorage;
+
 
 
     public CommonService() {
@@ -289,6 +283,8 @@ public  class CommonService {
 
                 Rider rider = new Rider();
 
+
+
                 try {
 
 
@@ -326,6 +322,7 @@ public  class CommonService {
                     messageJson.put("riderID", sharedPreferences.getString("riderID", ""));
                     messageJson.put("fcmToken", fcmToken);
                     messageJson.put("locale", locale);
+                    messageJson.put("deviceInfo", getDeviceInfo());
 
 
                     ConnectHost connectHost = new ConnectHost();
@@ -356,6 +353,8 @@ public  class CommonService {
 
                         if (jsonResponseData.getString("success") == "true") {
 
+                            //if host response is success
+                            rider.setHostResponse(true);
 
                             if (wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
 
@@ -1851,4 +1850,16 @@ public  class CommonService {
 
         return mediaPlayer;
     }
+
+
+    public static String getDeviceInfo()
+    {
+        return   "MANUFACTURER:" + Build.MANUFACTURER + " MODEL:"+Build.MODEL +" SDK_INT:" + Build.VERSION.SDK_INT
+                + " RELEASE:" + Build.VERSION.RELEASE + " INCREMENTAL:" + Build.VERSION.INCREMENTAL
+                + " BOARD:" + Build.BOARD + " BRAND:" + Build.BRAND + " DEVICE:" + Build.DEVICE + " ID:" + Build.ID;
+
+    }
+
+
+
 }

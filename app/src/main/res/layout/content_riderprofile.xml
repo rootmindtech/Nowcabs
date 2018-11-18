@@ -121,6 +121,7 @@
             android:layout_alignRight="@+id/txt_name"
             android:layout_alignEnd="@+id/txt_mobileNo"
             android:background="@drawable/button"
+            android:textAllCaps="false"
             android:textColor="#ffffff"
             />
 
@@ -143,6 +144,8 @@
             android:scaleY="2"/>
 
     </RelativeLayout>
+
+    <include layout="@layout/progress_bar" />
 
 
 </android.support.constraint.ConstraintLayout>
