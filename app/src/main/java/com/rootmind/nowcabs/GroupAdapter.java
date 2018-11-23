@@ -33,7 +33,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView tv_groupID, tv_name, tv_status;
+        public TextView tv_groupID, tv_name, tv_status, tv_makerDateTime;
         public ImageView iv_avatar,  iv_delete;
         public CardView cardView;
 
@@ -50,6 +50,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             iv_avatar=(ImageView) view.findViewById(R.id.iv_avatar);
             cardView=(CardView) view.findViewById(R.id.card_view);
             iv_delete=(ImageView) view.findViewById(R.id.iv_delete);
+            tv_makerDateTime=(TextView) view.findViewById(R.id.tv_makerDateTime);
 
 
             cardView.setOnClickListener(this);
@@ -120,6 +121,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.tv_groupID.setText(ride.getGroupID());
         holder.tv_name.setText(ride.getName());
         holder.tv_status.setText(ride.getStatus());
+        holder.tv_makerDateTime.setText(ride.getMakerDateTime());
 
         holder.tv_status.setBackgroundColor(Color.parseColor(GlobalConstants.DARKGREEN));
         holder.tv_status.setTextColor(Color.WHITE);

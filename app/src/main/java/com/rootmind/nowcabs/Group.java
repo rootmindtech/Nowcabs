@@ -11,6 +11,17 @@ public class Group implements Serializable {
     public String name = null;
     public String status=null;
 
+    public String makerDateTime=null;
+
+    public String getMakerDateTime() {
+        return makerDateTime;
+    }
+
+    public void setMakerDateTime(String makerDateTime) {
+        this.makerDateTime = makerDateTime;
+    }
+
+
     public String getGroupRefNo() {
         return groupRefNo;
     }

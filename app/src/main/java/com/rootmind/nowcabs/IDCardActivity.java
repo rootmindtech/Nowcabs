@@ -98,11 +98,12 @@ public class IDCardActivity extends AppCompatActivity {
 
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setBackgroundResource(Color.TRANSPARENT);
+        toolbar.setBackgroundColor(Color.WHITE);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
 
 
         btn_login = (Button) findViewById(R.id.btn_login);
@@ -114,6 +115,7 @@ public class IDCardActivity extends AppCompatActivity {
 
         ImageView nowcabs = (ImageView) findViewById(R.id.nowcabs);
 
+
         fetchProfile();
 
 
@@ -124,6 +126,7 @@ public class IDCardActivity extends AppCompatActivity {
             btn_login.setText(R.string.save);
             btn_login.setVisibility(View.GONE);
 
+            nowcabs.setVisibility(View.INVISIBLE);
 
 
         }

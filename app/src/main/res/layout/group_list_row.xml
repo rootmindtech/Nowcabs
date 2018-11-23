@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/driver_list_margin"
-            android:layout_marginTop="@dimen/driver_list_margin"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="@dimen/driver_list_margin"
             >
 
@@ -66,23 +66,33 @@
                     android:layout_below="@id/tv_groupID"
                     android:layout_marginTop="10dp"
                     android:gravity="start"
-                    android:text="Amit Kumar"
+                    android:text="Group Name"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#212121"
                     android:textSize="12sp"/>
 
-
+                <TextView
+                    android:id="@+id/tv_makerDateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_name"
+                    android:layout_marginTop="10dp"
+                    android:gravity="start"
+                    android:text="dd/mm/yyyy hh:ss"
+                    android:textSize="12sp"
+                    />
 
                 <TextView
                     android:id="@+id/tv_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_name"
-                    android:layout_marginTop="20dp"
+                    android:layout_below="@id/tv_makerDateTime"
+                    android:layout_marginTop="10dp"
                     android:gravity="start"
-                    android:text="@string/vacant"
+                    android:text="Status"
                     android:textSize="12sp"
                     />
+
 
             </LinearLayout>
 
@@ -92,8 +102,8 @@
 
         <ImageView
             android:id="@+id/iv_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:maxHeight="24dp"
             android:maxWidth="24dp"
             android:src="@drawable/next"

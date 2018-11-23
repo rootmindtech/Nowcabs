@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -72,16 +73,20 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-        String title="My Groups";
+        String title="Group";
 
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.setBackgroundResource(Color.TRANSPARENT);
+        toolbar.setBackgroundColor(Color.WHITE);
+        toolbar.setTitleTextColor(Color.BLACK);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
+
+
 
         Button btn_add  = (Button)findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -222,6 +227,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
                                         group.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
                                         group.setName(wrapperArrayObj.optJSONObject(i).optString("name"));
                                         group.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
+                                        group.setMakerDateTime(wrapperArrayObj.optJSONObject(i).optString("makerDateTime"));
 
                                         groupList.add(group);
                                         groupAdapter.notifyDataSetChanged();

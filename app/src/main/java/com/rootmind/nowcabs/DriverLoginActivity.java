@@ -930,11 +930,12 @@ public class DriverLoginActivity extends AppCompatActivity {
             //29-Sep-2018
             //navigation bar
             toolbar = (Toolbar) findViewById(R.id.toolbar);
-            toolbar.setBackgroundResource(Color.TRANSPARENT);
+            toolbar.setBackgroundColor(Color.WHITE);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
 
 
             dropDown_vehicleType = (Spinner) findViewById(R.id.dropDown_vehicleType);
@@ -961,7 +962,7 @@ public class DriverLoginActivity extends AppCompatActivity {
             if(!registerFlag)
             {
                 btn_login.setText(R.string.save);
-                //nowcabs.setVisibility(View.GONE);
+                nowcabs.setVisibility(View.INVISIBLE);
             }
 
 

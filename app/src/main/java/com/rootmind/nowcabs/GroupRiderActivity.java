@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -86,12 +87,15 @@ public class GroupRiderActivity extends AppCompatActivity implements  GroupRider
 
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.setBackgroundResource(Color.TRANSPARENT);
+        toolbar.setBackgroundColor(Color.WHITE);
+        toolbar.setTitleTextColor(Color.BLACK);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
+
 
         Button btn_add  = (Button)findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -234,6 +238,8 @@ public class GroupRiderActivity extends AppCompatActivity implements  GroupRider
                                         groupRider.setLinkRiderID(wrapperArrayObj.optJSONObject(i).optString("linkRiderID"));
                                         groupRider.setPublicView(wrapperArrayObj.optJSONObject(i).optString("publicView"));
                                         groupRider.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
+                                        groupRider.setMakerDateTime(wrapperArrayObj.optJSONObject(i).optString("makerDateTime"));
+
                                         groupRider.setRider(gson.fromJson(wrapperArrayObj.optJSONObject(i).optJSONObject("riderWrapper").toString(), Rider.class));
 
                                         //Log.d(TAG, "in the loop getImage ID  " + groupRider.rider.getImageWrappers()[0].getImageName());

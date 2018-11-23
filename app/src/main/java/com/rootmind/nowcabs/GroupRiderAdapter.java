@@ -34,7 +34,7 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView  tv_name, tv_mobileNo, tv_status; //tv_groupID
+        public TextView  tv_name, tv_mobileNo, tv_status, tv_makerDateTime, tv_groupID;
         public ImageView iv_avatar, iv_delete;
         public CheckBox cb_public;
 
@@ -45,16 +45,14 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
 
 
 
-//            tv_groupID = (TextView) view.findViewById(R.id.tv_groupID);
+            tv_groupID = (TextView) view.findViewById(R.id.tv_groupID);
             tv_name = (TextView) view.findViewById(R.id.tv_name);
             tv_mobileNo = (TextView) view.findViewById(R.id.tv_mobileNo);
             tv_status= (TextView) view.findViewById(R.id.tv_status);
             iv_avatar=(ImageView) view.findViewById(R.id.iv_avatar);
             cb_public=(CheckBox) view.findViewById(R.id.cb_public);
             iv_delete=(ImageView) view.findViewById(R.id.iv_delete);
-
-
-//            tv_groupID.setVisibility(View.INVISIBLE);
+            tv_makerDateTime=(TextView) view.findViewById(R.id.tv_makerDateTime);
 
 
             cb_public.setOnClickListener(this);
@@ -129,10 +127,12 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
         GroupRider groupRider = groupRiderList.get(position);
 
 
-//        holder.tv_groupID.setText(groupRider.getGroupID());
+        holder.tv_groupID.setText(groupRider.getGroupID());
         holder.tv_name.setText(groupRider.rider.getFirstName());
         holder.tv_mobileNo.setText(groupRider.rider.getMobileNo());
         holder.tv_status.setText(groupRider.getStatus());
+        holder.tv_makerDateTime.setText(groupRider.getMakerDateTime());
+
 
         holder.tv_status.setBackgroundColor(Color.parseColor(GlobalConstants.DARKGREEN));
         holder.tv_status.setTextColor(Color.WHITE);

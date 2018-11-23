@@ -14,9 +14,21 @@ public class GroupRider implements Serializable {
     public String publicView = null;
     public String status = null;
 
+    public String makerDateTime=null;
+
+
     public Rider rider=null;
 
     public Group group=null;
+
+    public String getMakerDateTime() {
+        return makerDateTime;
+    }
+
+    public void setMakerDateTime(String makerDateTime) {
+        this.makerDateTime = makerDateTime;
+    }
+
 
     public Group getGroup() {
         return group;

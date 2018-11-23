@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -65,12 +66,14 @@ public class GroupRegisterActivity extends AppCompatActivity implements  GroupRe
 
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.setBackgroundResource(Color.TRANSPARENT);
+        toolbar.setBackgroundColor(Color.WHITE);
+        toolbar.setTitleTextColor(Color.BLACK);
         toolbar.setTitle("My Groups");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
 
 //        Button btn_add  = (Button)findViewById(R.id.btn_add);
 //        btn_add.setOnClickListener(new View.OnClickListener() {
@@ -695,6 +698,8 @@ public class GroupRegisterActivity extends AppCompatActivity implements  GroupRe
                                         groupRider.setRiderID(wrapperArrayObj.optJSONObject(i).optString("linkRiderID"));
                                         groupRider.setPublicView(wrapperArrayObj.optJSONObject(i).optString("publicView"));
                                         groupRider.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
+                                        groupRider.setMakerDateTime(wrapperArrayObj.optJSONObject(i).optString("makerDateTime"));
+
                                         groupRider.setGroup(gson.fromJson(wrapperArrayObj.optJSONObject(i).optJSONObject("groupWrapper").toString(), Group.class));
 
                                         groupRiderList.add(groupRider);

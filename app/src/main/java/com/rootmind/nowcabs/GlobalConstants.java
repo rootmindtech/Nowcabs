@@ -108,6 +108,7 @@ public  final class GlobalConstants {
     public static final String ACCEPTED_STATUS="ACCEPTED";
     public static final String REJECTED_STATUS="REJECTED";
     public static final String NORESPONSE_STATUS="NORESPONSE";
+    public static final String NORESPONSE_STATUS_DISPLAY="NO RESPONSE";
 
     //------
 

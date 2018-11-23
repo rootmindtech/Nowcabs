@@ -57,7 +57,7 @@ public class DialerActivity extends AppCompatActivity {
     int i = -1;
     ProgressBar mProgressBar, mProgressBar1;
 
-    private Button btn_dial, btn_stop;
+    private Button btn_dial, btn_close;
 //    private EditText edtTimerValue;
     private TextView textViewShowTime;
     private CountDownTimer countDownTimer;
@@ -109,7 +109,7 @@ public class DialerActivity extends AppCompatActivity {
         rider = (Rider) getIntent().getSerializableExtra("Rider");
 
         btn_dial = (Button) findViewById(R.id.btn_dial);
-        btn_stop = (Button) findViewById(R.id.btn_stop);
+        btn_close = (Button) findViewById(R.id.btn_close);
 
         textViewShowTime = (TextView)
                 findViewById(R.id.tv_time);
@@ -174,7 +174,7 @@ public class DialerActivity extends AppCompatActivity {
 
 
         btn_dial = (Button) findViewById(R.id.btn_dial);
-        btn_stop = (Button) findViewById(R.id.btn_stop);
+        btn_close = (Button) findViewById(R.id.btn_close);
 
 
         btn_dial.setOnClickListener(new View.OnClickListener() {
@@ -222,7 +222,7 @@ public class DialerActivity extends AppCompatActivity {
             }
         });
 
-        btn_stop.setOnClickListener(new View.OnClickListener() {
+        btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -250,7 +250,7 @@ public class DialerActivity extends AppCompatActivity {
                 mProgressBar1.setMax( time * 1000);
 
                 btn_dial.setEnabled(false);
-                btn_stop.setEnabled(false);
+                btn_close.setEnabled(false);
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mProgressBar1.setVisibility(View.VISIBLE);
 
@@ -308,7 +308,7 @@ public class DialerActivity extends AppCompatActivity {
         textViewShowTime.setText("00:00");
         textViewShowTime.setVisibility(View.VISIBLE);
         btn_dial.setEnabled(true);
-        btn_stop.setEnabled(true);
+        btn_close.setEnabled(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressBar1.setVisibility(View.GONE);
 

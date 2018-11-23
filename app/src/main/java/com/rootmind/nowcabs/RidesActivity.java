@@ -15,8 +15,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -24,6 +27,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -112,14 +117,54 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
 
         }
 
+        loadingSpinner = ((LinearLayout) findViewById(R.id.progressBarLayout));
+
+        hideProgressBar();
+
+
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.setBackgroundResource(Color.TRANSPARENT);
+        toolbar.setBackgroundColor(Color.WHITE);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
+
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setBackgroundColor(Color.WHITE);
+        tabLayout.setTabTextColors(Color.BLACK,Color.BLACK);
+        tabLayout.setSelectedTabIndicatorColor(Color.BLACK);
+        tabLayout.addTab(tabLayout.newTab().setText(GlobalConstants.ACCEPTED_STATUS));
+        tabLayout.addTab(tabLayout.newTab().setText(GlobalConstants.REJECTED_STATUS));
+        tabLayout.addTab(tabLayout.newTab().setText(GlobalConstants.NORESPONSE_STATUS_DISPLAY)); //for display
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+                new RidesActivity.RideProgressTask().execute(tab.getText().toString());
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        tabLayout.getTabAt(0).select();
+
+        new RidesActivity.RideProgressTask().execute(GlobalConstants.ACCEPTED_STATUS);
+
+
 
 
         rideList = new ArrayList<>();
@@ -135,16 +180,41 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
         ridesAdapter.setClickListener(this);
         //----------------
 
-        loadingSpinner = ((LinearLayout) findViewById(R.id.progressBarLayout));
-
-        hideProgressBar();
 
 
-        new RidesActivity.RideProgressTask().execute();
 
 
     }
 
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.action_bar_main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//            case R.id.accepted:
+//                //count=(TextView)findViewById(R.id.textView);
+//                //count.setText("Add is clicked");
+//                return (true);
+//            case R.id.rejected:
+//                //count=(TextView)findViewById(R.id.textView);
+//                //count.setText("Nothing is selected");
+//                return (true);
+//            case R.id.noresponse:
+//                //Toast.makeText(this, R.string.about_toast, Toast.LENGTH_LONG).show();
+//                return (true);
+//
+//        }
+//
+//        return (super.onOptionsItemSelected(item));
+//
+//    }
 
 
 
@@ -156,7 +226,7 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
 
 
 
-    private class RideProgressTask extends AsyncTask<Void, Void, Void> {
+    private class RideProgressTask extends AsyncTask<String, Void, Void> {
         @Override
         protected void onPreExecute() {
 
@@ -165,11 +235,16 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected Void doInBackground(String... arg0) {
             //my stuff is here
 
 
-            fetchRide(rideType);
+            //replace the status
+            if(arg0[0].equals("NO RESPONSE")) {
+                arg0[0] = GlobalConstants.NORESPONSE_STATUS;
+            }
+
+            fetchRide(arg0[0]);
 
             return null;
 
@@ -184,8 +259,9 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
         }
     }
 
-    public void fetchRide(final String rideType)
+    public void fetchRide(final String rideStatus)
     {
+
 
         RidesActivity.this.runOnUiThread(new Runnable() {
 
@@ -212,6 +288,7 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
 
                     String methodAction = "fetchRide";
 
+
                     JSONObject messageJson = new JSONObject();
                     if(rideType.equals(GlobalConstants.RIDER_TYPE)) {
                         messageJson.put("riderRefNo", rider.getRiderRefNo());
@@ -223,6 +300,7 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
                         messageJson.put("servicerID", rider.getRiderID());
                     }
                     messageJson.put("rideType", rideType);
+                    messageJson.put("rideStatus", rideStatus);
 
 
                     ConnectHost connectHost = new ConnectHost();
@@ -244,6 +322,8 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
                         if (jsonResponseData.getString("success") == "true") {
 
                             Ride ride=null;
+                            rideList.clear();
+                            ridesAdapter.notifyDataSetChanged();
 
                             if(wrapperArrayObj!=null) {
 
