@@ -9,16 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.ViewHolder>  {
+public class GroupRegisterAdapter extends RecyclerView.Adapter<GroupRegisterAdapter.ViewHolder>  {
 
 
-    private static final String TAG = "GroupRiderAdapter";
+    private static final String TAG = "GroupRegisterAdapter";
 
 
     public interface ItemClickListener {
@@ -30,11 +29,11 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
 
     private List<GroupRider> groupRiderList;
 
-    private GroupRiderAdapter.ItemClickListener mClickListener;
+    private GroupRegisterAdapter.ItemClickListener mClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView  tv_name, tv_mobileNo, tv_status; //tv_groupID
+        public TextView tv_name, tv_mobileNo, tv_status; //tv_groupID
         public ImageView iv_avatar, iv_delete;
         public CheckBox cb_public;
 
@@ -103,18 +102,18 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
 
 
 
-    public GroupRiderAdapter(List<GroupRider> groupRiderList) {
+    public GroupRegisterAdapter(List<GroupRider> groupRiderList) {
 
         this.groupRiderList = groupRiderList;
     }
 
     @Override
-    public GroupRiderAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GroupRegisterAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.group_rider_list_row, parent, false);
 
 
-        return new GroupRiderAdapter.ViewHolder(itemView);
+        return new GroupRegisterAdapter.ViewHolder(itemView);
     }
 
 
@@ -122,7 +121,7 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
 
 
     @Override
-    public void onBindViewHolder(final GroupRiderAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final GroupRegisterAdapter.ViewHolder holder, int position) {
 
         Resources res = holder.itemView.getContext().getResources();
 
@@ -130,8 +129,8 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
 
 
 //        holder.tv_groupID.setText(groupRider.getGroupID());
-        holder.tv_name.setText(groupRider.rider.getFirstName());
-        holder.tv_mobileNo.setText(groupRider.rider.getMobileNo());
+        holder.tv_name.setText(groupRider.getGroup().getName());
+        holder.tv_mobileNo.setText(groupRider.getGroup().getName());
         holder.tv_status.setText(groupRider.getStatus());
 
         holder.tv_status.setBackgroundColor(Color.parseColor(GlobalConstants.DARKGREEN));
@@ -154,19 +153,19 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
 
         //Log.d(TAG, "setServiceImage getImageName  " + CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
 
-        String imageFileName= CommonService.getImageName(groupRider.rider,GlobalConstants.IMAGE_AVATAR);
-
-        Log.d(TAG, "setServiceImage getImage ID  " + groupRider.rider.getRiderID());
-
-        Log.d(TAG, "setServiceImage getImageName  " + imageFileName);
-
-        if(imageFileName!=null && !imageFileName.trim().equals("")) {
-            commonService.getImage(holder.iv_avatar, imageFileName);
-        }
-        else
-        {
-            holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
-        }
+//        String imageFileName= CommonService.getImageName(groupRider.rider,GlobalConstants.IMAGE_AVATAR);
+//
+//        Log.d(TAG, "setServiceImage getImage ID  " + groupRider.rider.getRiderID());
+//
+//        Log.d(TAG, "setServiceImage getImageName  " + imageFileName);
+//
+//        if(imageFileName!=null && !imageFileName.trim().equals("")) {
+//            commonService.getImage(holder.iv_avatar, imageFileName);
+//        }
+//        else
+//        {
+//            holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
+//        }
 
 
         holder.cb_public.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -188,7 +187,7 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
     }
 
 
-    //    public void setServiceImage(GroupRiderAdapter.ViewHolder holder, GroupRider ride)
+    //    public void setServiceImage(GroupRegisterAdapter.ViewHolder holder, GroupRider ride)
 //    {
 //
 //        holder.iv_vehicleImage.setAdjustViewBounds(true);
@@ -297,9 +296,8 @@ public class GroupRiderAdapter extends RecyclerView.Adapter<GroupRiderAdapter.Vi
 
 
 
-    public void setClickListener(GroupRiderAdapter.ItemClickListener itemClickListener) {
+    public void setClickListener(GroupRegisterAdapter.ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
-
 
 }

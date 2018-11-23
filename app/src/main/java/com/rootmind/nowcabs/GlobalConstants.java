@@ -116,4 +116,10 @@ public  final class GlobalConstants {
     public static final String SERVICER_TYPE="SERVICER";
     //-----
 
+
+    //---------Colors--------
+    public static final String DARKGREEN="#006400";
+    public static final String DARKRED="#8B0000";
+
+
 }

@@ -260,6 +260,10 @@
         <activity
             android:name=".GroupRiderActivity"
             android:label="@string/title_activity_group_rider"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".GroupRegisterActivity"
+            android:label="@string/title_activity_group_register"
             android:theme="@style/AppTheme"></activity>
     </application>
 

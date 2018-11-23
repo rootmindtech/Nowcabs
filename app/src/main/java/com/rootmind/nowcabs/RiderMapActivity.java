@@ -824,7 +824,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                                 item.setChecked(true);
 
 
-                                new fetchGroupProgressTask().execute();
+                                new fetchRegisteredGroupsProgressTask().execute();
 
                                 //new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, false});
 
@@ -1056,7 +1056,7 @@ public class RiderMapActivity extends AppCompatActivity implements
     public void onClickCarpenter(View view, int position) {
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_CARPENTER, null, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_CARPENTER, null, false,null});
 
     }
     @Override
@@ -1064,7 +1064,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, false,null});
 
     }
     @Override
@@ -1072,7 +1072,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, false, null});
 
     }
     @Override
@@ -1080,7 +1080,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_ELECTRICIAN, null, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_ELECTRICIAN, null, false, null});
 
     }
     @Override
@@ -1088,7 +1088,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_PLUMBER, null, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_PLUMBER, null, false, null});
 
     }
     @Override
@@ -1096,7 +1096,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_TAILOR, null, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_TAILOR, null, false, null});
 
     }
     @Override
@@ -1104,7 +1104,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_WASHER, null, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_WASHER, null, false, null});
 
     }
     @Override
@@ -1112,7 +1112,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_COURIER, null, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_COURIER, null, false, null});
 
     }
     @Override
@@ -1120,7 +1120,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_MERCHANT, null, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_MERCHANT, null, false, null});
 
     }
     //--------end of service selection events
@@ -1134,7 +1134,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         GroupRider groupRider = groupList.get(position);
 
         bottomGroupSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_GROUP, null, false});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_GROUP, null, false, groupRider});
 
 
     }
@@ -3120,6 +3120,17 @@ public class RiderMapActivity extends AppCompatActivity implements
 
             }
 
+            case R.id.nav_myGroup: {
+
+                Intent i = new Intent(getApplicationContext(), GroupRegisterActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Rider", rider);
+                i.putExtras(bundle);
+                startActivity(i);
+                break;
+
+            }
+
             case R.id.nav_logout: {
 
                 logout();
@@ -3387,7 +3398,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 //            Log.d(TAG, "param[1] "+params[1].toString());
 //            Log.d(TAG, "param[2] "+Boolean.valueOf(params[2].toString()));
 
-            fetchServiceLocation(params[0].toString(),(params[1]==null?null:params[1].toString()),Boolean.valueOf(params[2].toString()));
+            fetchServiceLocation(params[0].toString(),(params[1]==null?null:params[1].toString()),Boolean.valueOf(params[2].toString()), (GroupRider)params[3]);
 
             return null;
 
@@ -3403,7 +3414,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         }
     }
                     //--------fetch service Location  in the backend
-    public void fetchServiceLocation(final String service, final String vehicleType, final boolean switchService) {
+    public void fetchServiceLocation(final String service, final String vehicleType, final boolean switchService, final GroupRider groupRider) {
 
 
 
@@ -3442,6 +3453,12 @@ public class RiderMapActivity extends AppCompatActivity implements
                     if(vehicleType!=null) {
                         messageJson.put("vehicleType", vehicleType);
                     }
+                    if(service.equals(GlobalConstants.SERVICE_GROUP))
+                    {
+                        messageJson.put("groupRefNo", groupRider.getGroupRefNo());
+
+                    }
+
 
 
                     ConnectHost connectHost = new ConnectHost();
@@ -3547,14 +3564,28 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
                                     if (serviceAdapter.getItemCount() > 0) {
-                                        bottomServiceSheetClose();
+
+                                        if(service.equals(GlobalConstants.SERVICE_GROUP))
+                                        {
+                                            bottomGroupSheetClose();
+                                        }
+                                        else {
+                                            bottomServiceSheetClose();
+                                        }
+
                                         bottomSheetOpen();
                                     }
                                     else
                                     {
                                         bottomSheetClose();
                                         CommonService.Toast(RiderMapActivity.this,"No service found near to your location !!!",Toast.LENGTH_SHORT);
-                                        bottomServiceSheetOpen();
+                                        if(service.equals(GlobalConstants.SERVICE_GROUP))
+                                        {
+                                            bottomGroupSheetOpen();
+                                        }
+                                        else {
+                                            bottomServiceSheetOpen();
+                                        }
                                     }
                                 }
 
@@ -3612,7 +3643,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         if(currentServiceMarker.equals(GlobalConstants.TRANSPORT_AUTO_SERVICE)) {
 
             btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, true});
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, true, null});
             currentServiceMarker = GlobalConstants.TRANSPORT_CAB_SERVICE;
             btn_service.setImageResource(R.drawable.car_24px);
             Drawable fabDr= btn_service.getDrawable();
@@ -3623,7 +3654,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         else if(currentServiceMarker.equals(GlobalConstants.TRANSPORT_CAB_SERVICE)) {
 
             btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.UTILITY_SERVICE, true});
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.UTILITY_SERVICE, true, null});
             currentServiceMarker = GlobalConstants.SERVICE_MERCHANT;
             btn_service.setImageResource(R.drawable.merchant);
             Drawable fabDr= btn_service.getDrawable();
@@ -3635,7 +3666,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         else if(currentServiceMarker.equals(GlobalConstants.SERVICE_MERCHANT)) {
 
             btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true});
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true, null});
             currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
             btn_service.setImageResource(R.drawable.auto_24px);
             Drawable fabDr= btn_service.getDrawable();
@@ -4140,7 +4171,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
      }
 
-    private class fetchGroupProgressTask extends AsyncTask<Object, Void, Void> {
+    private class fetchRegisteredGroupsProgressTask extends AsyncTask<Object, Void, Void> {
         @Override
         protected void onPreExecute() {
             showProgressBar();
@@ -4151,7 +4182,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         protected Void doInBackground(Object...params ) {
 
 
-            fetchGroup();
+            fetchRegisteredGroups();
 
             return null;
 
@@ -4165,7 +4196,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         }
     }
 
-    public void fetchGroup()
+    public void fetchRegisteredGroups()
     {
 
         RiderMapActivity.this.runOnUiThread(new Runnable() {
@@ -4231,8 +4262,9 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                                         groupRider.setGroupRefNo(wrapperArrayObj.optJSONObject(i).optString("groupRefNo"));
                                         groupRider.setGroupID(wrapperArrayObj.optJSONObject(i).optString("groupID"));
-                                        groupRider.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
-                                        groupRider.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
+                                        groupRider.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("linkRiderRefNo"));
+                                        groupRider.setRiderID(wrapperArrayObj.optJSONObject(i).optString("linkRiderID"));
+                                        groupRider.setPublicView(wrapperArrayObj.optJSONObject(i).optString("publicView"));
                                         groupRider.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
                                         groupRider.setGroup(gson.fromJson(wrapperArrayObj.optJSONObject(i).optJSONObject("groupWrapper").toString(), Group.class));
 

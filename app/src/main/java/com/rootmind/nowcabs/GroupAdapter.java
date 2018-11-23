@@ -121,7 +121,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.tv_name.setText(ride.getName());
         holder.tv_status.setText(ride.getStatus());
 
-        holder.tv_status.setTextColor(Color.GREEN);
+        holder.tv_status.setBackgroundColor(Color.parseColor(GlobalConstants.DARKGREEN));
+        holder.tv_status.setTextColor(Color.WHITE);
 
 
 

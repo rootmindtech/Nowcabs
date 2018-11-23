@@ -114,8 +114,8 @@
 
         <ImageView
             android:id="@+id/iv_delete"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:maxHeight="24dp"
             android:maxWidth="24dp"
             android:layout_marginRight="10dp"

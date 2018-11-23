@@ -117,10 +117,11 @@ public class GroupSelectionAdapter extends RecyclerView.Adapter<GroupSelectionAd
 
 
         holder.tv_groupID.setText(groupRider.getGroupID());
-        //holder.tv_name.setText(groupRider.getName());
+        holder.tv_name.setText(groupRider.getGroup().getName());
         holder.tv_status.setText(groupRider.getStatus());
 
-        holder.tv_status.setTextColor(Color.GREEN);
+        holder.tv_status.setBackgroundColor(Color.parseColor(GlobalConstants.DARKGREEN));
+        holder.tv_status.setTextColor(Color.WHITE);
 
 
 

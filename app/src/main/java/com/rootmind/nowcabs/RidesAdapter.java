@@ -154,12 +154,12 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
 
                 holder.iv_dialImage.setVisibility(View.VISIBLE);
                 holder.tv_servicerMobileNo.setVisibility(View.VISIBLE);
-                holder.tv_rideStatus.setTextColor(Color.parseColor("#006400")); //darkgreen
+                holder.tv_rideStatus.setTextColor(Color.parseColor(GlobalConstants.DARKGREEN)); //darkgreen
                 break;
             }
             case GlobalConstants.REJECTED_STATUS: {
 
-                holder.tv_rideStatus.setTextColor(Color.parseColor("#8B0000")); //dark red
+                holder.tv_rideStatus.setTextColor(Color.parseColor(GlobalConstants.DARKRED)); //darkred
                 break;
             }
             case GlobalConstants.NORESPONSE_STATUS: {
