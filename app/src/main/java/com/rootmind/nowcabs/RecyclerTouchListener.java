@@ -3,15 +3,6 @@ package com.rootmind.nowcabs;
 /**
  * Created by rootmindtechsoftprivatelimited on 04/08/17.
  */
-import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.content.Context;
-import android.widget.AdapterView.OnItemClickListener;
-
-
-
 
 
 public  class RecyclerTouchListener  {

@@ -1,39 +1,18 @@
 package com.rootmind.nowcabs;
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.io.*;
 import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
+
 import java.util.*;
 import java.net.URLEncoder;
 
 import android.content.SharedPreferences;
-import android.widget.LinearLayout;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.MarkerOptions;
 //import com.google.firebase.database.FirebaseDatabase;
 
-import static com.rootmind.nowcabs.RiderMapActivity.MY_PERMISSIONS_REQUEST_LOCATION;
 
 /**
  * Created by rootmindtechsoftprivatelimited on 21/06/17.

@@ -6,13 +6,13 @@ package com.rootmind.nowcabs;
 
 
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.View;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.res.TypedArray;
 

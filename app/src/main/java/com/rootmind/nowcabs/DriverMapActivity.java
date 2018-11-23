@@ -9,12 +9,12 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -77,7 +77,6 @@ import android.widget.Button;
 import android.view.View;
 
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.util.Log;
 import android.app.AlertDialog;
 
@@ -105,9 +104,9 @@ import android.graphics.Rect;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.PorterDuff;
 
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.view.GravityCompat;
+import com.google.android.material.navigation.NavigationView;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.core.view.GravityCompat;
 
 import android.widget.ImageView;
 

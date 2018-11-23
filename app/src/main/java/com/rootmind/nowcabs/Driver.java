@@ -1,5 +1,4 @@
 package com.rootmind.nowcabs;
-import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.*;

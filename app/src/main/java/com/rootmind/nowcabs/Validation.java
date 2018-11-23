@@ -1,6 +1,5 @@
 package com.rootmind.nowcabs;
 
-import android.support.v4.app.Fragment;
 import android.widget.EditText;
 import java.util.regex.Pattern;
 /**
