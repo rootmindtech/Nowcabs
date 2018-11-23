@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="260dp"
     android:background="@color/colorWhite"
     android:focusable="true"
     android:orientation="horizontal"
@@ -162,6 +162,27 @@
                 android:text="@string/vacant"
                 android:textSize="12sp"
                 />
+
+            <ImageView
+                android:id="@+id/iv_calendar"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_below="@id/tv_rideStatus"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/calendar"
+                />
+
+            <TextView
+                android:id="@+id/tv_appointDateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_below="@id/tv_rideStatus"
+                android:layout_toRightOf="@id/iv_calendar"
+                android:layout_marginTop="10dp"
+                android:text="DD/MM/YYYY HH:MM"
+                android:textSize="12sp" />
 
 
         </RelativeLayout>

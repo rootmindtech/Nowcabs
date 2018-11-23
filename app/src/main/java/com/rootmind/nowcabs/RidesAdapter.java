@@ -34,7 +34,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView tv_servicerName, tv_servicerMobileNo, tv_rideStatus, tv_serviceCode, tv_vehicleNo, tv_rideStartDate;
+        public TextView tv_servicerName, tv_servicerMobileNo, tv_rideStatus, tv_serviceCode, tv_vehicleNo, tv_rideStartDate, tv_appointDateTime;
         public ImageView iv_avatar;
         public ImageView iv_vehicleImage;
         public ImageView iv_dialImage;
@@ -56,6 +56,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
             iv_dialImage=(ImageView) view.findViewById(R.id.iv_dialImage);
             iv_avatar=(ImageView) view.findViewById(R.id.iv_avatar);
             tv_rideStartDate=(TextView) view.findViewById(R.id.tv_rideStartDate);
+            tv_appointDateTime = (TextView) view.findViewById(R.id.tv_appointDateTime);
 
             iv_dialImage.setOnClickListener(this);
 
@@ -141,6 +142,8 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
 
         holder.iv_dialImage.setVisibility(View.INVISIBLE);
         holder.tv_servicerMobileNo.setVisibility(View.INVISIBLE);
+
+        holder.tv_appointDateTime.setText(ride.getAppointDateTime());
 
         switch (ride.getRideStatus()) {
 

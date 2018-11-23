@@ -25,6 +25,11 @@ android {
     }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
 
+    //this is added for datetimepicker
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -57,7 +62,7 @@ dependencies {
     implementation 'com.hbb20:ccp:2.2.3' //country drop downlist
     implementation 'com.squareup.picasso:picasso:2.71828' //images to display
 
-    implementation 'com.takisoft.datetimepicker:datetimepicker:1.0.0'
+    implementation 'com.wdullaer:materialdatetimepicker:4.1.0'
 
     testImplementation 'junit:junit:4.12'
 

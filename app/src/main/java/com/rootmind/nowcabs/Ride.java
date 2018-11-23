@@ -49,7 +49,18 @@ public class Ride implements Serializable {
 
     public String rideType=null;
 
+    public String appointDateTime=null;
+
     public boolean recordFound=false;
+
+    public String getAppointDateTime() {
+        return appointDateTime;
+    }
+
+    public void setAppointDateTime(String appointDateTime) {
+        this.appointDateTime = appointDateTime;
+    }
+
 
     public String getRideType() {
         return rideType;

@@ -1,6 +1,7 @@
 package com.rootmind.nowcabs;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +13,9 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,21 +37,25 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.wdullaer.materialdatetimepicker.*;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DialerActivity extends AppCompatActivity {
+public class DialerActivity extends  AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     int i = -1;
     ProgressBar mProgressBar, mProgressBar1;
 
     private Button btn_dial, btn_close;
 //    private EditText edtTimerValue;
-    private TextView textViewShowTime;
+    private TextView textViewShowTime, tv_appointDate, tv_appointTime;
     private CountDownTimer countDownTimer;
     private long totalTimeCountInMilliseconds;
 
@@ -65,6 +72,8 @@ public class DialerActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     ListenerRegistration registration;
+    String appointDate=null;
+    String appointTime=null;
 //    public LinearLayout loadingSpinner;
 
 
@@ -130,6 +139,9 @@ public class DialerActivity extends AppCompatActivity {
         TextView tv_serviceName = findViewById(R.id.tv_servicerName);
         ImageView icon=(ImageView)findViewById(R.id.iv_driverImage);
 
+        tv_appointDate = (TextView)findViewById(R.id.tv_appointDate);
+        tv_appointTime = (TextView)findViewById(R.id.tv_appointTime);
+
         //-----set avatar
         if(serviceGeo!=null) {
 
@@ -170,44 +182,7 @@ public class DialerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-                DocumentReference docRef = firebaseFirestore.collection("service").document(serviceGeo.getRiderID());
-                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-
-                                Log.d(TAG, "DocumentSnapshot rideStatus: " + document.getData().get("rideStatus"));
-
-                                if(document.getData().get("rideStatus")==null || !document.getData().get("rideStatus").equals(GlobalConstants.CALLING_STATUS))
-                                {
-
-                                    startTimer();
-
-                                }
-                                else
-                                {
-                                    CommonService.Toast(DialerActivity.this,"Service provider busy, please try again",Toast.LENGTH_SHORT);
-                                }
-
-
-
-                            } else {
-                                Log.d(TAG, "No such document");
-
-                                startTimer();
-
-                            }
-                        } else {
-                            Log.d(TAG, "get failed with ", task.getException());
-                        }
-                    }
-                });
-
-
+               dial();
             }
         });
 
@@ -226,9 +201,118 @@ public class DialerActivity extends AppCompatActivity {
         });
 
 
+
+        Calendar now = Calendar.getInstance();
+
+        tv_appointDate.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
+
+                  DatePickerDialog dpd =  DatePickerDialog.newInstance(
+                          DialerActivity.this,
+                          now.get(Calendar.YEAR), // Initial year selection
+                          now.get(Calendar.MONTH), // Initial month selection
+                          now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                  );
+                  // If you're calling this from an AppCompatActivity
+                  dpd.show(getSupportFragmentManager(), "Datepickerdialog");
+                  dpd.setMinDate(now);
+
+
+              }
+          }
+        );
+
+        tv_appointTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                TimePickerDialog tpd =  TimePickerDialog.newInstance(DialerActivity.this,true);
+                // If you're calling this from an AppCompatActivity
+                tpd.show(getSupportFragmentManager(), "Timepickerdialog");
+
+            }
+        });
+
+
+//        Calendar cal = Calendar.getInstance();
+
+//        findViewById(R.id.tv_appointDate)
+//                .setOnClickListener(view -> {
+//                            /*DatePickerDialog
+//                                    .newInstance(null, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE))
+//                                    .show(getFragmentManager(), null);*/
+//                            DatePickerDialog dpd = new DatePickerDialog(DialerActivity.this, (view1, year, month, dayOfMonth) -> {
+//                                //Toast.makeText(DialerActivity.this, String.format("%d", year) + "-" + String.format("%02d", month + 1) + "-" + String.format("%02d", dayOfMonth), Toast.LENGTH_SHORT).show();
+//                                tv_appointDate.setText(String.format("%02d", dayOfMonth)+"/"+ String.format("%02d", month + 1) + "/" + String.format("%d", year));
+//                            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
+//                            dpd.show();
+//                        }
+//                );
+//
+//        findViewById(R.id.tv_appointTime)
+//                .setOnClickListener(view -> {
+//                        /*TimePickerDialog
+//                        .newInstance(null, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true)
+//                        .show(getFragmentManager(), null);*/
+//                            TimePickerDialog tpd = new TimePickerDialog(DialerActivity.this, (view1, hourOfDay, minute) -> {
+//                                //Toast.makeText(DialerActivity.this, String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute), Toast.LENGTH_SHORT).show();
+//                                tv_appointTime.setText(String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute));
+//                            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), DateFormat.is24HourFormat(DialerActivity.this));
+//                            tpd.show();
+//                        }
+//                );
+
     }
 
 
+
+    private void dial()
+    {
+
+        if(tv_appointDate.getText().equals("") || tv_appointTime.getText().equals(""))
+        {
+            CommonService.Toast(DialerActivity.this,"Please select Appointment Date & Time",Toast.LENGTH_SHORT);
+            return;
+
+        }
+
+        DocumentReference docRef = firebaseFirestore.collection("service").document(serviceGeo.getRiderID());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+
+                        Log.d(TAG, "DocumentSnapshot rideStatus: " + document.getData().get("rideStatus"));
+
+                        if(document.getData().get("rideStatus")==null || !document.getData().get("rideStatus").equals(GlobalConstants.CALLING_STATUS))
+                        {
+
+                            startTimer();
+
+                        }
+                        else
+                        {
+                            CommonService.Toast(DialerActivity.this,"Service provider busy, please try again",Toast.LENGTH_SHORT);
+                        }
+
+
+
+                    } else {
+                        Log.d(TAG, "No such document");
+
+                        startTimer();
+
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
 
     private void startTimer() {
 
@@ -373,6 +457,7 @@ public class DialerActivity extends AppCompatActivity {
                     messageJson.put("servicerID", serviceGeo.getRiderID());
                     messageJson.put("riderRefNo", rider.getRiderRefNo());
                     messageJson.put("riderID", rider.getRiderID());
+                    messageJson.put("appointDateTime", appointDate + " " + appointTime);
 
 
                     ConnectHost connectHost = new ConnectHost();
@@ -790,6 +875,24 @@ public class DialerActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        appointDate = year + "-" + (monthOfYear+1)+ "-" + dayOfMonth;
+        tv_appointDate.setText(date);
+    }
+
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        String time = hourOfDay+":"+minute; //hourOfDay+"h"+minute+"m"+second;
+        appointTime = hourOfDay+":"+minute + ":00";
+        tv_appointTime.setText(time);
+    }
+
+
+
 //    public  void showProgressBar() {
 //
 //        loadingSpinner.setVisibility(View.VISIBLE);

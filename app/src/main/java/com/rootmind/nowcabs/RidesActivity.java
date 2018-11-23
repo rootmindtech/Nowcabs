@@ -323,6 +323,7 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
                                         ride.setServiceCode(wrapperArrayObj.optJSONObject(i).optString("serviceCode"));
                                         ride.setRideStatus(wrapperArrayObj.optJSONObject(i).optString("rideStatus"));
                                         ride.setRideStartDate(wrapperArrayObj.optJSONObject(i).optString("rideStartDate"));
+                                        ride.setAppointDateTime(wrapperArrayObj.optJSONObject(i).optString("appointDateTime"));
                                         ride.setRideType(rideType);
 
                                         rideList.add(ride);
