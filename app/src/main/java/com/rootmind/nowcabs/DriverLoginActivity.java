@@ -992,7 +992,7 @@ public class DriverLoginActivity extends AppCompatActivity {
 ////                dropDown_vehicleType.setSelection(i);
 //            }
 
-            mobileNo = rider.getRiderMobileNo();
+            mobileNo = rider.getMobileNo();
             name = rider.getRiderName();
 
 //            txt_mobileNo.setText(mobileNo);

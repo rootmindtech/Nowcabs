@@ -45,7 +45,7 @@ import org.json.JSONObject;
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHolder> {
 
 
-    private static final String TAG = "ServiceSelectionAdapter";
+    private static final String TAG = "ServiceAdapter";
 
 
     public interface ItemClickListener {

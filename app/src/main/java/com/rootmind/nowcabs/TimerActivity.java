@@ -257,7 +257,8 @@ public class TimerActivity extends AppCompatActivity  {
 
         }
     }
-    //--------insert Ride   in the backend
+
+    //--------update Ride   in the backend
     public void updateRide() {
 
 
@@ -354,7 +355,7 @@ public class TimerActivity extends AppCompatActivity  {
         });//runnable end
 
 
-    }//insert ride
+    }//update ride
 
 //    public void firestoreListener()
 //    {

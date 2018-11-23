@@ -24,14 +24,14 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
             <!--28-Sep-2018-->
-            <Button
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="right"
-                android:layout_marginRight="30dp"
-                android:id="@+id/btn_logout"
-                android:background="@drawable/logout_black_24dp"
-                />
+            <!--<Button-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:layout_gravity="right"-->
+                <!--android:layout_marginRight="30dp"-->
+                <!--android:id="@+id/btn_logout"-->
+                <!--android:background="@drawable/logout_black_24dp"-->
+                <!--/>-->
 
             <!--android:textSize="16sp"-->
             <!--android:layout_alignParentEnd="true"-->

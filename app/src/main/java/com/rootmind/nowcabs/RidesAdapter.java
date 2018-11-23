@@ -28,6 +28,8 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
 
 
     public interface ItemClickListener {
+        void onClickDialImage(View view, int position);
+
 
     }
 
@@ -56,10 +58,14 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
             tv_rideStatus = (TextView) view.findViewById(R.id.tv_rideStatus);
             iv_vehicleImage=(ImageView) view.findViewById(R.id.iv_vehicleImage);
             tv_vehicleNo= (TextView) view.findViewById(R.id.tv_vehicleNo);
+            iv_dialImage=(ImageView) view.findViewById(R.id.iv_dialImage);
             iv_avatar=(ImageView) view.findViewById(R.id.iv_avatar);
             tv_rideStartDate=(TextView) view.findViewById(R.id.tv_rideStartDate);
 
+            iv_dialImage.setOnClickListener(this);
 
+            iv_dialImage.setVisibility(View.INVISIBLE);
+            tv_servicerMobileNo.setVisibility(View.INVISIBLE);
 
 
         }
@@ -68,15 +74,16 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
         @Override
         public void onClick(View view) {
             if (mClickListener != null) {
-                //mClickListener.onClick(view, getAdapterPosition());
 
                 Log.i(TAG, "get ID "+ view.getId());
 
 
                 switch (view.getId()) {
 
-                    case R.id.iv_avatar: {
+                    case R.id.iv_dialImage: {
 
+
+                        mClickListener.onClickDialImage(view, getAdapterPosition());
                         break;
                     }
 
@@ -120,13 +127,52 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
 
         Ride ride = rideList.get(position);
 
-        holder.tv_servicerName.setText(ride.getServicerName());
-        holder.tv_servicerMobileNo.setText(ride.getServicerMobileNo());
+        if(ride.getRideType().equals(GlobalConstants.RIDER_TYPE)) {
+
+            holder.tv_servicerName.setText(ride.getServicerName());
+            holder.tv_servicerMobileNo.setText(ride.getServicerMobileNo());
+        }
+        else if(ride.getRideType().equals(GlobalConstants.SERVICER_TYPE))
+        {
+            holder.tv_servicerName.setText(ride.getRiderName());
+            holder.tv_servicerMobileNo.setText(ride.getRiderMobileNo());
+
+        }
         
         holder.tv_serviceCode.setText(ride.getServiceCode());
         holder.tv_rideStatus.setText(ride.getRideStatus());
-
         holder.tv_rideStartDate.setText(ride.getRideStartDate());
+
+
+        holder.iv_dialImage.setVisibility(View.INVISIBLE);
+        holder.tv_servicerMobileNo.setVisibility(View.INVISIBLE);
+
+        switch (ride.getRideStatus()) {
+
+
+            case GlobalConstants.ACCEPTED_STATUS: {
+
+                holder.iv_dialImage.setVisibility(View.VISIBLE);
+                holder.tv_servicerMobileNo.setVisibility(View.VISIBLE);
+                holder.tv_rideStatus.setTextColor(Color.parseColor("#006400")); //darkgreen
+                break;
+            }
+            case GlobalConstants.REJECTED_STATUS: {
+
+                holder.tv_rideStatus.setTextColor(Color.parseColor("#8B0000")); //dark red
+                break;
+            }
+            case GlobalConstants.NORESPONSE_STATUS: {
+
+                holder.tv_rideStatus.setTextColor(Color.GRAY);
+                break;
+            }
+
+        } //switch
+
+
+
+
 
         setServiceImage(holder, ride);
 

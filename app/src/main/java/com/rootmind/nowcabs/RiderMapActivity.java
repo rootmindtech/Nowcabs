@@ -97,6 +97,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import android.util.Log;
@@ -160,6 +162,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         OnCameraIdleListener,
         ServiceAdapter.ItemClickListener,
         ServiceSelectionAdapter.ItemClickListener,
+        GroupSelectionAdapter.ItemClickListener,
         OnInfoWindowClickListener
 
 {
@@ -257,12 +260,16 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     private List<Rider> servicesList;
     private List<Rider> serviceSelectionList;
+    private List<GroupRider> groupList;
 
     private RecyclerView recyclerView;
     private RecyclerView servicesRecyclerView;
+    private RecyclerView groupRecyclerView;
+
 
     private ServiceAdapter serviceAdapter;
     private ServiceSelectionAdapter serviceSelectionAdapter;
+    private GroupSelectionAdapter groupSelectionAdapter;
 
 //    ImageView riderImage;
     //RatingBar ratingBar;
@@ -279,6 +286,9 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     LinearLayout layoutBottomSheetService;
     BottomSheetBehavior serviceSheetBehavior;
+
+    LinearLayout layoutBottomSheetGroup;
+    BottomSheetBehavior groupSheetBehavior;
 
 
     FloatingActionButton btn_service;
@@ -349,6 +359,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         servicesList = new ArrayList<>();
         serviceSelectionList = new ArrayList<>();
+        groupList = new ArrayList<>();
 
 
 
@@ -624,6 +635,16 @@ public class RiderMapActivity extends AppCompatActivity implements
         serviceSelectionAdapter.setClickListener(this);
         //----------------
 
+        //-----------recycler for list group selecton-------
+        groupRecyclerView = (RecyclerView) findViewById(R.id.group_bottom_recycler_view);
+        groupSelectionAdapter = new GroupSelectionAdapter(groupList);
+        RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        groupRecyclerView.setLayoutManager(groupLayoutManager);
+        groupRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        groupRecyclerView.setAdapter(groupSelectionAdapter);
+        groupSelectionAdapter.setClickListener(this);
+        //----------------
+
 
         //recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL));
 
@@ -656,6 +677,10 @@ public class RiderMapActivity extends AppCompatActivity implements
         // -----service selection sheet view
         layoutBottomSheetService = (LinearLayout) findViewById(R.id.bottom_sheet_service);
         serviceSheetBehavior = BottomSheetBehavior.from(layoutBottomSheetService);
+
+        // -----group selection sheet view
+        layoutBottomSheetGroup = (LinearLayout) findViewById(R.id.bottom_sheet_group);
+        groupSheetBehavior = BottomSheetBehavior.from(layoutBottomSheetGroup);
 
 
         /**
@@ -731,6 +756,40 @@ public class RiderMapActivity extends AppCompatActivity implements
         //---------end of bottom sheet
 
 
+        //-----------bottom sheet for group selection
+        /**
+         * bottom sheet state change listener
+         * we are changing button text when sheet changed state
+         * */
+        groupSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+                        //Toast.makeText(RiderMapActivity.this, "Close Sheet", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        //Toast.makeText(RiderMapActivity.this, "Expand Sheet", Toast.LENGTH_LONG).show();
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+        bottomGroupSheetClose();
+
+
         //-----
         //-------bottom nav
         bottomNavigationView = (BottomNavigationView)
@@ -761,7 +820,11 @@ public class RiderMapActivity extends AppCompatActivity implements
                                 break;
                             case R.id.action_group:
 
+                                item.setCheckable(true);
                                 item.setChecked(true);
+
+
+                                new fetchGroupProgressTask().execute();
 
                                 //new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, false});
 
@@ -856,6 +919,25 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     }
 
+    public void bottomGroupSheetOpen() {
+        groupSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
+        groupSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+
+        if (groupSelectionAdapter.getItemCount() > 0) {
+            groupRecyclerView.setVisibility(View.VISIBLE);
+
+        } else {
+            groupRecyclerView.setVisibility(View.GONE);
+        }
+
+    }
+
+    public void bottomGroupSheetClose() {
+        groupSheetBehavior.setPeekHeight(0);
+        groupSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+    }
 
     //on item selection
 
@@ -902,6 +984,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         Rider serviceGeo = servicesList.get(position);
+
+        Log.i(TAG, "serviceGeo servicecode " + serviceGeo.getServiceCode());
 
         //this opens the ringer tone
         callDialer(serviceGeo);
@@ -1042,6 +1126,20 @@ public class RiderMapActivity extends AppCompatActivity implements
     //--------end of service selection events
 
 
+    //-------group selection event
+    @Override
+    public void onClickGroup(View view, int position) {
+
+
+        GroupRider groupRider = groupList.get(position);
+
+        bottomGroupSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_GROUP, null, false});
+
+
+    }
+    //---------end of group selection
+
     //------------------------------
 
     @Override
@@ -1123,6 +1221,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                 Log.d(TAG, "onMapClick");
                 bottomSheetClose();
                 bottomServiceSheetClose();
+                bottomGroupSheetClose();
             }
         });
 
@@ -2311,10 +2410,10 @@ public class RiderMapActivity extends AppCompatActivity implements
                     // sees the explanation, try again to request the permission.
 
                     Intent callIntent = new Intent(Intent.ACTION_CALL);
-                    callIntent.setData(Uri.parse("tel:" + driverGeo.getRiderMobileNo()));
+                    callIntent.setData(Uri.parse("tel:" + driverGeo.getMobileNo()));
                     startActivity(callIntent);
 
-                    nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getRiderMobileNo());
+                    nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getMobileNo());
 
                 } else {
 
@@ -2323,10 +2422,10 @@ public class RiderMapActivity extends AppCompatActivity implements
                     ActivityCompat.requestPermissions(RiderMapActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
 
                     Intent callIntent = new Intent(Intent.ACTION_CALL);
-                    callIntent.setData(Uri.parse("tel:" + driverGeo.getRiderMobileNo()));
+                    callIntent.setData(Uri.parse("tel:" + driverGeo.getMobileNo()));
                     startActivity(callIntent);
 
-                    nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getRiderMobileNo());
+                    nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getMobileNo());
 
                     // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                     // app-defined int constant. The callback method gets the
@@ -2334,15 +2433,15 @@ public class RiderMapActivity extends AppCompatActivity implements
                 }
             } else {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:" + driverGeo.getRiderMobileNo()));
+                callIntent.setData(Uri.parse("tel:" + driverGeo.getMobileNo()));
                 startActivity(callIntent);
 
-                nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getRiderMobileNo());
+                nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getMobileNo());
 
             }
 
 
-            Log.d(TAG, "Dial Button Click end: " + driverGeo.getRiderMobileNo());
+            Log.d(TAG, "Dial Button Click end: " + driverGeo.getMobileNo());
 
 
         } catch (Exception e) {
@@ -2435,7 +2534,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         try {
 
 
-            final String riderMobileNo = rider.getRiderMobileNo();
+            final String riderMobileNo = rider.getMobileNo();
 
 
             final String driverID = driverGeo.getRiderID();
@@ -2992,6 +3091,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                 Intent i = new Intent(getApplicationContext(), RidesActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Rider", rider);
+                bundle.putSerializable("rideType", GlobalConstants.RIDER_TYPE);
                 i.putExtras(bundle);
                 startActivity(i);
                 break;
@@ -3002,12 +3102,30 @@ public class RiderMapActivity extends AppCompatActivity implements
                 Intent i = new Intent(getApplicationContext(), RidesActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Rider", rider);
+                bundle.putSerializable("rideType", GlobalConstants.SERVICER_TYPE);
                 i.putExtras(bundle);
                 startActivity(i);
                 break;
 
             }
 
+            case R.id.nav_group: {
+
+                Intent i = new Intent(getApplicationContext(), GroupActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Rider", rider);
+                i.putExtras(bundle);
+                startActivity(i);
+                break;
+
+            }
+
+            case R.id.nav_logout: {
+
+                logout();
+                break;
+
+            }
 
 
 
@@ -3364,7 +3482,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                                         rider.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
                                         rider.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
                                         rider.setRiderName(wrapperArrayObj.optJSONObject(i).optString("firstName"));
-                                        rider.setRiderMobileNo(wrapperArrayObj.optJSONObject(i).optString("mobileNo"));
+                                        rider.setMobileNo(wrapperArrayObj.optJSONObject(i).optString("mobileNo"));
                                         rider.setVehicleNo(wrapperArrayObj.optJSONObject(i).optString("vehicleNo"));
                                         rider.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
                                         rider.setVehicleType(wrapperArrayObj.optJSONObject(i).optString("vehicleType"));
@@ -3387,7 +3505,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                                         if(imageWrappers!=null)
                                         {
 
-                                            rider.images = new Image[imageWrappers.length()];
+                                            rider.imageWrappers = new Image[imageWrappers.length()];
                                             Image image=null;
 
                                             for(int j=0;j<imageWrappers.length();j++)
@@ -3402,7 +3520,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                                                     image.setImageName(imageWrappers.optJSONObject(j).optString("imageName"));
                                                     image.setImageFolder(imageWrappers.optJSONObject(j).optString("imageFolder"));
                                                     image.setStatus(imageWrappers.optJSONObject(j).optString("status"));
-                                                    rider.images[j] = image;
+                                                    rider.imageWrappers[j] = image;
 
                                                 }
                                             }
@@ -3974,6 +4092,188 @@ public class RiderMapActivity extends AppCompatActivity implements
         }
     }
 
+
+    public void logout()
+    {
+
+
+                Log.d(TAG, "Logout Button Click: ");
+
+
+                new AlertDialog.Builder(RiderMapActivity.this)
+                        .setTitle(R.string.logout)
+                        .setMessage(R.string.logout_confirm)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                //To clear SharedPreferences
+                                editor = sharedPreferences.edit();
+                                //editor.clear();
+                                //Do not clear all as last current lat and current lng required in case onLocationChange is not fired
+                                editor.putString("autoLogin", GlobalConstants.NO_CODE);
+                                editor.commit();
+
+
+                                //update Log
+                                //NowcabsLog nowcabsLog = new NowcabsLog();
+                                //nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Logout");
+
+
+                                Intent intent = new Intent(RiderMapActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+
+
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+
+     }
+
+    private class fetchGroupProgressTask extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            showProgressBar();
+
+        }
+
+        @Override
+        protected Void doInBackground(Object...params ) {
+
+
+            fetchGroup();
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            hideProgressBar();
+
+        }
+    }
+
+    public void fetchGroup()
+    {
+
+        RiderMapActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+
+                try {
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+                    //loadingSpinner.setVisibility(View.VISIBLE);
+
+
+                    String methodAction = "fetchRegisteredGroups";
+
+                    JSONObject messageJson = new JSONObject();
+                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+                    messageJson.put("riderID", rider.getRiderID());
+
+
+                    ConnectHost connectHost = new ConnectHost();
+
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+                    //loadingSpinner.setVisibility(View.GONE);
+
+                    Log.d(GlobalConstants.CommonService, "fetchRegisteredGroups responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        // Convert String to json object
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchRegisteredGroups");
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("groupRiderWrapper");
+                        if (jsonResponseData.getString("success") == "true") {
+
+                            GroupRider groupRider=null;
+                            Gson gson=new GsonBuilder().create();
+
+                            if(wrapperArrayObj!=null) {
+
+                                groupList.clear();
+                                groupSelectionAdapter.notifyDataSetChanged();
+
+                                for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
+                                    if (wrapperArrayObj.optJSONObject(i).optString("recordFound") == "true") {
+
+                                        groupRider = new GroupRider();
+
+                                        groupRider.setGroupRefNo(wrapperArrayObj.optJSONObject(i).optString("groupRefNo"));
+                                        groupRider.setGroupID(wrapperArrayObj.optJSONObject(i).optString("groupID"));
+                                        groupRider.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
+                                        groupRider.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
+                                        groupRider.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
+                                        groupRider.setGroup(gson.fromJson(wrapperArrayObj.optJSONObject(i).optJSONObject("groupWrapper").toString(), Group.class));
+
+                                        groupList.add(groupRider);
+                                        groupSelectionAdapter.notifyDataSetChanged();
+
+                                    }
+                                }
+
+                                bottomGroupSheetOpen();
+
+                            }//null condition check
+
+                        } else {
+
+                            CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+                        }
+
+
+                    } else {
+
+                        CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+                }
+
+            } //run end
+
+
+        });
+
+
+    }
 
 }//class end
 

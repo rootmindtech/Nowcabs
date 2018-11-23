@@ -1,15 +1,22 @@
 package com.rootmind.nowcabs;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -70,8 +77,12 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
     String responseData = null;
     private RecyclerView recyclerView;
     private RidesAdapter ridesAdapter;
+    String rideType;
 
     public LinearLayout loadingSpinner;
+
+    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1;
+
 
     @SuppressLint("ResourceType")
     @Override
@@ -81,16 +92,32 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
         Context context = this;
 
         rider = (Rider) getIntent().getSerializableExtra("Rider");
+        rideType = (String) getIntent().getSerializableExtra("rideType");
+
 
         //sharedPreferences initiated
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
+        String title="Request";
+        if(rideType!=null) {
+            if (rideType.equals(GlobalConstants.RIDER_TYPE))
+            {
+                title = "My Requests";
+            }
+            else if(rideType.equals(GlobalConstants.SERVICER_TYPE))
+            {
+                title = "My Services";
+            }
+
+        }
+
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setBackgroundResource(Color.TRANSPARENT);
+        //toolbar.setBackgroundResource(Color.TRANSPARENT);
+        toolbar.setTitle(title);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -142,7 +169,7 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
             //my stuff is here
 
 
-            fetchRide(GlobalConstants.RIDER_TYPE);
+            fetchRide(rideType);
 
             return null;
 
@@ -186,8 +213,15 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
                     String methodAction = "fetchRide";
 
                     JSONObject messageJson = new JSONObject();
-                    messageJson.put("riderRefNo", rider.getRiderRefNo());
-                    messageJson.put("riderID", rider.getRiderID());
+                    if(rideType.equals(GlobalConstants.RIDER_TYPE)) {
+                        messageJson.put("riderRefNo", rider.getRiderRefNo());
+                        messageJson.put("riderID", rider.getRiderID());
+                    }
+                    else if(rideType.equals(GlobalConstants.SERVICER_TYPE))
+                    {
+                        messageJson.put("servicerRefNo", rider.getRiderRefNo());
+                        messageJson.put("servicerID", rider.getRiderID());
+                    }
                     messageJson.put("rideType", rideType);
 
 
@@ -232,6 +266,7 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
                                         ride.setServiceCode(wrapperArrayObj.optJSONObject(i).optString("serviceCode"));
                                         ride.setRideStatus(wrapperArrayObj.optJSONObject(i).optString("rideStatus"));
                                         ride.setRideStartDate(wrapperArrayObj.optJSONObject(i).optString("rideStartDate"));
+                                        ride.setRideType(rideType);
 
                                         rideList.add(ride);
                                         ridesAdapter.notifyDataSetChanged();
@@ -286,4 +321,92 @@ public class RidesActivity extends AppCompatActivity implements  RidesAdapter.It
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
     }
+
+    @Override
+    public void onClickDialImage(View view, int position) {
+
+
+        Ride ride = rideList.get(position);
+
+        //this opens the ringer tone
+        setDialImage(ride);
+
+
+    }
+
+
+    public void setDialImage(Ride ride)
+
+    {
+
+        try {
+
+
+            Log.d(TAG, "Dial Button Click: ");
+
+            //callIntent.setData(Uri.parse("tel:9030209883"));
+            // update Log
+            //NowcabsLog nowcabsLog = new NowcabsLog();
+
+
+            try {
+                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                r.play();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Here, thisActivity is the current activity
+            if (ContextCompat.checkSelfPermission(RidesActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(RidesActivity.this, Manifest.permission.CALL_PHONE)) {
+
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:" + ride.getServicerMobileNo()));
+                    startActivity(callIntent);
+
+                    //nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getRiderMobileNo());
+
+                } else {
+
+                    // No explanation needed, we can request the permission.
+
+                    ActivityCompat.requestPermissions(RidesActivity.this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
+
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:" + ride.getServicerMobileNo()));
+                    startActivity(callIntent);
+
+                    //nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getRiderMobileNo());
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+            } else {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + ride.getServicerMobileNo()));
+                startActivity(callIntent);
+
+                //nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Dialed to " + driverGeo.getRiderMobileNo());
+
+            }
+
+
+            Log.d(TAG, "Dial Button Click end: " + ride.getServicerMobileNo());
+
+
+        } catch (Exception e) {
+            Log.d(TAG, "setDialImage Exception");
+            e.printStackTrace();
+        }
+
+
+    }//------end of Dial Image
 }

@@ -87,7 +87,7 @@ class DriverInfoWindowAdapter implements InfoWindowAdapter {
                 icon.setImageResource(R.drawable.avatar_outline48);
 
 
-                if(rider.images!=null && rider.images.length>0)
+                if(rider.imageWrappers!=null && rider.imageWrappers.length>0)
                 {
                     CommonService commonService = new CommonService();
                     String imageFileName = CommonService.getImageName(rider, GlobalConstants.IMAGE_AVATAR);

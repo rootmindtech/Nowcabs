@@ -16,7 +16,11 @@ public class Rider implements Serializable {
     public String riderRefNo;
     public String riderName;
 
-    public String riderMobileNo;
+
+    public String firstName;
+
+
+    public String mobileNo;
     public double riderLat;
     public double riderLng;
 
@@ -56,7 +60,7 @@ public class Rider implements Serializable {
 
     public String vehicleType;
 
-    public Image images[]=null;
+    //public Image images[]=null;
 
     public Service services[]=null;
 
@@ -69,6 +73,46 @@ public class Rider implements Serializable {
     public String customToken=null;
 
     public boolean hostResponse=false;
+
+    public Image[] imageWrappers=null;
+
+    public String publicView=null;
+
+    
+    public String getPublicView() {
+        return publicView;
+    }
+
+    public void setPublicView(String publicView) {
+        this.publicView = publicView;
+    }
+
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
+    }
+
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public Image[] getImageWrappers() {
+        return imageWrappers;
+    }
+
+    public void setImageWrappers(Image[] imageWrappers) {
+        this.imageWrappers = imageWrappers;
+    }
+
 
     public boolean isHostResponse() {
         return hostResponse;
@@ -235,13 +279,6 @@ public class Rider implements Serializable {
         this.riderName = riderName;
     }
 
-    public String getRiderMobileNo() {
-        return riderMobileNo;
-    }
-
-    public void setRiderMobileNo(String riderMobileNo) {
-        this.riderMobileNo = riderMobileNo;
-    }
 
     public double getRiderLat() {
         return riderLat;
@@ -310,13 +347,13 @@ public class Rider implements Serializable {
         this.fcmToken = fcmToken;
     }
 
-    public Image[] getImages() {
-        return images;
-    }
-
-    public void setImages(Image[] images) {
-        this.images = images;
-    }
+//    public Image[] getImages() {
+//        return images;
+//    }
+//
+//    public void setImages(Image[] images) {
+//        this.images = images;
+//    }
 
 
     public  Rider(){
@@ -325,11 +362,11 @@ public class Rider implements Serializable {
     }
 
 
-    public Rider(String riderID, String riderRefNo, String riderName, String riderMobileNo, double riderLat, double riderLng, String status, String datetime, String riderLocation, String fcmToken) {
+    public Rider(String riderID, String riderRefNo, String riderName, String mobileNo, double riderLat, double riderLng, String status, String datetime, String riderLocation, String fcmToken) {
         this.riderID = riderID;
         this.riderRefNo = riderRefNo;
         this.riderName = riderName;
-        this.riderMobileNo = riderMobileNo;
+        this.mobileNo = mobileNo;
         this.riderLat = riderLat;
         this.riderLng = riderLng;
         this.status = status;
@@ -344,7 +381,7 @@ public class Rider implements Serializable {
         result.put("riderID", riderID);
         result.put("riderRefNo", riderRefNo);
         result.put("riderName", riderName);
-        result.put("riderMobileNo", riderMobileNo);
+        result.put("mobileNo", mobileNo);
         result.put("status", status);
         result.put("riderLat", riderLat);
         result.put("riderLng", riderLng);

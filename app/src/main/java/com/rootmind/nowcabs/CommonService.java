@@ -366,7 +366,7 @@ public  class CommonService {
 
                                 rider.setRiderRefNo(wrapperArrayObj.optJSONObject(0).optString("riderRefNo"));
                                 rider.setRiderID(wrapperArrayObj.optJSONObject(0).optString("riderID"));
-                                rider.setRiderMobileNo(wrapperArrayObj.optJSONObject(0).optString("mobileNo"));
+                                rider.setMobileNo(wrapperArrayObj.optJSONObject(0).optString("mobileNo"));
                                 rider.setRiderName(wrapperArrayObj.optJSONObject(0).optString("firstName"));
                                 rider.setStatus(wrapperArrayObj.optJSONObject(0).optString("status"));
                                 rider.setRecordFound(wrapperArrayObj.optJSONObject(0).optBoolean("recordFound"));
@@ -1733,7 +1733,7 @@ public  class CommonService {
 
 
                                 //rider = new Rider();
-                                rider.setRiderMobileNo(wrapperArrayObj.optJSONObject(0).optString("mobileNo"));
+                                rider.setMobileNo(wrapperArrayObj.optJSONObject(0).optString("mobileNo"));
                                 rider.setRiderName(wrapperArrayObj.optJSONObject(0).optString("firstName"));
                                 rider.setLocale(wrapperArrayObj.optJSONObject(0).optString("locale"));
                                 rider.setVehicleNo(wrapperArrayObj.optJSONObject(0).optString("vehicleNo"));
@@ -1748,7 +1748,7 @@ public  class CommonService {
                                 if(imageWrappers!=null)
                                 {
 
-                                    rider.images = new Image[imageWrappers.length()];
+                                    rider.imageWrappers = new Image[imageWrappers.length()];
                                     Image image=null;
 
                                     for(int i=0;i<imageWrappers.length();i++)
@@ -1763,7 +1763,7 @@ public  class CommonService {
                                             image.setImageName(imageWrappers.optJSONObject(i).optString("imageName"));
                                             image.setImageFolder(imageWrappers.optJSONObject(i).optString("imageFolder"));
                                             image.setStatus(imageWrappers.optJSONObject(i).optString("status"));
-                                            rider.images[i] = image;
+                                            rider.imageWrappers[i] = image;
 
                                         }
                                     }
@@ -1815,14 +1815,14 @@ public  class CommonService {
     {
         String imageName=null;
 
-        if(rider!=null && rider.images !=null && rider.images.length>0)
+        if(rider!=null && rider.imageWrappers !=null && rider.imageWrappers.length>0)
         {
 
-            for(int i=0; i<rider.images.length;i++)
+            for(int i=0; i<rider.imageWrappers.length;i++)
             {
-                if(rider.images[i].imageID.equals(imageID))
+                if(rider.imageWrappers[i].imageID.equals(imageID))
                 {
-                    imageName = rider.images[i].imageName;
+                    imageName = rider.imageWrappers[i].imageName;
                     break;
                 }
 

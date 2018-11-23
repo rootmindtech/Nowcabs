@@ -285,7 +285,7 @@ public class RideDetailsActivity extends AppCompatActivity {
         tv_driverID.setText(driver.driverID);
 
         tv_riderID.setText(rider.riderID);
-        tv_riderMobileNo.setText(rider.riderMobileNo);
+        tv_riderMobileNo.setText(rider.mobileNo);
         tv_riderName.setText(rider.riderName);
 
         tv_rideID.setText(rideDetails.rideID);

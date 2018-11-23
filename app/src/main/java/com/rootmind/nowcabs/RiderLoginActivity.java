@@ -374,7 +374,7 @@ public class RiderLoginActivity extends AppCompatActivity {
 
                             rider.setRiderRefNo(wrapperArrayObj.getJSONObject(0).optString("riderRefNo"));
                             rider.setRiderID(wrapperArrayObj.getJSONObject(0).optString("riderID"));
-                            rider.setRiderMobileNo(wrapperArrayObj.getJSONObject(0).optString("mobileNo"));
+                            rider.setMobileNo(wrapperArrayObj.getJSONObject(0).optString("mobileNo"));
                             rider.setRiderName(wrapperArrayObj.getJSONObject(0).optString("firstName"));
                             rider.setStatus(wrapperArrayObj.getJSONObject(0).optString("status"));
                             //rider.setImageFound(false);

@@ -115,18 +115,18 @@
                 android:textSize="12sp" />
 
 
-            <TextView
-                android:id="@+id/tv_call"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/iv_dialImage"
-                android:layout_marginTop="5dp"
-                android:text="@string/call"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_marginStart="150dp"
-                android:textColor="#212121"/>
+            <!--<TextView-->
+                <!--android:id="@+id/tv_call"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/iv_dialImage"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:text="@string/call"-->
+                <!--android:textSize="12sp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_marginStart="150dp"-->
+                <!--android:textColor="#212121"/>-->
 
             <TextView
                 android:id="@+id/tv_rideStartDate"

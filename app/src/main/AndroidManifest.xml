@@ -255,6 +255,11 @@
         <activity
             android:name=".DialerActivity"
             android:label="@string/title_activity_dialer"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".GroupActivity" />
+        <activity
+            android:name=".GroupRiderActivity"
+            android:label="@string/title_activity_group_rider"
             android:theme="@style/AppTheme"></activity>
     </application>
 

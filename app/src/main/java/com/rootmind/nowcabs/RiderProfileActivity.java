@@ -55,7 +55,7 @@ public class RiderProfileActivity extends AppCompatActivity {
     private EditText txt_mobileNo;
     private Spinner dropDown_locale;
 
-    Button btn_logout;
+//    Button btn_logout;
     Button btn_save;
     Switch swt_vacant;
 
@@ -131,7 +131,7 @@ public class RiderProfileActivity extends AppCompatActivity {
         iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
 
 
-        btn_logout = (Button) findViewById(R.id.btn_logout);
+//        btn_logout = (Button) findViewById(R.id.btn_logout);
         btn_save = (Button) findViewById(R.id.btn_save);
         swt_vacant = (Switch) findViewById(R.id.swt_vacant);
 
@@ -147,56 +147,56 @@ public class RiderProfileActivity extends AppCompatActivity {
 
 
 
-        btn_logout.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-
-                Log.d(TAG, "Logout Button Click: ");
-
-
-                new AlertDialog.Builder(RiderProfileActivity.this)
-                        .setTitle(R.string.logout)
-                        .setMessage(R.string.logout_confirm)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-
-                                //To clear SharedPreferences
-                                editor = sharedPreferences.edit();
-                                //editor.clear();
-                                //Do not clear all as last current lat and current lng required in case onLocationChange is not fired
-                                editor.putString("autoLogin", GlobalConstants.NO_CODE);
-                                editor.commit();
-
-
-                                //update Log
-                                //NowcabsLog nowcabsLog = new NowcabsLog();
-                                //nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Logout");
-
-
-                                Intent intent = new Intent(RiderProfileActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
-
-
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
-
-
-            }
-        });
+//        btn_logout.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//
+//                Log.d(TAG, "Logout Button Click: ");
+//
+//
+//                new AlertDialog.Builder(RiderProfileActivity.this)
+//                        .setTitle(R.string.logout)
+//                        .setMessage(R.string.logout_confirm)
+//                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//
+//                                //To clear SharedPreferences
+//                                editor = sharedPreferences.edit();
+//                                //editor.clear();
+//                                //Do not clear all as last current lat and current lng required in case onLocationChange is not fired
+//                                editor.putString("autoLogin", GlobalConstants.NO_CODE);
+//                                editor.commit();
+//
+//
+//                                //update Log
+//                                //NowcabsLog nowcabsLog = new NowcabsLog();
+//                                //nowcabsLog.updateLog(GlobalConstants.RIDER_CODE, rider.riderID, "Logout");
+//
+//
+//                                Intent intent = new Intent(RiderProfileActivity.this, LoginActivity.class);
+//                                startActivity(intent);
+//                                finish();
+//
+//
+//                            }
+//                        })
+//                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                                dialogInterface.dismiss();
+//                            }
+//                        })
+//                        .create()
+//                        .show();
+//
+//
+//            }
+//        });
 
 
         btn_save.setOnClickListener(new View.OnClickListener() {
@@ -383,7 +383,7 @@ public class RiderProfileActivity extends AppCompatActivity {
                 public void on(Boolean arg) {
 
                     if (arg) {
-                        txt_mobileNo.setText(rider.getRiderMobileNo());
+                        txt_mobileNo.setText(rider.getMobileNo());
                         txt_name.setText(rider.getRiderName());
                         dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
 

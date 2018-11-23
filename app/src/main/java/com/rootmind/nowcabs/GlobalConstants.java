@@ -97,6 +97,9 @@ public  final class GlobalConstants {
     public static final String SERVICE_COURIER="COURIER";
     public static final String SERVICE_MERCHANT="MERCHANT";
 
+
+    public static final String SERVICE_GROUP="GROUP";
+
     //------------
 
     //-----------dialing status

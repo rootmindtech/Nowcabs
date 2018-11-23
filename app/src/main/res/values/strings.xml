@@ -84,6 +84,7 @@
     <string name="idcard_front">ID Card - Front</string>
     <string name="idcard_back">ID Card - Back</string>
     <string name="title_activity_dialer">DialerActivity</string>
+    <string name="title_activity_group_rider">GroupRiderActivity</string>
 
 
 </resources>

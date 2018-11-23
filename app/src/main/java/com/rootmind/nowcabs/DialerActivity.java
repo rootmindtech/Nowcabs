@@ -1,7 +1,12 @@
 package com.rootmind.nowcabs;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +21,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -145,7 +151,7 @@ public class DialerActivity extends AppCompatActivity {
             icon.setImageResource(R.drawable.avatar_outline48);
 
 
-            if(serviceGeo.images!=null && serviceGeo.images.length>0)
+            if(serviceGeo.imageWrappers!=null && serviceGeo.imageWrappers.length>0)
             {
                 CommonService commonService = new CommonService();
                 String imageFileName = CommonService.getImageName(serviceGeo, GlobalConstants.IMAGE_AVATAR);
@@ -225,7 +231,7 @@ public class DialerActivity extends AppCompatActivity {
                     countDownTimer.cancel();
                     countDownTimer.onFinish();
                 }
-                closeActivity();
+                finishPlayer();
 
             }
         });
@@ -272,6 +278,7 @@ public class DialerActivity extends AppCompatActivity {
                     @Override
                     public void onFinish() {
 
+                        updateRide();
                         finishPlayer();
                     }
                 }.start();
@@ -304,6 +311,9 @@ public class DialerActivity extends AppCompatActivity {
         btn_stop.setEnabled(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressBar1.setVisibility(View.GONE);
+
+        finish();
+
 
 
     }
@@ -369,7 +379,7 @@ public class DialerActivity extends AppCompatActivity {
                     messageJson.put("pickupLat", rider.getRiderLat());
                     messageJson.put("pickupLng", rider.getRiderLng());
                     messageJson.put("rideStartPoint", rider.getRiderLocation());
-                    messageJson.put("serviceCode", rider.getServiceCode());
+                    messageJson.put("serviceCode", serviceGeo.getServiceCode());
                     messageJson.put("servicerRefNo", serviceGeo.getRiderRefNo());
                     messageJson.put("servicerID", serviceGeo.getRiderID());
                     messageJson.put("riderRefNo", rider.getRiderRefNo());
@@ -482,7 +492,7 @@ public class DialerActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //Toast.makeText(DialerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-                    closeActivity();
+                    finishPlayer();
 
                 }
 
@@ -532,20 +542,20 @@ public class DialerActivity extends AppCompatActivity {
 
                         case GlobalConstants.ACCEPTED_STATUS: {
 
-                            finishPlayer();
-                            CommonService.Toast(DialerActivity.this, "Your request has been accepted", Toast.LENGTH_SHORT);
+                            showResponse(GlobalConstants.ACCEPTED_STATUS,"Your request has been accepted" );
+                            //CommonService.Toast(DialerActivity.this, "Your request has been accepted", Toast.LENGTH_SHORT);
                             break;
                         }
                         case GlobalConstants.REJECTED_STATUS: {
 
-                            finishPlayer();
-                            CommonService.Toast(DialerActivity.this, "Your request has been rejected", Toast.LENGTH_SHORT);
+                            showResponse(GlobalConstants.REJECTED_STATUS, "Your request has been rejected");
+                            //CommonService.Toast(DialerActivity.this, "Your request has been rejected", Toast.LENGTH_SHORT);
                             break;
                         }
                         case GlobalConstants.NORESPONSE_STATUS: {
 
-                            finishPlayer();
-                            CommonService.Toast(DialerActivity.this, "No response from service provider", Toast.LENGTH_SHORT);
+                            showResponse(GlobalConstants.NORESPONSE_STATUS, "No response from service provider");
+                            //CommonService.Toast(DialerActivity.this, "No response from service provider", Toast.LENGTH_SHORT);
                             break;
                         }
 
@@ -566,13 +576,173 @@ public class DialerActivity extends AppCompatActivity {
 
     }
 
-    public void closeActivity()
+//    public void closeActivity()
+//    {
+//
+//        try{
+//
+//
+//            finish();
+//
+//        }
+//        catch(Exception ex)
+//        {
+//            ex.printStackTrace();
+//        }
+//    }
+
+
+
+
+    //--------update Ride   in the backend
+    public void updateRide() {
+
+
+
+
+        DialerActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+
+
+                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    String methodAction = "updateRide";
+
+                    JSONObject messageJson = new JSONObject();
+                    messageJson.put("rideStatus", GlobalConstants.NORESPONSE_STATUS);
+                    messageJson.put("rideRefNo", ride.getRideRefNo());
+
+
+                    ConnectHost connectHost = new ConnectHost();
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+                    Log.d(TAG, "update Ride responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        // Convert String to json object
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+
+                        // get LL json object
+                        JSONObject jsonResult = jsonResponseData.optJSONObject("updateRide");
+
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("rideWrapper");
+
+
+                        if (jsonResponseData.getString("success") == "true") {
+
+                            resetStatus();
+
+                        }
+                        else
+                        {
+
+                            //Toast.makeText(DialerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                        }
+
+
+                    } else {
+
+                        //Toast.makeText(DialerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //Toast.makeText(DialerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                }
+
+                //}// validation
+
+            }//run end
+
+        });//runnable end
+
+
+    }//update ride
+
+    //in case no response from servicer reset to NORESPONSE status
+    public void resetStatus()
     {
 
-        try{
+        try {
+
+            DocumentReference docRef = firebaseFirestore.collection("service").document(serviceGeo.getRiderID());
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+
+                            Log.d(TAG, "DocumentSnapshot rideStatus: " + document.getData().get("rideStatus"));
+
+                            if (document.getData().get("rideStatus") != null)
+                            {
+
+                                if(document.getData().get("riderID").equals(rider.getRiderID()) && document.getData().get("rideStatus").equals(GlobalConstants.CALLING_STATUS)) {
 
 
-            finish();
+                                    // Create a new user with a first and last name
+                                    Map<String, Object> serviceMap = new HashMap<>();
+                                    serviceMap.put("servicerID", serviceGeo.getRiderID());
+                                    serviceMap.put("riderID", rider.getRiderID());
+                                    serviceMap.put("rideRefNo", ride.getRideRefNo());
+                                    serviceMap.put("rideStatus", GlobalConstants.NORESPONSE_STATUS);
+                                    serviceMap.put("datetime", FieldValue.serverTimestamp());
+
+
+                                    // Add a new document with a generated ID
+                                    firebaseFirestore.collection("service")
+                                            .document(serviceGeo.getRiderID())
+                                            .set(serviceMap)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error writing document", e);
+                                                }
+                                            });
+
+
+                                }
+
+                            }
+
+
+                        } else {
+                            Log.d(TAG, "No such document");
+
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
 
         }
         catch(Exception ex)
@@ -581,6 +751,56 @@ public class DialerActivity extends AppCompatActivity {
         }
     }
 
+    public void showResponse(final String dialingStatus, String message)
+    {
+
+        new AlertDialog.Builder(DialerActivity.this)
+                .setTitle("Response")
+                .setMessage(message)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int j) {
+
+
+                        switch (dialingStatus) {
+
+                            case GlobalConstants.ACCEPTED_STATUS: {
+
+                                finishPlayer();
+
+                                Intent i = new Intent(getApplicationContext(), RidesActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("Rider", rider);
+                                bundle.putSerializable("rideType", GlobalConstants.RIDER_TYPE);
+                                i.putExtras(bundle);
+                                startActivity(i);
+                                break;
+                            }
+                            case GlobalConstants.REJECTED_STATUS: {
+
+                                finishPlayer();
+                                break;
+                            }
+                            case GlobalConstants.NORESPONSE_STATUS: {
+
+                                finishPlayer();
+                                break;
+                            }
+
+                        } //switch
+
+                        dialogInterface.dismiss();
+
+
+
+
+                    }
+                })
+                .create()
+                .show();
+
+
+    }
 //    public  void showProgressBar() {
 //
 //        loadingSpinner.setVisibility(View.VISIBLE);

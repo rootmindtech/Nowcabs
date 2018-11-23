@@ -1548,7 +1548,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
             smsImage.setImageResource(R.drawable.sms_icon48x48);
             //smsImage.setPadding(10, 10, 10, 10);
 
-            final String riderMobileNo = rider.getRiderMobileNo();
+            final String riderMobileNo = rider.getMobileNo();
 
 
             final String driverID = driverGeo.getDriverID();
