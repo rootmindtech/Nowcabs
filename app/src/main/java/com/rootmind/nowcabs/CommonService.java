@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -229,6 +230,49 @@ public  class CommonService {
         return currentSelect;
     }
 
+    public static final String showLocale(String input)
+    {
+        String currentLang=GlobalConstants.ENGLISH_LANG;
+
+        if(isEmpty(input))
+        {
+            input = GlobalConstants.ENGLISH_LOCALE;
+        }
+
+        switch (input.trim())
+        {
+            case GlobalConstants.ENGLISH_LOCALE:{
+                currentLang = GlobalConstants.ENGLISH_LANG;
+                break;
+            }
+            case GlobalConstants.HINDI_LOCALE:{
+                currentLang = GlobalConstants.HINDI_LANG;
+                break;
+            }
+            case GlobalConstants.TELUGU_LOCALE:{
+                currentLang = GlobalConstants.TELUGU_LANG;
+                break;
+            }
+            case GlobalConstants.TAMIL_LOCALE:{
+                currentLang = GlobalConstants.TAMIL_LANG;
+                break;
+            }
+            case GlobalConstants.KANNADA_LOCALE:{
+                currentLang = GlobalConstants.KANNADA_LANG;
+                break;
+            }
+            case GlobalConstants.URDU_LOCALE:{
+                currentLang = GlobalConstants.URDU_LANG;
+                break;
+            }
+
+
+        }
+        return currentLang;
+    }
+
+
+
     public static final Locale getLocale(String input)
     {
         String locale = GlobalConstants.ENGLISH_LOCALE;
@@ -321,6 +365,7 @@ public  class CommonService {
                     messageJson.put("fcmToken", fcmToken);
                     messageJson.put("locale", locale);
                     messageJson.put("deviceInfo", getDeviceInfo());
+                    messageJson.put("deviceID", sharedPreferences.getString("deviceID", ""));
 
 
                     ConnectHost connectHost = new ConnectHost();
@@ -372,7 +417,13 @@ public  class CommonService {
                                 rider.setDatetime(formattedDate);
                                 rider.setFcmToken(fcmToken);
                                 rider.setLocale(wrapperArrayObj.optJSONObject(0).optString("locale"));
+                                rider.setDeviceID(wrapperArrayObj.optJSONObject(0).optString("deviceID"));
 
+
+                                if(rider.getDeviceID().equals(sharedPreferences.getString("deviceID", "")))
+                                {
+                                    rider.setAuthDevice(true);
+                                }
 
                                 //setRiderLogin(activity, context, rider, fcmToken);
 
@@ -785,7 +836,15 @@ public  class CommonService {
                 //Bitmap circleBitmap=getCircleBitmap(imageBitmap);
 
 
-                Bitmap circleBitmap=getCroppedBitmap(imageBitmap,imageBitmap.getWidth(), avatar);
+                Bitmap circleBitmap;
+
+                if(avatar) {
+                    circleBitmap = getCroppedBitmap(imageBitmap, imageBitmap.getWidth(), avatar);
+                }
+                else
+                {
+                    circleBitmap = cropToSquare(imageBitmap);
+                }
 
                 circleBitmap.compress(Bitmap.CompressFormat.PNG, 30, bao); // bmp is bitmap from user image file
                 circleBitmap.recycle();
@@ -1112,6 +1171,20 @@ public  class CommonService {
         return output;
     }
 
+    public static Bitmap cropToSquare(Bitmap bitmap){
+        int width  = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int newWidth = (height > width) ? width : height;
+        int newHeight = (height > width)? height - ( height - width) : height;
+        int cropW = (width - height) / 2;
+        cropW = (cropW < 0)? 0: cropW;
+        int cropH = (height - width) / 2;
+        cropH = (cropH < 0)? 0: cropH;
+        Bitmap cropImg = Bitmap.createBitmap(bitmap, cropW, cropH, newWidth, newHeight);
+
+        return cropImg;
+    }
+
     public static Bitmap compressImage(Bitmap bmp) {
 
         Bitmap scaledBitmap = null;
@@ -1409,6 +1482,8 @@ public  class CommonService {
                     //messageJson.put("vehicleNo", rider.getVehicleNo());
                     //messageJson.put("vehicleType", rider.getVehicleType());
                     messageJson.put("service", GlobalConstants.TRANSPORT_BUSINESS);
+                    messageJson.put("radius", rider.getRadius());
+                    messageJson.put("currency", rider.getCurrency());
 
 
                     ConnectHost connectHost = new ConnectHost();
@@ -1738,6 +1813,10 @@ public  class CommonService {
                                 rider.setVehicleType(wrapperArrayObj.optJSONObject(0).optString("vehicleType"));
                                 rider.setStatus(wrapperArrayObj.optJSONObject(0).optString("status"));
                                 rider.setVacantStatus(wrapperArrayObj.optJSONObject(0).optString("vacantStatus"));
+                                rider.setRadius(wrapperArrayObj.optJSONObject(0).optInt("radius"));
+                                rider.setCurrency(wrapperArrayObj.optJSONObject(0).optString("currency"));
+                                rider.setDeviceID(wrapperArrayObj.optJSONObject(0).optString("deviceID"));
+                                rider.setAvgRating(wrapperArrayObj.optJSONObject(0).optDouble("avgRating"));
 
                                 //Log.d(TAG, "setVacantStatus: " + rider.getVacantStatus());
 

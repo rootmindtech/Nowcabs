@@ -1996,7 +1996,7 @@ public class DriverMapActivity extends AppCompatActivity implements NavigationVi
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
                 //Toast.makeText(DriverMapActivity.this, "Image download failed", Toast.LENGTH_SHORT).show();
-                driverImage.setImageResource(R.drawable.avatar_24dp);
+                driverImage.setImageResource(R.drawable.avatar_outline48);
 
 
             }

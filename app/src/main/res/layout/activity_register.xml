@@ -1,576 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:id="@+id/loginActivity"-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".RegisterActivity">
+
+
+    <!--<androidx.appcompat.widget.Toolbar-->
+    <!--android:id="@+id/toolbar"-->
     <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:focusable="true"-->
-    <!--android:clickable="true"-->
-    <!--android:focusableInTouchMode="true"-->
-    <!--tools:context=".RegisterActivity">-->
-    
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorWhite"
-                android:orientation="vertical"
-                android:weightSum="10"
-                tools:context=".RegisterActivity">
-    
-    
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@android:color/transparent"
-                    app:popupTheme="@style/AppTheme.PopupOverlay" >
+    <!--android:layout_height="?attr/actionBarSize"-->
+    <!--android:layout_above="@+id/bottom_service_selection"-->
+    <!--android:background="@android:color/transparent"-->
+    <!--app:popupTheme="@style/AppTheme.PopupOverlay" >-->
 
-                    <TextView
-                        android:id="@+id/txt_rider"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Please select your profession"
-                        android:textColor="@color/colorGrey"
-                        android:textSize="16sp"
-                        android:layout_centerInParent="true"
-                        android:layout_gravity="center"
-                        android:layout_below="@id/nowcabs"/>
+    <!--<TextView-->
+    <!--android:id="@+id/txt_rider"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Please select your profession"-->
+    <!--android:textColor="@color/colorGrey"-->
+    <!--android:textSize="16sp"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_below="@id/nowcabs"/>-->
 
+    <!--</androidx.appcompat.widget.Toolbar>-->
 
-                    <!--<Button-->
-                        <!--android:id="@+id/btn_skip"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_gravity="right"-->
-                        <!--android:layout_marginRight="20dp"-->
-                        <!--android:text="Skip"-->
-                        <!--android:textAllCaps="false"-->
-                        <!--android:textColor="@color/colorPrimary"-->
-                        <!--android:backgroundTint="@color/colorWhite"-->
-                        <!--android:imeOptions="actionDone"-->
-    <!---->
-                        <!--/>-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:background="@android:color/transparent"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:title="Select profession" >
 
-                </androidx.appcompat.widget.Toolbar>
-    
-    
-    
-    
-        <!--<RelativeLayout-->
-                    <!--android:id="@+id/logoContainer"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0dp"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:gravity="center_horizontal"-->
-                    <!--android:orientation="vertical"-->
-                    <!--android:layout_weight="2"-->
-                    <!--&gt;-->
-    
-                    <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
-                        <!--&lt;!&ndash;android:id="@+id/nowcabs"&ndash;&gt;-->
-                        <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-                        <!--&lt;!&ndash;android:layout_height="130dp"&ndash;&gt;-->
-                        <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
-                        <!--&lt;!&ndash;android:src="@drawable/nowcabs"&ndash;&gt;-->
-    
-                        <!--&lt;!&ndash;/>&ndash;&gt;-->
-    
-    
-    
-                <!--</RelativeLayout>-->
-    
-    
-                <GridLayout
-                    android:id="@+id/gridLayout"
-                    android:columnCount="3"
-                    android:rowCount="3"
-                    android:alignmentMode="alignMargins"
-                    android:columnOrderPreserved="false"
-                    android:layout_weight="9"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_below="@+id/toolbar"
-                    android:layout_marginTop="0dp"
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/button"
+            android:imeOptions="actionDone"
+            android:text="@string/next"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
 
-                   >
-    
-                    <!--Row-1-->
-                    <!--Column-1 carpenter-->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/carpenter_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        app:cardElevation="8dp"
-                        app:cardCornerRadius="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-    
-                            <ImageView
-                                android:src="@drawable/carpenter"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp" />
-    
-    
-                            <TextView
-                                android:text="Carpenter"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-    
-                        </LinearLayout>
-    
-    
-    
-    
-                    </androidx.cardview.widget.CardView>
-    
-                    <!--Row-1-->
-                    <!--Column-2 driver-->
-                    <androidx.cardview.widget.CardView
-    
-                        android:id="@+id/driver_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        app:cardElevation="8dp"
-                        app:cardCornerRadius="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-    
-                            <ImageView
-                                android:src="@drawable/driver"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp" />
-    
-    
-                            <TextView
-                                android:text="Driver"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-    
-                        </LinearLayout>
-    
-    
-    
-    
-                    </androidx.cardview.widget.CardView>
-    
-    
-                    <!--Row-2-->
-                    <!--Column-1 electrician-->
-                    <androidx.cardview.widget.CardView
-    
-                        android:id="@+id/electrician_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        app:cardElevation="8dp"
-                        app:cardCornerRadius="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-    
-                            <ImageView
-                                android:src="@drawable/electrician"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp" />
-    
-    
-                            <TextView
-                                android:text="Electrician"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-    
-                        </LinearLayout>
-    
-    
-    
-    
-                    </androidx.cardview.widget.CardView>
-    
-                    <!--Row-2-->
-                    <!--Column-2 plumber-->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/plumber_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        app:cardElevation="8dp"
-                        app:cardCornerRadius="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-    
-                            <ImageView
-                                android:src="@drawable/plumber"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp" />
-    
-    
-                            <TextView
-                                android:text="Plumber"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-    
-                        </LinearLayout>
-    
-    
-    
-    
-                    </androidx.cardview.widget.CardView>
-    
-                    <!--Row-3-->
-                    <!--Column-1 tailer-->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/tailor_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        app:cardElevation="8dp"
-                        app:cardCornerRadius="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-    
-                            <ImageView
-                                android:src="@drawable/tailor"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp" />
-    
-    
-                            <TextView
-                                android:text="Tailor"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-    
-                        </LinearLayout>
-    
-    
-    
-    
-                    </androidx.cardview.widget.CardView>
-    
-                    <!--Row-3-->
-                    <!--Column-2 washer-->
-                    <androidx.cardview.widget.CardView
-    
-                        android:id="@+id/washer_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        app:cardElevation="8dp"
-                        app:cardCornerRadius="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-    
-                            <ImageView
-                                android:src="@drawable/washer"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp" />
-    
-    
-                            <TextView
-                                android:text="Washer"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-    
-                        </LinearLayout>
-    
-    
-    
-    
-                    </androidx.cardview.widget.CardView>
-    
-                    <!--Row-4-->
-                    <!--Column-1 courier-->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/courier_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        app:cardElevation="8dp"
-                        app:cardCornerRadius="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-    
-                            <ImageView
-                                android:src="@drawable/courier"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp" />
-    
-    
-                            <TextView
-                                android:text="Courier"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-    
-                        </LinearLayout>
-    
-    
-    
-    
-                    </androidx.cardview.widget.CardView>
-    
-                    <!--Row-5-->
-                    <!--Column-2 merchant-->
-                    <androidx.cardview.widget.CardView
-    
-                        android:id="@+id/merchant_cardView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_columnWeight="1"
-                        android:layout_rowWeight="1"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        app:cardElevation="8dp"
-                        app:cardCornerRadius="8dp"
-                        >
-                        <LinearLayout
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-    
-                            <ImageView
-                                android:src="@drawable/merchant"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp" />
-    
-    
-                            <TextView
-                                android:text="Merchant"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-    
-                        </LinearLayout>
-    
-    
-    
-    
-                    </androidx.cardview.widget.CardView>
+            />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/service_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:orientation="vertical">
+
+        <include layout="@layout/bottom_service_selection" />
+
+    </LinearLayout>
 
 
+    <!--<Button-->
+        <!--android:id="@+id/btn_login"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:background="@drawable/button"-->
+        <!--android:imeOptions="actionDone"-->
+        <!--android:text="@string/next"-->
+        <!--android:textAllCaps="false"-->
+        <!--android:textColor="#ffffff"-->
+
+        <!--/>-->
+
+    <Button
+        android:id="@+id/btn_skip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/colorGrey"
+        android:imeOptions="actionDone"
+        android:text="Skip"
+        android:textAllCaps="false"
+        android:textColor="#ffffff"
+        android:visibility="invisible"
+
+        />
+
+    <include layout="@layout/progress_bar" />
 
 
+</RelativeLayout>
 
-                </GridLayout>
-
-
-                <Button
-                    android:id="@+id/btn_login"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/gridLayout"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/button"
-                    android:text="@string/next"
-                    android:textColor="#ffffff"
-                    android:textAllCaps="false"
-                    android:imeOptions="actionDone"
-
-                    />
-
-                <Button
-                    android:id="@+id/btn_skip"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/btn_login"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/colorGrey"
-                    android:text="Skip"
-                    android:textColor="#ffffff"
-                    android:textAllCaps="false"
-                    android:imeOptions="actionDone"
-
-                    />
-
-
-                <ProgressBar
-                    style="?android:attr/progressBarStyleLarge"
-                    android:id="@+id/progressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:indeterminateTint="@color/colorOrange"
-                    android:visibility="visible"/>
-
-</LinearLayout>
-
-
-<!--</android.support.constraint.ConstraintLayout>-->
-<!--<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
-<!--android:id="@+id/rider_card_view"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="100dp"-->
-<!--android:layout_gravity="top"-->
-<!--android:layout_below="@id/txt_rider"-->
-<!--android:layout_marginTop="5dp"-->
-<!--android:layout_marginLeft="20dp"-->
-<!--android:layout_marginRight="20dp"-->
-<!--card_view:cardCornerRadius="10dp"-->
-<!--card_view:cardElevation="10dp"-->
-    <!--&gt;-->
-
-
-<!--<Button-->
-    <!--android:id="@+id/btn_rider"-->
-    <!--android:layout_width="80dp"-->
-    <!--android:layout_height="80dp"-->
-    <!--android:layout_below="@id/txt_rider"-->
-    <!--android:background="@drawable/rider"-->
-    <!--android:textColor="#ffffff"-->
-    <!--android:layout_gravity="center_horizontal|center_vertical"-->
-    <!--android:imeOptions="actionNext"-->
-    <!--/>-->
-
-<!--</android.support.v7.widget.CardView>-->
-
-<!--<TextView-->
-<!--android:id="@+id/txt_driver"-->
-<!--android:layout_width="wrap_content"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:layout_below="@id/rider_card_view"-->
-<!--android:layout_centerHorizontal="true"-->
-<!--android:layout_marginTop="30dp"-->
-<!--android:text="@string/driver"-->
-<!--android:textColor="@color/colorGrey"-->
-<!--android:textSize="20sp"-->
-<!--android:layout_gravity="left"/>-->
-
-
-<!--<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
-<!--android:id="@+id/driver_card_view"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="100dp"-->
-<!--android:layout_gravity="bottom"-->
-<!--android:layout_below="@id/txt_driver"-->
-<!--android:layout_marginTop="5dp"-->
-<!--android:layout_marginLeft="20dp"-->
-<!--android:layout_marginRight="20dp"-->
-<!--android:layout_marginBottom="20dp"-->
-<!--card_view:cardCornerRadius="10dp"-->
-<!--card_view:cardElevation="10dp"-->
-    <!--&gt;-->
-
-
-<!--<Button-->
-    <!--android:id="@+id/btn_driver"-->
-    <!--android:layout_width="80dp"-->
-    <!--android:layout_height="80dp"-->
-    <!--android:layout_below="@id/txt_driver"-->
-    <!--android:background="@drawable/driver_select"-->
-    <!--android:textColor="#ffffff"-->
-    <!--android:layout_gravity="center_horizontal|center_vertical"-->
-    <!--android:imeOptions="actionNext"-->
-    <!--/>-->
-
-<!--</android.support.v7.widget.CardView>-->

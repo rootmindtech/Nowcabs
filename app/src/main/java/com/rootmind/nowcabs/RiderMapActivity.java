@@ -304,6 +304,7 @@ public class RiderMapActivity extends AppCompatActivity implements
     public LinearLayout loadingSpinner;
     FirebaseFirestore firebaseFirestore;
 
+    MyLocation myLocation = new MyLocation();
 
     protected void startIntentService() {
 
@@ -405,6 +406,11 @@ public class RiderMapActivity extends AppCompatActivity implements
         ((EditText) autocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input)).setTextSize(15.0f);
 
 
+        myLocation.getLocation(getApplicationContext(), locationResult);
+
+//        boolean r = myLocation.getLocation(getApplicationContext(), locationResult);
+
+
         //-----------side nav image
         ImageView searchIcon = (ImageView) ((LinearLayout) autocompleteFragment.getView()).getChildAt(0);
 
@@ -471,8 +477,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
 
-        //LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        //lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         //Log.d(TAG, "Before RiderList: " );
 
@@ -855,6 +861,9 @@ public class RiderMapActivity extends AppCompatActivity implements
         Drawable fabDr = btn_service.getDrawable();
         DrawableCompat.setTint(fabDr, Color.WHITE);
 
+        //do not show button
+        btn_service.setVisibility(View.GONE);
+
 
         //------rating
 
@@ -864,6 +873,30 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
     }//------end of create
+
+
+    public MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
+
+        @Override
+        public void gotLocation(Location location) {
+            // TODO Auto-generated method stub
+//            double Longitude = location.getLongitude();
+//            double Latitude = location.getLatitude();
+
+            riderLat = location.getLatitude();
+            riderLng = location.getLongitude();
+
+            rider.setRiderLat(riderLat);
+            rider.setRiderLng(riderLng);
+
+            new RiderMapActivity.updateRiderLocation().execute(new Object[]{null, null, false});
+
+
+//            Toast.makeText(getApplicationContext(), "Got Location",
+//                    Toast.LENGTH_LONG).show();
+
+        }
+    };
 
 
     public void bottomSheetOpen() {
@@ -914,11 +947,12 @@ public class RiderMapActivity extends AppCompatActivity implements
     }
 
     public void bottomGroupSheetOpen() {
-        groupSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-        groupSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
         if (groupSelectionAdapter.getItemCount() > 0) {
+
+            groupSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
+            groupSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             groupRecyclerView.setVisibility(View.VISIBLE);
 
         } else {
@@ -951,9 +985,11 @@ public class RiderMapActivity extends AppCompatActivity implements
     public void onInfoWindowClick(Marker marker) {
         //Toast.makeText(this, "Info window clicked",Toast.LENGTH_SHORT).show();
 
-        Rider driverGeo = (Rider) marker.getTag();
+        Rider serviceGeo = (Rider) marker.getTag();
 
-        setDialImage(driverGeo);
+        //setDialImage(driverGeo);
+        callDialer(serviceGeo);
+
 
         //marker.showInfoWindow();
     }
@@ -963,7 +999,9 @@ public class RiderMapActivity extends AppCompatActivity implements
     public void onClickAvatarImage(View view, int position) {
 
 
-        Rider rider = servicesList.get(position);
+        Rider serviceGeo = servicesList.get(position);
+
+        callDialer(serviceGeo);
 
         //13-Sep-2018
         //trackDriver(driver);
@@ -1058,7 +1096,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, false,null});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_AUTO_DRIVER, GlobalConstants.AUTO_CODE, false,null});
 
     }
     @Override
@@ -1066,7 +1104,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         bottomServiceSheetClose();
-        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, false, null});
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_CAB_DRIVER, GlobalConstants.CAB_CODE, false, null});
 
     }
     @Override
@@ -1117,6 +1155,79 @@ public class RiderMapActivity extends AppCompatActivity implements
         new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_MERCHANT, null, false, null});
 
     }
+    @Override
+    public void onClickMovers(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_MOVERS, null, false, null});
+
+    }
+    @Override
+    public void onClickHousekeeper(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_HOUSEKEEPER, null, false, null});
+
+    }
+    @Override
+    public void onClickCook(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_COOK, null, false, null});
+
+    }
+    @Override
+    public void onClickPainter(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_PAINTER, null, false, null});
+
+    }
+    @Override
+    public void onClickFlorist(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_FLORIST, null, false, null});
+
+    }
+    @Override
+    public void onClickPesticide(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_PESTICIDE, null, false, null});
+
+    }
+    @Override
+    public void onClickTutor(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_TUTOR, null, false, null});
+
+    }
+    @Override
+    public void onClickLocksmith(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_LOCKSMITH, null, false, null});
+
+    }
+    @Override
+    public void onClickGrinder(View view, int position) {
+
+
+        bottomServiceSheetClose();
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_GRINDER, null, false, null});
+
+    }
+
     //--------end of service selection events
 
 
@@ -1198,6 +1309,15 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                 LatLng initLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+                riderLat = location.getLatitude();
+                riderLng = location.getLongitude();
+
+                rider.setRiderLat(riderLat);
+                rider.setRiderLng(riderLng);
+
+                new RiderMapActivity.updateRiderLocation().execute(new Object[]{null, null, false});
+
+
                 Log.i(TAG, "Tower Zoom ");
                 //move map camera
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(initLatLng, mapZoom));
@@ -1207,6 +1327,8 @@ public class RiderMapActivity extends AppCompatActivity implements
             Log.d(TAG, "Unable to get tower");
             ex.printStackTrace();
         }
+
+
 
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -1223,6 +1345,8 @@ public class RiderMapActivity extends AppCompatActivity implements
         //------
 
     }
+
+
 
 
     protected synchronized void buildGoogleApiClient() {
@@ -1740,27 +1864,37 @@ public class RiderMapActivity extends AppCompatActivity implements
                             break;
 
                         }
-                        case GlobalConstants.SERVICE_DRIVER:
+                        case GlobalConstants.SERVICE_AUTO_DRIVER:
                         {
 
-                            switch (riderGeo.getVehicleType()){
+//                            switch (riderGeo.getVehicleType()){
+//
+//                                case GlobalConstants.AUTO_CODE:
+//                                {
+//                                    vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.auto_outline));
+//                                    break;
+//
+//                                }
+//                                case GlobalConstants.CAB_CODE:
+//                                {
+//                                    vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cab_outline));
+//                                    break;
+//
+//                                }
+//
+//
+//                            }
+//                            break;
 
-                                case GlobalConstants.AUTO_CODE:
-                                {
-                                    vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.auto_blue48px));
-                                    break;
-
-                                }
-                                case GlobalConstants.CAB_CODE:
-                                {
-                                    vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.taxi_blue48px));
-                                    break;
-
-                                }
-
-
-                            }
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.auto_outline));
                             break;
+
+                        }
+                        case GlobalConstants.SERVICE_CAB_DRIVER:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cab_outline));
+                            break;
+
                         }
                         case GlobalConstants.SERVICE_ELECTRICIAN:
                         {
@@ -1792,6 +1926,62 @@ public class RiderMapActivity extends AppCompatActivity implements
                             break;
 
                         }
+                        case GlobalConstants.SERVICE_MOVERS:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.movers));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_HOUSEKEEPER:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.housekeeper));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_COOK:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cook));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_PAINTER:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.painter));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_FLORIST:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.florist));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_PESTICIDE:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pesticide));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_TUTOR:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.tutor));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_LOCKSMITH:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.locksmith));
+                            break;
+
+                        }
+                        case GlobalConstants.SERVICE_GRINDER:
+                        {
+                            vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.grinder));
+                            break;
+
+                        }
+
+
                     }
 
                     //extend the bounds to include each marker's position
@@ -3637,9 +3827,9 @@ public class RiderMapActivity extends AppCompatActivity implements
         if(currentServiceMarker.equals(GlobalConstants.TRANSPORT_AUTO_SERVICE)) {
 
             btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.CAB_CODE, true, null});
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_AUTO_DRIVER, GlobalConstants.CAB_CODE, true, null});
             currentServiceMarker = GlobalConstants.TRANSPORT_CAB_SERVICE;
-            btn_service.setImageResource(R.drawable.car_24px);
+            btn_service.setImageResource(R.drawable.cab_outline);
             Drawable fabDr= btn_service.getDrawable();
             DrawableCompat.setTint(fabDr, Color.WHITE);
             btn_service.setEnabled(true);
@@ -3648,7 +3838,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         else if(currentServiceMarker.equals(GlobalConstants.TRANSPORT_CAB_SERVICE)) {
 
             btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.UTILITY_SERVICE, true, null});
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_CAB_DRIVER, GlobalConstants.UTILITY_SERVICE, true, null});
             currentServiceMarker = GlobalConstants.SERVICE_MERCHANT;
             btn_service.setImageResource(R.drawable.merchant);
             Drawable fabDr= btn_service.getDrawable();
@@ -3660,9 +3850,9 @@ public class RiderMapActivity extends AppCompatActivity implements
         else if(currentServiceMarker.equals(GlobalConstants.SERVICE_MERCHANT)) {
 
             btn_service.setEnabled(false);
-            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_DRIVER, GlobalConstants.AUTO_CODE, true, null});
+            new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{GlobalConstants.SERVICE_AUTO_DRIVER, GlobalConstants.AUTO_CODE, true, null});
             currentServiceMarker = GlobalConstants.TRANSPORT_AUTO_SERVICE;
-            btn_service.setImageResource(R.drawable.auto_24px);
+            btn_service.setImageResource(R.drawable.auto_outline);
             Drawable fabDr= btn_service.getDrawable();
             DrawableCompat.setTint(fabDr, Color.WHITE);
             btn_service.setEnabled(true);

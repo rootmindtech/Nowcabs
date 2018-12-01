@@ -55,6 +55,13 @@ public  final class GlobalConstants {
     public static final String KANNADA_LOCALE="kn";
     public static final String URDU_LOCALE="ur";
 
+    public static final String ENGLISH_LANG="English";
+    public static final String HINDI_LANG="हिंदी";
+    public static final String TELUGU_LANG="తెలుగు";
+    public static final String TAMIL_LANG="தமிழ்";
+    public static final String KANNADA_LANG="ಕನ್ನಡ್";
+    public static final String URDU_LANG="اردو";
+
 
     public static final String GOOGLE_MAPS_KEY="AIzaSyDASwkBLMvv2fchepUL1iZZBV_DWYkk9F8";
     public static final String GOOGLE_MAPS_DIRECTIONS_URL="https://maps.googleapis.com/maps/api/directions/";
@@ -89,13 +96,24 @@ public  final class GlobalConstants {
 
     //------------ServiceList Constants
     public static final String SERVICE_CARPENTER="CARPENTER";
-    public static final String SERVICE_DRIVER="DRIVER";
+    public static final String SERVICE_AUTO_DRIVER="AUTODRIVER";
+    public static final String SERVICE_CAB_DRIVER="CABDRIVER";
     public static final String SERVICE_ELECTRICIAN="ELECTRICIAN";
     public static final String SERVICE_PLUMBER="PLUMBER";
     public static final String SERVICE_TAILOR="TAILOR";
     public static final String SERVICE_WASHER="WASHER";
     public static final String SERVICE_COURIER="COURIER";
     public static final String SERVICE_MERCHANT="MERCHANT";
+
+    public static final String SERVICE_MOVERS="MOVERS";
+    public static final String SERVICE_HOUSEKEEPER="HOUSEKEEPER";
+    public static final String SERVICE_COOK="COOK";
+    public static final String SERVICE_PAINTER="PAINTER";
+    public static final String SERVICE_FLORIST="FLORIST";
+    public static final String SERVICE_PESTICIDE="PESTICIDE";
+    public static final String SERVICE_TUTOR="TUTOR";
+    public static final String SERVICE_LOCKSMITH="LOCKSMITH";
+    public static final String SERVICE_GRINDER="GRINDER";
 
 
     public static final String SERVICE_GROUP="GROUP";
@@ -115,6 +133,8 @@ public  final class GlobalConstants {
     //-----------ridetype status
     public static final String RIDER_TYPE="RIDER";
     public static final String SERVICER_TYPE="SERVICER";
+    public static final String TIMER_TYPE="TIMER";
+
     //-----
 
 

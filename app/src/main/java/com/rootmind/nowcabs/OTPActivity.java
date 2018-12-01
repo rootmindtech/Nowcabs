@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -49,7 +51,10 @@ public class OTPActivity extends AppCompatActivity {
 
     public Toolbar toolbar;
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
+
+    CommonService commonService;
 
     @SuppressLint("ResourceType")
     @Override
@@ -60,6 +65,9 @@ public class OTPActivity extends AppCompatActivity {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
+
+        //sharedPreferences initiated
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
         mobileNo = (String) getIntent().getSerializableExtra("mobileNo");
@@ -85,8 +93,13 @@ public class OTPActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
+
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        commonService = new CommonService();
+
 
         otpEditText1 = findViewById(R.id.otpEditText1);
         otpEditText2 = findViewById(R.id.otpEditText2);
@@ -466,16 +479,36 @@ public class OTPActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("signInWithCredential", "signInWithCredential:success");
 
-                                Intent i = new Intent(getApplicationContext(), RiderLoginActivity.class);
-                                Bundle bundle = new Bundle();
-                                //bundle.putSerializable("Parameter", parameter);
-                                bundle.putSerializable("mobileNo", mobileNo);
-                                bundle.putSerializable("locale", locale);
-                                i.putExtras(bundle);
-                                startActivity(i);
+
+                                commonService.riderAutoLogin(new Listener<Rider>() {
+                                    @Override
+                                    public void on(Rider rider) {
 
 
-                                FirebaseUser user = task.getResult().getUser();
+                                        if (rider.isHostResponse()) {
+
+
+                                            if (!rider.isRecordFound() || !rider.isAuthDevice()) {
+
+
+                                                Intent i = new Intent(getApplicationContext(), RiderLoginActivity.class);
+                                                Bundle bundle = new Bundle();
+                                                //bundle.putSerializable("Parameter", parameter);
+                                                bundle.putSerializable("mobileNo", mobileNo);
+                                                bundle.putSerializable("locale", locale);
+                                                i.putExtras(bundle);
+                                                startActivity(i);
+                                                //FirebaseUser user = task.getResult().getUser();
+
+
+                                            } else {
+                                                setRiderLogin(rider);
+                                            }
+                                        }
+
+                                    }
+                                }, OTPActivity.this, getApplicationContext(), mobileNo);
+
 
 
                                 // ...
@@ -577,7 +610,57 @@ public class OTPActivity extends AppCompatActivity {
 
 
 
+    private void setRiderLogin(Rider rider) {
 
+
+        //Shared Preferences
+        editor = sharedPreferences.edit();
+
+        Log.d(GlobalConstants.CommonService, "SharedPreferences putString ");
+
+//        editor.putString("riderMobileNo", rider.getRiderMobileNo());
+//        editor.putString("riderFirstName", rider.getRiderName());
+        editor.putString("userGroup", GlobalConstants.RIDER_CODE);
+        editor.putString("riderRefNo", rider.getRiderRefNo());
+        editor.putString("riderID", rider.getRiderID());
+        editor.putString("autoLogin", GlobalConstants.YES_CODE);
+        editor.putString("fcmToken", sharedPreferences.getString("fcmToken",""));
+        editor.putString("locale", CommonService.getLocale(rider.getLocale()).toString());
+        //Log.d(TAG, "fcmToken: " + fcmToken);
+
+        editor.apply();
+
+        commonService.setLocale(this, CommonService.getLocale(rider.getLocale()).toString());
+
+        //Log.d(TAG, "Saved Info: " + sharedPreferences.getString("riderMobileNo", "") );
+
+
+        //Log.d(TAG, "Before Change Activity " + rider.getStatus());
+
+
+        if (rider.getStatus().equals(GlobalConstants.ACTIVE_CODE)) {
+
+            Parameter parameter = new Parameter();
+
+            Intent i = new Intent(getApplicationContext(), RiderMapActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("Parameter", parameter);
+            bundle.putSerializable("Rider", rider);
+            bundle.putSerializable("locale", CommonService.getLocale(rider.getLocale()).toString());
+            i.putExtras(bundle);
+            startActivity(i);
+
+            Log.d(GlobalConstants.CommonService, "Going to RiderMap ");
+        } else {
+
+            Log.d(GlobalConstants.CommonService, "Access Restricted");
+
+            CommonService.Toast(this, GlobalConstants.ACCESS_RESTRICTED, Toast.LENGTH_SHORT);
+
+        }
+
+
+    }
 
 //    public static void hideKeyboard(Activity activity) {
 //        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);

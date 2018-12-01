@@ -231,26 +231,34 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                 break;
 
             }
-            case GlobalConstants.SERVICE_DRIVER:
+            case GlobalConstants.SERVICE_AUTO_DRIVER:
             {
 
-                switch (ride.getVehicleType()){
+//                switch (ride.getVehicleType()){
+//
+//                    case GlobalConstants.AUTO_CODE:
+//                    {
+//                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
+//                        break;
+//
+//                    }
+//                    case GlobalConstants.CAB_CODE:
+//                    {
+//                        holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
+//                        break;
+//
+//                    }
+//
+//
+//                }
 
-                    case GlobalConstants.AUTO_CODE:
-                    {
-                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
-                        break;
-
-                    }
-                    case GlobalConstants.CAB_CODE:
-                    {
-                        holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
-                        break;
-
-                    }
-
-
-                }
+                holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
+                holder.tv_vehicleNo.setText(ride.getVehicleNo());
+                break;
+            }
+            case GlobalConstants.SERVICE_CAB_DRIVER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
                 holder.tv_vehicleNo.setText(ride.getVehicleNo());
                 break;
             }

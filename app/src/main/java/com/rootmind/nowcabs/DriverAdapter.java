@@ -254,9 +254,9 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
 
         if (driver.getDriverVehicleType().equals(GlobalConstants.CAB_CODE)) {
 
-            holder.iv_vehicleImage.setImageResource(R.drawable.taxi_blue48px);
+            holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
         } else {
-            holder.iv_vehicleImage.setImageResource(R.drawable.auto_blue48px);
+            holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
         }
 
 

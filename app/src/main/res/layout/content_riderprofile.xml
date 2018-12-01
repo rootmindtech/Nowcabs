@@ -37,22 +37,43 @@
 
         <ImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="50dp"
-            android:layout_centerHorizontal="true"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="40dp"
             android:src="@drawable/avatar_outline48"
             app:srcCompat="@android:drawable/sym_def_app_icon"/>
 
 
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/iv_avatar"
+            android:layout_alignTop="@id/iv_avatar"
+            android:layout_gravity="start"
+            android:gravity="center_vertical"
+            android:layout_marginStart="100dp"
+            android:isIndicator="true"
+            android:maxHeight="50dp"
+            android:minHeight="28dp"
+            android:numStars="5"
+            android:rating="3.5"
+            android:scaleX=".5"
+            android:scaleY=".5"
+            android:stepSize="0.5"
+            android:transformPivotX="0dp"
+            android:transformPivotY="0dp"
+            android:fillViewport="true"/>
+
+
+        <!--android:drawableLeft="@drawable/dial_blue48px"-->
 
         <EditText
             android:layout_width = "wrap_content"
             android:layout_height = "wrap_content"
             android:id = "@+id/txt_mobileNo"
-            android:drawableLeft="@drawable/dial_blue48px"
-            android:scaleX="0.75"
-            android:scaleY="0.75"
             android:layout_below="@id/iv_avatar"
             android:hint = "Enter Mobile No"
             android:maxLength="20"
@@ -61,7 +82,7 @@
             android:focusable = "true"
             android:textColorHighlight = "#ff7eff15"
             android:textColorHint =  "#7e7e7e"
-            android:textSize="36sp"
+            android:textSize="24sp"
             android:layout_alignParentLeft = "true"
             android:layout_alignParentStart = "true"
             android:layout_alignParentRight = "true"
@@ -72,7 +93,7 @@
             android:nextFocusForward="@+id/txt_name"
             />
 
-
+        <!--android:drawableLeft="@drawable/avatar_outline48"-->
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,7 +104,6 @@
             android:maxLines="1"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/txt_mobileNo"
-            android:drawableLeft="@drawable/person_24px"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignRight="@+id/txt_mobileNo"
@@ -98,7 +118,7 @@
 
         <Spinner
             android:id="@+id/dropDown_locale"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:prompt="@string/dropDown_local_prompt"
             android:entries="@array/locale_array"
@@ -112,6 +132,70 @@
             android:nextFocusForward="@+id/btn_login"
             />
 
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/et_currency"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/dropDown_locale"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/txt_mobileNo"
+            android:layout_alignEnd="@+id/txt_mobileNo"
+            android:textColorHint="#7e7e7e"
+            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:maxLength="3"
+            android:hint="Currency"
+            android:imeOptions="actionDone"
+            android:nextFocusForward="@+id/et_currency"
+            android:focusable="false"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_kms"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/et_currency"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/txt_mobileNo"
+            android:layout_alignEnd="@+id/txt_mobileNo"
+            android:textColorHint="#7e7e7e"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:hint="Search in kms"
+            />
+
+
+        <com.xw.repo.BubbleSeekBar
+            android:id="@+id/sb_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_below="@+id/tv_kms"
+            android:layout_alignParentLeft = "true"
+            android:layout_alignParentStart = "true"
+            android:layout_alignParentRight = "true"
+            android:layout_alignParentEnd = "true"
+            app:bsb_bubble_color="@color/colorTwitterBlue"
+            app:bsb_bubble_text_color="@color/colorBlack"
+            app:bsb_max="200"
+            app:bsb_min="0"
+            app:bsb_progress="0"
+            app:bsb_second_track_color="@color/colorRed"
+            app:bsb_section_count="10"
+            app:bsb_section_text_position="below_section_mark"
+            app:bsb_show_progress_in_float="false"
+            app:bsb_show_section_mark="true"
+            app:bsb_show_section_text="true"
+            app:bsb_show_thumb_text="true"
+            app:bsb_track_color="@color/colorGrey"
+            app:bsb_auto_adjust_section_mark="true"
+            android:nextFocusForward="@+id/btn_login"
+            />
+
 
         <!--24-Sep-2018 background="#1E90FF"-->
         <Button
@@ -120,7 +204,7 @@
             android:text="@string/save"
             android:id="@+id/btn_save"
             android:layout_marginTop="20dp"
-            android:layout_below="@+id/dropDown_locale"
+            android:layout_below="@+id/sb_radius"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignRight="@+id/txt_name"
@@ -136,7 +220,7 @@
             android:layout_below="@id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="30dp"
             android:checked="true"
             android:text="Vacant"
             android:layout_centerHorizontal="true"
@@ -145,8 +229,8 @@
             android:textColor="@color/colorBlack"
             android:gravity="center"
             android:textSize="16sp"
-            android:scaleX="2"
-            android:scaleY="2"/>
+            android:scaleX="1.5"
+            android:scaleY="1.5"/>
 
     </RelativeLayout>
 

@@ -82,6 +82,7 @@ public class AvatarActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
 
 
         btn_login = (Button) findViewById(R.id.btn_login);

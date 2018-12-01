@@ -3,6 +3,7 @@ package com.rootmind.nowcabs;
 import android.content.res.Resources;
 import android.graphics.Color;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -42,7 +43,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
     private  ItemClickListener  mClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView tv_servicerName, tv_mobileNo, tv_destination, tv_distance, tv_vacantStatus, tv_yourRating, tv_vehicleNo;
+        public TextView tv_servicerName, tv_mobileNo, tv_destination, tv_distance, tv_vacantStatus, tv_yourRating, tv_vehicleNo, tv_langauge;
         public ImageView iv_vehicleImage;
         public ImageView iv_avatar;
         public ImageView iv_dialImage;
@@ -51,6 +52,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         public RatingBar ratingBar;
         public ImageButton ib_rating;
         public ImageButton ib_location;
+        public CardView cardView;
 
         private String mItem;
         private TextView mTextView;
@@ -88,6 +90,10 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
             tv_vehicleNo= (TextView) view.findViewById(R.id.tv_vehicleNo);
 
+            tv_langauge= (TextView) view.findViewById(R.id.tv_language);
+
+            cardView = (CardView) view.findViewById(R.id.card_view);
+
             //view.setTag(iv_avatar);
 
             iv_avatar.setOnClickListener(this);
@@ -101,6 +107,8 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
             ib_rating.setOnClickListener(this);
 
             ib_location.setOnClickListener(this);
+
+            cardView.setOnClickListener(this);
 
             tv_destination.setTextColor(Color.GRAY);
 //            tv_mobileNo.setTextColor(Color.rgb(34, 139, 34)); //FOREST GREEN
@@ -169,6 +177,13 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
                         view.setEnabled(true);
                         break;
                     }
+                    case R.id.card_view: {
+
+                        mClickListener.onClickLocation(view, getAdapterPosition());
+                        break;
+                    }
+
+
                 }
 
 
@@ -230,6 +245,8 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         holder.tv_yourRating.setText(res.getString(R.string.you_rated) + " " + String.valueOf(rider.getYourRating()));
 
+
+        holder.tv_langauge.setText(CommonService.showLocale(rider.getLocale()));
 
         setServiceImage(holder, rider);
 
@@ -368,26 +385,33 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
                 break;
 
             }
-            case GlobalConstants.SERVICE_DRIVER:
+            case GlobalConstants.SERVICE_AUTO_DRIVER:
             {
 
-                switch (rider.getVehicleType()){
-
-                    case GlobalConstants.AUTO_CODE:
-                    {
-                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
-                        break;
-
-                    }
-                    case GlobalConstants.CAB_CODE:
-                    {
-                        holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
-                        break;
-
-                    }
-
-
-                }
+//                switch (rider.getVehicleType()){
+//
+//                    case GlobalConstants.AUTO_CODE:
+//                    {
+//                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
+//                        break;
+//
+//                    }
+//                    case GlobalConstants.CAB_CODE:
+//                    {
+//                        holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
+//                        break;
+//
+//                    }
+//
+//
+//                }
+                holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
+                holder.tv_vehicleNo.setText(rider.getVehicleNo());
+                break;
+            }
+            case GlobalConstants.SERVICE_CAB_DRIVER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
                 holder.tv_vehicleNo.setText(rider.getVehicleNo());
                 break;
             }
@@ -421,6 +445,65 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
                 break;
 
             }
+            case GlobalConstants.SERVICE_MOVERS:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.movers);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_HOUSEKEEPER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.housekeeper);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_COOK:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.cook);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_PAINTER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.painter);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_FLORIST:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.florist);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_PESTICIDE:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.pesticide);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_TUTOR:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.tutor);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_LOCKSMITH:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.locksmith);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_GRINDER:
+            {
+                holder.iv_vehicleImage.setImageResource(R.drawable.grinder);
+                break;
+
+            }
+
+
+
+
+
         }
 
     }

@@ -1,62 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:id="@+id/group_rider"
-        android:checkableBehavior="single">
+    <item android:title="User">
+        <menu>
 
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/avatar_outline48"
-            android:title="Profile" />
+            <group android:id="@+id/group_rider"
+                android:checkableBehavior="single">
 
-
-        <item
-            android:id="@+id/nav_idcard"
-            android:icon="@drawable/driving_front"
-            android:title="ID Card" />
+                <item
+                    android:id="@+id/nav_profile"
+                    android:icon="@drawable/avatar_outline48"
+                    android:title="Profile" />
 
 
-        <item
-            android:id="@+id/nav_myRequests"
-            android:icon="@drawable/request"
-            android:title="My Request" />
+                <item
+                    android:id="@+id/nav_myRequests"
+                    android:icon="@drawable/request"
+                    android:title="My Request" />
 
-        <item
-            android:id="@+id/nav_myGroup"
-            android:icon="@drawable/mygroup"
-            android:title="My Group" />
-
-
-    </group>
-
-    <group  android:id="@+id/group_servicer"
-        android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_myGroup"
+                    android:icon="@drawable/mygroup"
+                    android:title="My Group" />
 
 
-        <item
-            android:id="@+id/nav_service"
-            android:icon="@drawable/tools"
-            android:title="Service" />
+            </group>
 
-        <item
-            android:id="@+id/nav_driver"
-            android:icon="@drawable/vehicle_24px"
-            android:title="Driver" />
+        </menu>
+    </item>
 
-        <item
-            android:id="@+id/nav_myService"
-            android:icon="@drawable/response"
-            android:title="My Service" />
+    <item android:title="Service Provider">
+        <menu>
 
-        <item
-            android:id="@+id/nav_group"
-            android:icon="@drawable/group"
-            android:title="Group" />
+            <group  android:id="@+id/group_servicer"
+                android:checkableBehavior="single">
 
 
-    </group>
+                <item
+                    android:id="@+id/nav_service"
+                    android:icon="@drawable/service"
+                    android:title="Service" />
+
+                <item
+                    android:id="@+id/nav_idcard"
+                    android:icon="@drawable/idcard"
+                    android:title="ID Card" />
+
+                <item
+                    android:id="@+id/nav_driver"
+                    android:icon="@drawable/vehicle_24px"
+                    android:title="Vehicle" />
+
+                <item
+                    android:id="@+id/nav_myService"
+                    android:icon="@drawable/response"
+                    android:title="My Service" />
+
+                <item
+                    android:id="@+id/nav_group"
+                    android:icon="@drawable/group"
+                    android:title="Group" />
 
 
+            </group>
+
+
+        </menu>
+    </item>
     <group  android:id="@+id/logout"
         android:checkableBehavior="single">
 

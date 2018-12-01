@@ -65,7 +65,7 @@
                 android:maxHeight="48dp"
                 android:maxWidth="48dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/avatar_black_24dp"
+                android:src="@drawable/avatar_outline48"
                 android:layout_weight="1"
                 android:layout_gravity="right"
                 />

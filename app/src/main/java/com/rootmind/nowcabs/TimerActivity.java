@@ -1,5 +1,6 @@
 package com.rootmind.nowcabs;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,7 +38,7 @@ public class TimerActivity extends AppCompatActivity  {
     int i = -1;
     ProgressBar mProgressBar, mProgressBar1;
 
-    private TextView textViewShowTime;
+    private TextView textViewShowTime, tv_riderName, tv_riderLocation, tv_appointDateTime;
     private CountDownTimer countDownTimer;
     private long totalTimeCountInMilliseconds;
 
@@ -83,6 +85,11 @@ public class TimerActivity extends AppCompatActivity  {
 
         mediaPlayer = CommonService.mediaPlayer(getApplicationContext());
 
+        tv_riderName = (TextView)findViewById(R.id.tv_riderName);
+        tv_riderLocation = (TextView)findViewById(R.id.tv_riderLocation);
+
+        tv_appointDateTime = (TextView)findViewById(R.id.tv_appointDateTime);
+
 
         btn_accept = (Button) findViewById(R.id.btn_accept);
         btn_reject = (Button) findViewById(R.id.btn_reject);
@@ -105,21 +112,34 @@ public class TimerActivity extends AppCompatActivity  {
         });
 
 
+
         startRinger();
 
 
     }
 
 
+    private void viewRide() {
+
+        try {
+
+                tv_riderName.setText(ride.getRiderName());
+                tv_riderLocation.setText("");
+                tv_appointDateTime.setText(ride.getAppointDateTime());
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 
     private void startRinger()
     {
 
 
-        mProgressBar.setVisibility(View.INVISIBLE);
-        mProgressBar1.setVisibility(View.VISIBLE);
-        setTimer();
-        startTimer();
+        fetchRide();
+
 
 
     }
@@ -202,6 +222,17 @@ public class TimerActivity extends AppCompatActivity  {
         textViewShowTime.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressBar1.setVisibility(View.GONE);
+
+
+        //-------------
+
+        Intent i = new Intent(getApplicationContext(), RidesActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Rider", rider);
+        bundle.putSerializable("rideType", GlobalConstants.SERVICER_TYPE);
+        i.putExtras(bundle);
+        startActivity(i);
+        //-----
 
         finish();
 
@@ -344,6 +375,128 @@ public class TimerActivity extends AppCompatActivity  {
 
     }//update ride
 
+
+    public void fetchRide()
+    {
+
+
+        TimerActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+
+                try {
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+
+                    //loadingSpinner.setVisibility(View.VISIBLE);
+
+
+                    String methodAction = "fetchRide";
+
+
+                    JSONObject messageJson = new JSONObject();
+                    messageJson.put("rideRefNo", ride.getRideRefNo());
+                    messageJson.put("rideType", GlobalConstants.TIMER_TYPE);
+
+
+                    ConnectHost connectHost = new ConnectHost();
+
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+                    //loadingSpinner.setVisibility(View.GONE);
+
+                    Log.d(GlobalConstants.CommonService, "fetchRide responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        // Convert String to json object
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchRide");
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("rideWrapper");
+                        if (jsonResponseData.getString("success") == "true") {
+
+
+                            if(wrapperArrayObj!=null) {
+
+                                for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
+                                    if (wrapperArrayObj.optJSONObject(i).optString("recordFound") == "true") {
+
+                                        ride.setRideRefNo(wrapperArrayObj.optJSONObject(i).optString("rideRefNo"));
+                                        ride.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
+                                        ride.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
+                                        ride.setRiderName(wrapperArrayObj.optJSONObject(i).optString("riderName"));
+                                        ride.setRiderMobileNo(wrapperArrayObj.optJSONObject(i).optString("riderMobileNo"));
+                                        ride.setServicerRefNo(wrapperArrayObj.optJSONObject(i).optString("servicerRefNo"));
+                                        ride.setServicerID(wrapperArrayObj.optJSONObject(i).optString("servicerID"));
+                                        ride.setServicerName(wrapperArrayObj.optJSONObject(i).optString("servicerName"));
+                                        ride.setServicerMobileNo(wrapperArrayObj.optJSONObject(i).optString("servicerMobileNo"));
+                                        ride.setVehicleNo(wrapperArrayObj.optJSONObject(i).optString("vehicleNo"));
+                                        ride.setVehicleType(wrapperArrayObj.optJSONObject(i).optString("vehicleType"));
+                                        ride.setServiceCode(wrapperArrayObj.optJSONObject(i).optString("serviceCode"));
+                                        ride.setRideStatus(wrapperArrayObj.optJSONObject(i).optString("rideStatus"));
+                                        ride.setRideStartDate(wrapperArrayObj.optJSONObject(i).optString("rideStartDate"));
+                                        ride.setAppointDateTime(wrapperArrayObj.optJSONObject(i).optString("appointDateTime"));
+                                        ride.setRideType(GlobalConstants.TIMER_TYPE);
+
+
+                                        //-------get ringer after getting data
+                                        viewRide();
+                                        mProgressBar.setVisibility(View.INVISIBLE);
+                                        mProgressBar1.setVisibility(View.VISIBLE);
+                                        setTimer();
+                                        startTimer();
+
+
+                                    }
+                                }
+
+
+
+                            }//null condition check
+
+                        } else {
+
+                            CommonService.Toast(TimerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+                        }
+
+
+                    } else {
+
+                        CommonService.Toast(TimerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    CommonService.Toast(TimerActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+                }
+
+            } //run end
+
+
+        });
+
+
+    }
+    
 //    public void firestoreListener()
 //    {
 //

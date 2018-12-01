@@ -12,6 +12,8 @@ import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,9 +24,16 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mynameismidori.currencypicker.CurrencyPicker;
+import com.mynameismidori.currencypicker.CurrencyPickerListener;
+import com.xw.repo.BubbleSeekBar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +53,8 @@ public class RiderProfileActivity extends AppCompatActivity {
     private EditText txt_name;
     private EditText txt_mobileNo;
     private Spinner dropDown_locale;
+    private BubbleSeekBar sb_radius;
+    private EditText et_currency;
 
 //    Button btn_logout;
     Button btn_save;
@@ -71,6 +82,7 @@ public class RiderProfileActivity extends AppCompatActivity {
     CommonService commonService = null;
     String responseData = null;
     public LinearLayout loadingSpinner;
+    public RatingBar ratingBar;
 
 
     @SuppressLint("ResourceType")
@@ -121,11 +133,15 @@ public class RiderProfileActivity extends AppCompatActivity {
         txt_name = (EditText) findViewById(R.id.txt_name);
         dropDown_locale = (Spinner) findViewById(R.id.dropDown_locale);
         iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
-
+        sb_radius = (BubbleSeekBar) findViewById(R.id.sb_radius);
 
 //        btn_logout = (Button) findViewById(R.id.btn_logout);
         btn_save = (Button) findViewById(R.id.btn_save);
         swt_vacant = (Switch) findViewById(R.id.swt_vacant);
+
+        et_currency = (EditText) findViewById(R.id.et_currency);
+
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
 
         loadingSpinner = ((LinearLayout) findViewById(R.id.progressBarLayout));
@@ -135,7 +151,7 @@ public class RiderProfileActivity extends AppCompatActivity {
 
         //--disable text boxes
         txt_mobileNo.setEnabled(false);
-        //txt_name.setEnabled(false);
+        //et_currency.setEnabled(false);
 
 
 
@@ -210,6 +226,19 @@ public class RiderProfileActivity extends AppCompatActivity {
                     }
                 });
 
+                et_currency.addTextChangedListener(new TextWatcher() {
+                    public void afterTextChanged(Editable s) {
+                        Validation.hasText(et_currency);
+                    }
+
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+                });
+
+                
                 if (Validation.hasText(txt_name)) {
 
                     name = txt_name.getText().toString().trim();
@@ -218,7 +247,8 @@ public class RiderProfileActivity extends AppCompatActivity {
 
                     rider.setRiderName(name);
                     rider.setLocale(locale);
-
+                    rider.setRadius(sb_radius.getProgress());
+                    rider.setCurrency(et_currency.getText().toString());
                     new RiderProfileActivity.updateProfileProgressTask().execute();
                     //updateFBProfile();
                 }
@@ -232,7 +262,7 @@ public class RiderProfileActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     txt_name.clearFocus();
-                    Log.d(TAG, "RiderLogin onFocusChange:");
+                    //Log.d(TAG, "RiderLogin onFocusChange:");
                     CommonService.hideKeyboardView(RiderProfileActivity.this, txt_name);
                 }
             }
@@ -266,6 +296,40 @@ public class RiderProfileActivity extends AppCompatActivity {
 
             }
         });
+
+
+        et_currency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                CurrencyPicker picker = CurrencyPicker.newInstance("Select Currency");  // dialog title
+                picker.setListener(new CurrencyPickerListener() {
+                    @Override
+                    public void onSelectCurrency(String name, String code, String symbol, int flagDrawableResID) {
+                        // Implement your code here
+
+                        et_currency.setText(code);
+                        picker.dismiss();
+
+                    }
+                });
+                picker.show(getSupportFragmentManager(), "CURRENCY_PICKER");
+
+
+            }
+        });
+
+
+//        et_currency.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (!hasFocus) {
+//                    et_currency.clearFocus();
+//                    //Log.d(TAG, "RiderLogin onFocusChange:");
+//                    CommonService.hideKeyboardView(RiderProfileActivity.this, et_currency);
+//                }
+//            }
+//        });
 
         new RiderProfileActivity.ProfileProgressTask().execute(null,null,null);
 
@@ -379,6 +443,10 @@ public class RiderProfileActivity extends AppCompatActivity {
                         txt_name.setText(rider.getRiderName());
                         dropDown_locale.setSelection(CommonService.populateLocale(rider.getLocale()));
 
+                        sb_radius.setProgress(rider.getRadius());
+
+                        et_currency.setText(rider.getCurrency());
+
                         commonService.getImage(iv_avatar, CommonService.getImageName(rider, GlobalConstants.IMAGE_AVATAR));
 
                         Log.d(TAG, "getVacantStatus: " + rider.getVacantStatus());
@@ -391,6 +459,9 @@ public class RiderProfileActivity extends AppCompatActivity {
                             swt_vacant.setChecked(true);
 
                         }
+
+                        ratingBar.setRating((float)rider.getAvgRating());
+
 
                     } else {
                         btn_save.setVisibility(View.GONE);

@@ -253,7 +253,7 @@ public class RideDetailsActivity extends AppCompatActivity {
 
         } else {
 
-            driverImage.setImageResource(R.drawable.avatar_black_24dp);
+            driverImage.setImageResource(R.drawable.avatar_outline48);
 
         }
 

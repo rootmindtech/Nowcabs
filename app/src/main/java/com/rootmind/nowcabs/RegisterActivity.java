@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -44,13 +45,25 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     CardView carpenterView;
-    CardView driverView;
+    CardView autoDriverView;
+    CardView cabDriverView;
     CardView electricianView;
     CardView plumberView ;
     CardView tailorView;
     CardView washerView;
     CardView courierView;
     CardView merchantView;
+
+    CardView moversView;
+    CardView housekeeperView;
+    CardView cookView;
+    CardView painterView;
+    CardView floristView;
+    CardView pesticideView;
+    CardView tutorView;
+    CardView locksmithView;
+    CardView grinderView;
+
 
     boolean registerFlag=false;
 
@@ -60,7 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     String responseData = null;
 
-    private ProgressBar loadingSpinner;
+    private LinearLayout loadingSpinner;
 
 
     ArrayList<String> serviceArrayList = new ArrayList<String>();
@@ -87,8 +100,10 @@ public class RegisterActivity extends AppCompatActivity {
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(Color.WHITE);
+        toolbar.setTitleTextColor(Color.BLACK);
+        toolbar.setTitle("Select profession");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
@@ -135,13 +150,24 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         carpenterView = (CardView) findViewById(R.id.carpenter_cardView);
-        driverView = (CardView) findViewById(R.id.driver_cardView);
+        autoDriverView = (CardView) findViewById(R.id.auto_driver_cardView);
+        cabDriverView = (CardView) findViewById(R.id.cab_driver_cardView);
         electricianView = (CardView) findViewById(R.id.electrician_cardView);
         plumberView = (CardView) findViewById(R.id.plumber_cardView);
         tailorView = (CardView) findViewById(R.id.tailor_cardView);
         washerView = (CardView) findViewById(R.id.washer_cardView);
         courierView = (CardView) findViewById(R.id.courier_cardView);
         merchantView = (CardView) findViewById(R.id.merchant_cardView);
+
+        moversView = (CardView) findViewById(R.id.movers_cardView);
+        housekeeperView = (CardView) findViewById(R.id.housekeeper_cardView);
+        cookView = (CardView) findViewById(R.id.cook_cardView);
+        painterView = (CardView) findViewById(R.id.painter_cardView);
+        floristView = (CardView) findViewById(R.id.florist_cardView);
+        pesticideView = (CardView) findViewById(R.id.pesticide_cardView);
+        tutorView = (CardView) findViewById(R.id.tutor_cardView);
+        locksmithView = (CardView) findViewById(R.id.locksmith_cardView);
+        grinderView = (CardView) findViewById(R.id.grinder_cardView);
 
 
         carpenterView.setOnClickListener(new View.OnClickListener() {
@@ -154,12 +180,22 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        driverView.setOnClickListener(new View.OnClickListener() {
+        autoDriverView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
-                setActiveServiceArrayList(v,GlobalConstants.SERVICE_DRIVER);
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_AUTO_DRIVER);
+
+            }
+        });
+
+        cabDriverView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_CAB_DRIVER);
 
             }
         });
@@ -223,6 +259,88 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        moversView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_MOVERS);
+
+            }
+        });
+        housekeeperView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_HOUSEKEEPER);
+
+            }
+        });
+        cookView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_COOK);
+
+            }
+        });
+        painterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_PAINTER);
+
+            }
+        });
+        floristView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_FLORIST);
+
+            }
+        });
+        pesticideView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_PESTICIDE);
+
+            }
+        });
+        tutorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_TUTOR);
+
+            }
+        });
+        locksmithView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_LOCKSMITH);
+
+            }
+        });
+        grinderView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //v.setBackgroundColor(getResources().getColor(R.color.colorOrange));
+                setActiveServiceArrayList(v,GlobalConstants.SERVICE_GRINDER);
+
+            }
+        });
+
 
         if(!registerFlag)
         {
@@ -232,7 +350,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
 
-        loadingSpinner = (ProgressBar) findViewById(R.id.progressBar);
+        loadingSpinner = ((LinearLayout)findViewById(R.id.progressBarLayout));
         hideProgressBar();
 
 
@@ -344,7 +462,7 @@ public class RegisterActivity extends AppCompatActivity {
                 //move to next screen only during registration
                 if(registerFlag) {
 
-                    if (activeServiceArrayList.contains(GlobalConstants.SERVICE_DRIVER)) {
+                    if (activeServiceArrayList.contains(GlobalConstants.SERVICE_AUTO_DRIVER)) {
                         setDriverLogin();
                     } else {
                         setAvatar();
@@ -405,12 +523,23 @@ public class RegisterActivity extends AppCompatActivity {
     {
         serviceArrayList.add(GlobalConstants.SERVICE_CARPENTER);
         serviceArrayList.add(GlobalConstants.SERVICE_COURIER);
-        serviceArrayList.add(GlobalConstants.SERVICE_DRIVER);
+        serviceArrayList.add(GlobalConstants.SERVICE_AUTO_DRIVER);
+        serviceArrayList.add(GlobalConstants.SERVICE_CAB_DRIVER);
         serviceArrayList.add(GlobalConstants.SERVICE_ELECTRICIAN);
         serviceArrayList.add(GlobalConstants.SERVICE_MERCHANT);
         serviceArrayList.add(GlobalConstants.SERVICE_PLUMBER);
         serviceArrayList.add(GlobalConstants.SERVICE_TAILOR);
         serviceArrayList.add(GlobalConstants.SERVICE_WASHER);
+
+        serviceArrayList.add(GlobalConstants.SERVICE_MOVERS);
+        serviceArrayList.add(GlobalConstants.SERVICE_HOUSEKEEPER);
+        serviceArrayList.add(GlobalConstants.SERVICE_COOK);
+        serviceArrayList.add(GlobalConstants.SERVICE_PAINTER);
+        serviceArrayList.add(GlobalConstants.SERVICE_FLORIST);
+        serviceArrayList.add(GlobalConstants.SERVICE_PESTICIDE);
+        serviceArrayList.add(GlobalConstants.SERVICE_TUTOR);
+        serviceArrayList.add(GlobalConstants.SERVICE_LOCKSMITH);
+        serviceArrayList.add(GlobalConstants.SERVICE_GRINDER);
 
     }
 
@@ -423,7 +552,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         else
         {
-            view.setBackgroundColor(Color.YELLOW);
+            view.setBackgroundColor(Color.GRAY);
             activeServiceArrayList.add(serviceCode);
         }
     }
@@ -671,7 +800,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //Toast.makeText(RegisterActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-                    btn_login.setVisibility(View.GONE);
+                    //btn_login.setVisibility(View.GONE);
                     result = GlobalConstants.SYSTEM_ERROR;
 
 
@@ -688,12 +817,25 @@ public class RegisterActivity extends AppCompatActivity {
 
         carpenterView.setBackgroundColor(Color.WHITE);
         courierView.setBackgroundColor(Color.WHITE);
-        driverView.setBackgroundColor(Color.WHITE);
+        autoDriverView.setBackgroundColor(Color.WHITE);
+        cabDriverView.setBackgroundColor(Color.WHITE);
         electricianView.setBackgroundColor(Color.WHITE);
         merchantView.setBackgroundColor(Color.WHITE);
         plumberView.setBackgroundColor(Color.WHITE);
         tailorView.setBackgroundColor(Color.WHITE);
         washerView.setBackgroundColor(Color.WHITE);
+
+        moversView.setBackgroundColor(Color.WHITE);
+        housekeeperView.setBackgroundColor(Color.WHITE);
+        cookView.setBackgroundColor(Color.WHITE);
+        painterView.setBackgroundColor(Color.WHITE);
+        floristView.setBackgroundColor(Color.WHITE);
+        pesticideView.setBackgroundColor(Color.WHITE);
+        tutorView.setBackgroundColor(Color.WHITE);
+        locksmithView.setBackgroundColor(Color.WHITE);
+        grinderView.setBackgroundColor(Color.WHITE);
+
+
 
         activeServiceArrayList.clear();
 
@@ -708,56 +850,126 @@ public class RegisterActivity extends AppCompatActivity {
 
                     case GlobalConstants.SERVICE_CARPENTER: {
 
-                        carpenterView.setBackgroundColor(Color.YELLOW);
+                        carpenterView.setBackgroundColor(Color.GRAY);
                         activeServiceArrayList.add(GlobalConstants.SERVICE_CARPENTER);
                         break;
                     }
                     case GlobalConstants.SERVICE_COURIER: {
 
-                        courierView.setBackgroundColor(Color.YELLOW);
+                        courierView.setBackgroundColor(Color.GRAY);
                         activeServiceArrayList.add(GlobalConstants.SERVICE_COURIER);
                         break;
 
                     }
-                    case GlobalConstants.SERVICE_DRIVER: {
+                    case GlobalConstants.SERVICE_AUTO_DRIVER: {
 
-                        driverView.setBackgroundColor(Color.YELLOW);
-                        activeServiceArrayList.add(GlobalConstants.SERVICE_DRIVER);
+                        autoDriverView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_AUTO_DRIVER);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_CAB_DRIVER: {
+
+                        cabDriverView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_CAB_DRIVER);
                         break;
 
                     }
                     case GlobalConstants.SERVICE_ELECTRICIAN: {
 
-                        electricianView.setBackgroundColor(Color.YELLOW);
+                        electricianView.setBackgroundColor(Color.GRAY);
                         activeServiceArrayList.add(GlobalConstants.SERVICE_ELECTRICIAN);
                         break;
 
                     }
                     case GlobalConstants.SERVICE_MERCHANT: {
 
-                        merchantView.setBackgroundColor(Color.YELLOW);
+                        merchantView.setBackgroundColor(Color.GRAY);
                         activeServiceArrayList.add(GlobalConstants.SERVICE_MERCHANT);
                         break;
 
                     }
                     case GlobalConstants.SERVICE_PLUMBER: {
 
-                        plumberView.setBackgroundColor(Color.YELLOW);
+                        plumberView.setBackgroundColor(Color.GRAY);
                         activeServiceArrayList.add(GlobalConstants.SERVICE_PLUMBER);
                         break;
 
                     }
                     case GlobalConstants.SERVICE_TAILOR: {
 
-                        tailorView.setBackgroundColor(Color.YELLOW);
+                        tailorView.setBackgroundColor(Color.GRAY);
                         activeServiceArrayList.add(GlobalConstants.SERVICE_TAILOR);
                         break;
 
                     }
                     case GlobalConstants.SERVICE_WASHER: {
 
-                        washerView.setBackgroundColor(Color.YELLOW);
+                        washerView.setBackgroundColor(Color.GRAY);
                         activeServiceArrayList.add(GlobalConstants.SERVICE_WASHER);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_MOVERS: {
+
+                        moversView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_MOVERS);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_HOUSEKEEPER: {
+
+                        housekeeperView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_HOUSEKEEPER);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_COOK: {
+
+                        cookView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_COOK);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_PAINTER: {
+
+                        painterView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_PAINTER);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_FLORIST: {
+
+                        floristView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_FLORIST);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_PESTICIDE: {
+
+                        pesticideView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_PESTICIDE);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_TUTOR: {
+
+                        tutorView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_TUTOR);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_LOCKSMITH: {
+
+                        locksmithView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_LOCKSMITH);
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_GRINDER: {
+
+                        grinderView.setBackgroundColor(Color.GRAY);
+                        activeServiceArrayList.add(GlobalConstants.SERVICE_GRINDER);
                         break;
 
                     }

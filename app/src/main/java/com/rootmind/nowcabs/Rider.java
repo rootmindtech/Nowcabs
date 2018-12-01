@@ -78,7 +78,49 @@ public class Rider implements Serializable {
 
     public String publicView=null;
 
-    
+    public int radius;
+
+    public String currency=null;
+
+    public String deviceID=null;
+
+    public boolean authDevice=false;
+
+    public boolean isAuthDevice() {
+        return authDevice;
+    }
+
+    public void setAuthDevice(boolean authDevice) {
+        this.authDevice = authDevice;
+    }
+
+
+    public String getDeviceID() {
+        return deviceID;
+    }
+
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+
     public String getPublicView() {
         return publicView;
     }

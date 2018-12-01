@@ -105,6 +105,7 @@ public class RiderLoginActivity extends AppCompatActivity {
 
     String fcmToken;
     public Toolbar toolbar;
+    String deviceID;
 
     //CommonService commonService=null;
 
@@ -149,6 +150,9 @@ public class RiderLoginActivity extends AppCompatActivity {
 
 
         fcmToken = sharedPreferences.getString("fcmToken","");
+
+        deviceID = sharedPreferences.getString("deviceID","");
+
 
         //to show components, if no sharedPreferences are stored
         setComponentView();
@@ -293,6 +297,7 @@ public class RiderLoginActivity extends AppCompatActivity {
                     messageJson.put("fcmToken", fcmToken);
                     messageJson.put("locale", locale);
                     messageJson.put("deviceInfo", CommonService.getDeviceInfo());
+                    messageJson.put("deviceID", deviceID);
 
 
 
@@ -367,6 +372,7 @@ public class RiderLoginActivity extends AppCompatActivity {
                             rider.setDatetime(formattedDate);
                             rider.setFcmToken(fcmToken);
                             rider.setLocale(wrapperArrayObj.getJSONObject(0).optString("locale"));
+                            rider.setDeviceID(wrapperArrayObj.getJSONObject(0).optString("deviceID"));
 
 
 
@@ -693,15 +699,22 @@ public class RiderLoginActivity extends AppCompatActivity {
 
         if (rider.getStatus().equals(GlobalConstants.ACTIVE_CODE)) {
 
-            //parameter = new Parameter();
 
-            Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+            //changed on 25-Nov-2018 to make direct login
+//            Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable("Rider", rider);
+//            bundle.putSerializable("RegisterFlag", true); //only for registration
+//            i.putExtras(bundle);
+//            startActivity(i);
+
+
+            Intent i = new Intent(getApplicationContext(), RiderMapActivity.class);
             Bundle bundle = new Bundle();
-            //bundle.putSerializable("Parameter", parameter);
             bundle.putSerializable("Rider", rider);
-            bundle.putSerializable("RegisterFlag", true); //only for registration
             i.putExtras(bundle);
             startActivity(i);
+
 
             Log.d(TAG, "Going to RiderMap ");
         } else {
@@ -894,6 +907,7 @@ public class RiderLoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.close_18px);
 
 
         txt_mobileNo = (TextView) findViewById(R.id.txt_mobileNo);

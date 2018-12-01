@@ -27,6 +27,15 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
         void onClickWasher(View view, int position);
         void onClickCourier(View view, int position);
         void onClickMerchant(View view, int position);
+        void onClickMovers(View view, int position);
+        void onClickHousekeeper(View view, int position);
+        void onClickCook(View view, int position);
+        void onClickPainter(View view, int position);
+        void onClickFlorist(View view, int position);
+        void onClickPesticide(View view, int position);
+        void onClickTutor(View view, int position);
+        void onClickLocksmith(View view, int position);
+        void onClickGrinder(View view, int position);
 
 
     }
@@ -59,6 +68,16 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
         public CardView cv_courier;
         public CardView cv_merchant;
 
+        public CardView cv_movers;
+        public CardView cv_housekeeper;
+        public CardView cv_cook;
+        public CardView cv_painter;
+        public CardView cv_florist;
+        public CardView cv_pesticide;
+        public CardView cv_tutor;
+        public CardView cv_locksmith;
+        public CardView cv_grinder;
+
 
 
         public ViewHolder(View view) {
@@ -75,6 +94,17 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
             cv_courier = (CardView) view.findViewById(R.id.courier_cardView);
             cv_merchant = (CardView) view.findViewById(R.id.merchant_cardView);
 
+            cv_movers = (CardView) view.findViewById(R.id.movers_cardView);
+            cv_housekeeper = (CardView) view.findViewById(R.id.housekeeper_cardView);
+            cv_cook = (CardView) view.findViewById(R.id.cook_cardView);
+            cv_painter = (CardView) view.findViewById(R.id.painter_cardView);
+            cv_florist = (CardView) view.findViewById(R.id.florist_cardView);
+            cv_pesticide = (CardView) view.findViewById(R.id.pesticide_cardView);
+            cv_tutor = (CardView) view.findViewById(R.id.tutor_cardView);
+            cv_locksmith = (CardView) view.findViewById(R.id.locksmith_cardView);
+            cv_grinder = (CardView) view.findViewById(R.id.grinder_cardView);
+
+
             cv_carpenter.setOnClickListener(this);
             cv_autoDriver.setOnClickListener(this);
             cv_cabDriver.setOnClickListener(this);
@@ -84,6 +114,17 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
             cv_washer.setOnClickListener(this);
             cv_courier.setOnClickListener(this);
             cv_merchant.setOnClickListener(this);
+
+            cv_movers.setOnClickListener(this);
+            cv_housekeeper.setOnClickListener(this);
+            cv_cook.setOnClickListener(this);
+            cv_painter.setOnClickListener(this);
+            cv_florist.setOnClickListener(this);
+            cv_pesticide.setOnClickListener(this);
+            cv_tutor.setOnClickListener(this);
+            cv_locksmith.setOnClickListener(this);
+            cv_grinder.setOnClickListener(this);
+
 
 //            tv_servicerName = (TextView) view.findViewById(R.id.tv_servicerName);
 ////            tv_mobileNo = (TextView) view.findViewById(R.id.tv_mobileNo);
@@ -205,6 +246,61 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
                         break;
 
                     }
+                    case R.id.movers_cardView:{
+
+                        mClickListener.onClickMovers(view, getAdapterPosition());
+                        break;
+
+                    }
+                    case R.id.housekeeper_cardView:{
+
+                        mClickListener.onClickHousekeeper(view, getAdapterPosition());
+                        break;
+
+                    }
+                    case R.id.cook_cardView:{
+
+                        mClickListener.onClickCook(view, getAdapterPosition());
+                        break;
+
+                    }
+                    case R.id.painter_cardView:{
+
+                        mClickListener.onClickPainter(view, getAdapterPosition());
+                        break;
+
+                    }
+                    case R.id.florist_cardView:{
+
+                        mClickListener.onClickFlorist(view, getAdapterPosition());
+                        break;
+
+                    }
+                    case R.id.pesticide_cardView:{
+
+                        mClickListener.onClickPesticide(view, getAdapterPosition());
+                        break;
+
+                    }
+                    case R.id.tutor_cardView:{
+
+                        mClickListener.onClickTutor(view, getAdapterPosition());
+                        break;
+
+                    }
+                    case R.id.locksmith_cardView:{
+
+                        mClickListener.onClickLocksmith(view, getAdapterPosition());
+                        break;
+
+                    }
+                    case R.id.grinder_cardView:{
+
+                        mClickListener.onClickGrinder(view, getAdapterPosition());
+                        break;
+
+                    }
+
 
                 }
 

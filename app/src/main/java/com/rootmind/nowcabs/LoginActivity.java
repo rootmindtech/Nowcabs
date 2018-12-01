@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.StrictMode;
@@ -225,13 +226,18 @@ public class LoginActivity extends AppCompatActivity {
                          // Get new Instance ID token
                          String fcmToken = task.getResult().getToken();
 
+                         String deviceID = getUUID();
+
                          editor = sharedPreferences.edit();
                          editor.putString("fcmToken", fcmToken);
                          editor.putString("deviceToken", fcmToken);
+                         editor.putString("deviceID", deviceID);
+
                          editor.apply();
 
 
                          Log.d(TAG, "fcm token " + fcmToken);
+                         Log.d(TAG, "device ID  " + deviceID);
 
                          //check for userGroup
                          //if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE)) {
@@ -264,12 +270,12 @@ public class LoginActivity extends AppCompatActivity {
                                      if (rider.isHostResponse()) {
 
 
-                                         if (rider.isRecordFound() == false) {
+                                         if (!rider.isRecordFound() || !rider.isAuthDevice()) {
 
                                              setComponentView();
 
                                          } else {
-                                             firebaseCustomerTokenAuth(rider);
+                                             firebaseCustomTokenAuth(rider);
                                          }
                                      } else {
                                          setComponentView();
@@ -341,7 +347,7 @@ public class LoginActivity extends AppCompatActivity {
 
             //Log.d(TAG, "riderMobileNo " + sharedPreferences.getString("riderMobileNo", ""));
             //Log.d(TAG, "driverMobileNo " + sharedPreferences.getString("driverMobileNo", ""));
-            Log.d(TAG, "userGroup " + sharedPreferences.getString("userGroup", ""));
+            //Log.d(TAG, "userGroup " + sharedPreferences.getString("userGroup", ""));
 
 
             //if matching mobile number then auto login
@@ -366,7 +372,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(rider.isHostResponse()) {
 
-                        if (!rider.isRecordFound()) {
+                        if (!rider.isRecordFound() || !rider.isAuthDevice()) {
 
                             //parameter = new Parameter();
 
@@ -380,7 +386,7 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(i);
 
                         } else {
-                            firebaseCustomerTokenAuth(rider);
+                            firebaseCustomTokenAuth(rider);
                         }
                     }
 
@@ -453,7 +459,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void firebaseCustomerTokenAuth(final Rider rider) {
+    public void firebaseCustomTokenAuth(final Rider rider) {
 
         if (rider.getCustomToken() != null) {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -1051,7 +1057,7 @@ public class LoginActivity extends AppCompatActivity {
             int hasCameraPermission = checkSelfPermission(Manifest.permission.CAMERA);
             int hasLocationPermission = checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION);
             int hasCallPhonePermission = checkSelfPermission(android.Manifest.permission.CALL_PHONE);
-//            int hasStatePhonePermission = checkSelfPermission(Manifest.permission.READ_PHONE_STATE);
+            int hasStatePhonePermission = checkSelfPermission(Manifest.permission.READ_PHONE_STATE);
 
 
             List<String> permissions = new ArrayList<String>();
@@ -1072,10 +1078,10 @@ public class LoginActivity extends AppCompatActivity {
             }
 
 
-//            if (hasStatePhonePermission != PackageManager.PERMISSION_GRANTED) {
-//                permissions.add(Manifest.permission.READ_PHONE_STATE);
-//
-//            }
+            if (hasStatePhonePermission != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.READ_PHONE_STATE);
+
+            }
 
 
             if (!permissions.isEmpty()) {
@@ -1200,6 +1206,9 @@ public class LoginActivity extends AppCompatActivity {
         String uniqueId = deviceUuid.toString();
         return uniqueId;
     }
+
+
+
 }
 
 

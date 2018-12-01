@@ -224,6 +224,7 @@
             android:layout_marginTop="30dp"
             android:text="@string/next"
             android:textColor="#ffffff"
+            android:textAllCaps="false"
             android:imeOptions="actionDone"
             />
 

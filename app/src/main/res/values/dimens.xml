@@ -16,4 +16,7 @@
     <dimen name="icon_width">40dp</dimen>
     <dimen name="icon_height">40dp</dimen>
 
+    <dimen name="service_icon_width">30dp</dimen>
+    <dimen name="service_icon_height">30dp</dimen>
+
 </resources>

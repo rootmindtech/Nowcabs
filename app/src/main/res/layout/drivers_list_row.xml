@@ -96,7 +96,7 @@
                 android:layout_marginStart="150dp"
                 android:maxHeight="48dp"
                 android:maxWidth="48dp"
-                android:src="@drawable/auto_blue48px"
+                android:src="@drawable/auto_outline"
                 />
 
 

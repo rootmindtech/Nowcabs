@@ -56,6 +56,7 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
     private Button btn_dial, btn_close;
 //    private EditText edtTimerValue;
     private TextView textViewShowTime, tv_appointDate, tv_appointTime;
+    private ImageView iv_calendar;
     private CountDownTimer countDownTimer;
     private long totalTimeCountInMilliseconds;
 
@@ -74,6 +75,7 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
     ListenerRegistration registration;
     String appointDate=null;
     String appointTime=null;
+    Calendar now;
 //    public LinearLayout loadingSpinner;
 
 
@@ -141,6 +143,8 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
 
         tv_appointDate = (TextView)findViewById(R.id.tv_appointDate);
         tv_appointTime = (TextView)findViewById(R.id.tv_appointTime);
+        iv_calendar = (ImageView) findViewById(R.id.iv_calendar);
+
 
         //-----set avatar
         if(serviceGeo!=null) {
@@ -202,22 +206,24 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
 
 
 
-        Calendar now = Calendar.getInstance();
+        now = Calendar.getInstance();
+
+        iv_calendar.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
+
+                  showDatePicker();
+
+              }
+          }
+        );
+
 
         tv_appointDate.setOnClickListener(new View.OnClickListener() {
               @Override
               public void onClick(View view) {
 
-                  DatePickerDialog dpd =  DatePickerDialog.newInstance(
-                          DialerActivity.this,
-                          now.get(Calendar.YEAR), // Initial year selection
-                          now.get(Calendar.MONTH), // Initial month selection
-                          now.get(Calendar.DAY_OF_MONTH) // Inital day selection
-                  );
-                  // If you're calling this from an AppCompatActivity
-                  dpd.show(getSupportFragmentManager(), "Datepickerdialog");
-                  dpd.setMinDate(now);
-
+                  showDatePicker();
 
               }
           }
@@ -227,9 +233,7 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
             @Override
             public void onClick(View view) {
 
-                TimePickerDialog tpd =  TimePickerDialog.newInstance(DialerActivity.this,true);
-                // If you're calling this from an AppCompatActivity
-                tpd.show(getSupportFragmentManager(), "Timepickerdialog");
+                    showTimePicker();
 
             }
         });
@@ -314,6 +318,26 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
         });
     }
 
+    private void showDatePicker()
+    {
+        DatePickerDialog dpd =  DatePickerDialog.newInstance(
+                DialerActivity.this,
+                now.get(Calendar.YEAR), // Initial year selection
+                now.get(Calendar.MONTH), // Initial month selection
+                now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+        );
+        // If you're calling this from an AppCompatActivity
+        dpd.show(getSupportFragmentManager(), "Datepickerdialog");
+        dpd.setMinDate(now);
+
+    }
+
+    private void showTimePicker()
+    {
+        TimePickerDialog tpd =  TimePickerDialog.newInstance(DialerActivity.this,true);
+        // If you're calling this from an AppCompatActivity
+        tpd.show(getSupportFragmentManager(), "Timepickerdialog");
+    }
     private void startTimer() {
 
         try {
@@ -324,6 +348,9 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
 
                 btn_dial.setEnabled(false);
                 btn_close.setEnabled(false);
+                iv_calendar.setClickable(false);
+                tv_appointDate.setEnabled(false);
+                tv_appointTime.setEnabled(false);
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mProgressBar1.setVisibility(View.VISIBLE);
 
@@ -382,6 +409,9 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
         textViewShowTime.setVisibility(View.VISIBLE);
         btn_dial.setEnabled(true);
         btn_close.setEnabled(true);
+        iv_calendar.setClickable(true);
+        tv_appointDate.setEnabled(true);
+        tv_appointTime.setEnabled(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressBar1.setVisibility(View.GONE);
 
@@ -886,7 +916,8 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        String time = hourOfDay+":"+minute; //hourOfDay+"h"+minute+"m"+second;
+        String format = "%1$02d"; // two digits
+        String time = String.format(format,hourOfDay)+":"+String.format(format,minute); //hourOfDay+"h"+minute+"m"+second;
         appointTime = hourOfDay+":"+minute + ":00";
         tv_appointTime.setText(time);
     }

@@ -94,7 +94,7 @@ public class IDCardActivity extends AppCompatActivity {
 
         iv_id_back = (ImageView) findViewById(R.id.iv_id_back);
 
-        ImageView nowcabs = (ImageView) findViewById(R.id.nowcabs);
+//        ImageView nowcabs = (ImageView) findViewById(R.id.nowcabs);
 
 
         fetchProfile();
@@ -107,7 +107,7 @@ public class IDCardActivity extends AppCompatActivity {
             btn_login.setText(R.string.save);
             btn_login.setVisibility(View.GONE);
 
-            nowcabs.setVisibility(View.INVISIBLE);
+            //nowcabs.setVisibility(View.INVISIBLE);
 
 
         }

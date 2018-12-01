@@ -858,12 +858,12 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
                     if(driverGeo.driverVehicleType.equals(GlobalConstants.CAB_CODE))
                     {
                         //for cab image
-                        vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cartop));
+                        vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cab_outline));
                     }
                     else
                     {
                         //For auto image
-                        vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.autotop_32x32));
+                        vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.auto_outline));
                     }
 
                     //extend the bounds to include each marker's position
@@ -1079,7 +1079,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
             }
             else {
 
-                iv_driverImage.setImageResource(R.drawable.avatar_black_24dp);
+                iv_driverImage.setImageResource(R.drawable.avatar_outline48);
 
             }
 
@@ -1425,7 +1425,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
 
             } else {
 
-                driverImage.setImageResource(R.drawable.avatar_black_24dp);
+                driverImage.setImageResource(R.drawable.avatar_outline48);
 
             }
 
@@ -1807,13 +1807,13 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
         {
             //for cab image
             //vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cartop));
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.cartop));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.cab_outline));
         }
         else
         {
             //For auto image
             //vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.autotop_32x32));
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.autotop_32x32));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.auto_outline));
         }
 
         mCurrLocationMarker = mMap.addMarker(markerOptions);

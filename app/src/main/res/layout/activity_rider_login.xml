@@ -140,6 +140,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/button"
         android:textColor="#ffffff"
+        android:textAllCaps="false"
         android:gravity="center"
         android:layout_centerInParent="true"
         android:imeOptions="actionDone"

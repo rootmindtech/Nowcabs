@@ -8,7 +8,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 35
+        versionCode 43
         versionName "2.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -62,7 +62,9 @@ dependencies {
     implementation 'com.hbb20:ccp:2.2.3' //country drop downlist
     implementation 'com.squareup.picasso:picasso:2.71828' //images to display
 
-    implementation 'com.wdullaer:materialdatetimepicker:4.1.0'
+    implementation 'com.wdullaer:materialdatetimepicker:4.1.0' //datetime picker
+    implementation 'com.xw.repo:bubbleseekbar:3.19-lite' //kms bar
+    implementation 'com.github.midorikocak:currency-picker-android:1.1.9' //currency selector
 
     testImplementation 'junit:junit:4.12'
 
@@ -76,6 +78,7 @@ allprojects {
         maven {
             url "https://maven.google.com"
         }
+        maven { url "https://jitpack.io" }
     }
 }
 

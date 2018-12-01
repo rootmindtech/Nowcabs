@@ -83,19 +83,25 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/ratingBar"
                 android:layout_alignStart="@+id/ratingBar"
-                android:gravity="center"
                 android:text="Your rating 3.2"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_yourRating"
+                android:layout_alignStart="@+id/ratingBar"
+                android:text="English"
                 android:textSize="10sp" />
 
 
             <ImageView
                 android:id="@+id/iv_vehicleImage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/service_icon_height"
                 android:layout_gravity="end"
                 android:layout_marginStart="150dp"
-                android:maxHeight="48dp"
-                android:maxWidth="48dp"
                 android:src="@drawable/auto_outline"
                 />
 
