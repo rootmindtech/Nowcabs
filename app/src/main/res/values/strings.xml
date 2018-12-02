@@ -88,4 +88,25 @@
     <string name="title_activity_group_register">GroupRegisterActivity</string>
 
 
+    <string-array name="servicecode_array">
+        <item>CARPENTER</item>
+        <item>AUTODRIVER</item>
+        <item>CABDRIVER</item>
+        <item>ELECTRICIAN</item>
+        <item>PLUMBER</item>
+        <item>TAILOR</item>
+        <item>WASHER</item>
+        <item>COURIER</item>
+        <item>MERCHANT</item>
+
+        <item>MOVERS</item>
+        <item>HOUSEKEEPER</item>
+        <item>COOK</item>
+        <item>PAINTER</item>
+        <item>FLORIST</item>
+        <item>PESTICIDE</item>
+        <item>TUTOR</item>
+        <item>LOCKSMITH</item>
+        <item>GRINDER</item>
+    </string-array>
 </resources>

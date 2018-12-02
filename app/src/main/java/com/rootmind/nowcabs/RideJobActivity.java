@@ -1,57 +1,62 @@
 package com.rootmind.nowcabs;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
+import android.preference.PreferenceManager;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupActivity extends AppCompatActivity implements  GroupAdapter.ItemClickListener {
+public class RideJobActivity extends AppCompatActivity implements  RideJobAdapter.ItemClickListener {
 
     public Toolbar toolbar;
-    private static final String TAG = "GroupActivity";
+    private static final String TAG = "RideJobActivity";
 
+    Rider serviceGeo;
     Rider rider;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    private List<Group> groupList;
+    private List<Job> jobList;
     String responseData = null;
     private RecyclerView recyclerView;
-    private GroupAdapter groupAdapter;
+    private RideJobAdapter rideJobAdapter;
 
     public LinearLayout loadingSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group);
+        setContentView(R.layout.activity_ride_job);
 
-
+        serviceGeo = (Rider) getIntent().getSerializableExtra("ServiceGeo");
         rider = (Rider) getIntent().getSerializableExtra("Rider");
 
 
@@ -59,7 +64,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
-        String title="Group";
+        String title="Rate Sheet";
 
         //navigation bar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,22 +83,22 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
-                addGroup();
+
+                addJob(GlobalConstants.ADD_MODE,null);
             }
         });
 
-        groupList = new ArrayList<>();
+        jobList = new ArrayList<>();
 
 
         //------------------
-        recyclerView = (RecyclerView) findViewById(R.id.group_recycler_view);
-        groupAdapter = new GroupAdapter(groupList);
+        recyclerView = (RecyclerView) findViewById(R.id.job_recycler_view);
+        rideJobAdapter = new RideJobAdapter(jobList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(groupAdapter);
-        groupAdapter.setClickListener(this);
+        recyclerView.setAdapter(rideJobAdapter);
+        rideJobAdapter.setClickListener(this);
         //----------------
 
         loadingSpinner = ((LinearLayout) findViewById(R.id.progressBarLayout));
@@ -101,12 +106,8 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
         hideProgressBar();
 
 
-        new GroupActivity.GroupProgressTask().execute();
-
+        new RideJobActivity.RideJobProgressTask().execute();
     }
-
-
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -116,7 +117,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
 
 
 
-    private class GroupProgressTask extends AsyncTask<Void, Void, Void> {
+    private class RideJobProgressTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
 
@@ -129,7 +130,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
             //my stuff is here
 
 
-            fetchGroup();
+            fetchRideJob();
 
             return null;
 
@@ -144,10 +145,10 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
         }
     }
 
-    public void fetchGroup()
+    public void fetchRideJob()
     {
 
-        GroupActivity.this.runOnUiThread(new Runnable() {
+        RideJobActivity.this.runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
@@ -170,7 +171,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
                     //loadingSpinner.setVisibility(View.VISIBLE);
 
 
-                    String methodAction = "fetchGroup";
+                    String methodAction = "fetchJobRider";
 
                     JSONObject messageJson = new JSONObject();
                     messageJson.put("riderRefNo", rider.getRiderRefNo());
@@ -183,7 +184,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
 
                     //loadingSpinner.setVisibility(View.GONE);
 
-                    Log.d(GlobalConstants.CommonService, "fetchGroup responseData: " + responseData);
+                    Log.d(GlobalConstants.CommonService, "fetchJobRider responseData: " + responseData);
 
 
                     if (responseData != null) {
@@ -191,32 +192,34 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
 
                         // Convert String to json object
                         JSONObject jsonResponseData = new JSONObject(responseData);
-                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchGroup");
-                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("groupWrapper");
+                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchJobRider");
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("jobWrapper");
                         if (jsonResponseData.getString("success") == "true") {
 
-                            Group group=null;
+                            Job job=null;
 
                             if(wrapperArrayObj!=null) {
 
-                                groupList.clear();
-                                groupAdapter.notifyDataSetChanged();
+                                jobList.clear();
+                                rideJobAdapter.notifyDataSetChanged();
 
                                 for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
                                     if (wrapperArrayObj.optJSONObject(i).optString("recordFound") == "true") {
 
-                                        group = new Group();
+                                        job = new Job();
 
-                                        group.setGroupRefNo(wrapperArrayObj.optJSONObject(i).optString("groupRefNo"));
-                                        group.setGroupID(wrapperArrayObj.optJSONObject(i).optString("groupID"));
-                                        group.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
-                                        group.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
-                                        group.setName(wrapperArrayObj.optJSONObject(i).optString("name"));
-                                        group.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
-                                        group.setMakerDateTime(wrapperArrayObj.optJSONObject(i).optString("makerDateTime"));
+                                        job.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
+                                        job.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
+                                        job.setJobID(wrapperArrayObj.optJSONObject(i).optString("jobID"));
+                                        job.setJobName(wrapperArrayObj.optJSONObject(i).optString("jobName"));
+                                        job.setServiceCode(wrapperArrayObj.optJSONObject(i).optString("serviceCode"));
+                                        job.setRate(wrapperArrayObj.optJSONObject(i).optDouble("rate"));
+                                        job.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
+                                        job.setMakerDateTime(wrapperArrayObj.optJSONObject(i).optString("makerDateTime"));
+                                        job.setCurrency(rider.getCurrency());
 
-                                        groupList.add(group);
-                                        groupAdapter.notifyDataSetChanged();
+                                        jobList.add(job);
+                                        rideJobAdapter.notifyDataSetChanged();
 
                                     }
                                 }
@@ -227,14 +230,14 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
 
                         } else {
 
-                            CommonService.Toast(GroupActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+                            CommonService.Toast(RideJobActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
 
                         }
 
 
                     } else {
 
-                        CommonService.Toast(GroupActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+                        CommonService.Toast(RideJobActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
 
                     }
 
@@ -242,7 +245,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
                 } catch (Exception e) {
                     e.printStackTrace();
 
-                    CommonService.Toast(GroupActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+                    CommonService.Toast(RideJobActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
 
                 }
 
@@ -270,17 +273,12 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
     }
 
     @Override
-    public void onClickGroup(View view, int position) {
+    public void onClickJob(View view, int position) {
 
 
-        Group group = groupList.get(position);
+        Job job = jobList.get(position);
 
-        Intent i = new Intent(getApplicationContext(), GroupRiderActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("Rider", rider);
-        bundle.putSerializable("Group", group);
-        i.putExtras(bundle);
-        startActivity(i);
+        addJob(GlobalConstants.EDIT_MODE, job);
 
     }
 
@@ -288,16 +286,16 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
     public void onClickDelete(View view, int position) {
 
 
-        Group group = groupList.get(position);
+        Job job = jobList.get(position);
 
-        group.setStatus(GlobalConstants.INACTIVE_CODE);
+        job.setStatus(GlobalConstants.INACTIVE_CODE);
 
-        new GroupActivity.updateGroupProgressTask().execute(group);
+        new RideJobActivity.updateJobProgressTask().execute(job);
 
     }
 
 
-    public void addGroup()
+    public void addJob(String mode,Job job)
     {
 
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
@@ -306,30 +304,76 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(40, 100, 40, 100);
+        layoutParams.setMargins(40, 50, 40, 50);
 
-        final EditText et_groupID = new EditText(this);
-        et_groupID.setHint("Group ID, max 10 chars");
-        et_groupID.setMaxLines(1);
-        et_groupID.setFilters(new InputFilter[] { new InputFilter.LengthFilter(10) });
-        et_groupID.setAllCaps(true);
-        et_groupID.setGravity(Gravity.CENTER);
-        et_groupID.setLayoutParams(layoutParams);
-        linearLayout.addView(et_groupID);
+        final Spinner sp_serviceCode = new Spinner(this);
+        final TextView tv_serviceCode = new TextView(this);
 
-        final EditText et_name = new EditText(this);
-        et_name.setHint("Name, max 20 chars");
-        et_name.setMaxLines(1);
-        et_name.setFilters(new InputFilter[] { new InputFilter.LengthFilter(20) });
-        et_name.setAllCaps(false);
-        et_name.setGravity(Gravity.CENTER);
-        et_name.setLayoutParams(layoutParams);
-        linearLayout.addView(et_name);
+        switch (mode) {
+            case GlobalConstants.ADD_MODE: {
+                String[] servicecode_array = getResources().getStringArray(R.array.servicecode_array);
+                ArrayAdapter<String> adapter =
+                        new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, servicecode_array);
+                sp_serviceCode.setAdapter(adapter);
+                sp_serviceCode.setGravity(Gravity.CENTER);
+                sp_serviceCode.setLayoutParams(layoutParams);
+                linearLayout.addView(sp_serviceCode);
+                break;
+            }
+            case GlobalConstants.EDIT_MODE: {
+                tv_serviceCode.setHint("Service Code");
+                tv_serviceCode.setMaxLines(1);
+                tv_serviceCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+                tv_serviceCode.setAllCaps(true);
+                tv_serviceCode.setGravity(Gravity.CENTER);
+                tv_serviceCode.setLayoutParams(layoutParams);
+                linearLayout.addView(tv_serviceCode);
+
+                tv_serviceCode.setText(job.getServiceCode());
+
+                break;
+            }
+        }
+
+
+        final EditText et_jobName = new EditText(this);
+        et_jobName.setHint("Job Name, max 10 chars");
+        et_jobName.setMaxLines(1);
+        et_jobName.setFilters(new InputFilter[] { new InputFilter.LengthFilter(20) });
+        et_jobName.setAllCaps(true);
+        et_jobName.setGravity(Gravity.CENTER);
+        et_jobName.setLayoutParams(layoutParams);
+        linearLayout.addView(et_jobName);
+
+        final EditText et_rate = new EditText(this);
+        et_rate.setHint("Rate");
+        et_rate.setMaxLines(1);
+        et_rate.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4) });
+        et_rate.addTextChangedListener(new NumberTextWatcher(et_rate)); //number validation
+        et_rate.setInputType(InputType.TYPE_CLASS_NUMBER);
+        et_rate.setAllCaps(false);
+        et_rate.setGravity(Gravity.CENTER);
+        et_rate.setLayoutParams(layoutParams);
+        linearLayout.addView(et_rate);
 
         linearLayout.setGravity(Gravity.CENTER);
         Resources res = popDialog.getContext().getResources();
-        popDialog.setTitle("New Group");
+        popDialog.setTitle("New Job");
         popDialog.setView(linearLayout);
+
+        switch (mode) {
+            case GlobalConstants.ADD_MODE: {
+
+                break;
+            }
+            case GlobalConstants.EDIT_MODE: {
+
+                et_jobName.setText(job.getJobName());
+                et_rate.setText(new DecimalFormat("#").format(job.getRate()));
+                break;
+            }
+        }
+
 
         // Button OK
         popDialog.setPositiveButton(android.R.string.ok,
@@ -337,12 +381,40 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
                     public void onClick(DialogInterface dialog, int which) {
                         //tv_Rating.setText(String.valueOf(rating.getProgress()));
 
-                        if(et_groupID.getText().toString().length()<=0 || et_name.getText().toString().length()<=0) {
-                            CommonService.Toast(GroupActivity.this,"Please enter data", Toast.LENGTH_SHORT);
-                            return;
+
+
+                        if(mode.equals(GlobalConstants.ADD_MODE)) {
+                            if (sp_serviceCode.getSelectedItem().toString().length() <= 0 || et_jobName.getText().toString().length() <= 0) {
+                                CommonService.Toast(RideJobActivity.this, "Please enter data", Toast.LENGTH_SHORT);
+                                return;
+                            }
+                        }
+                        else if(mode.equals(GlobalConstants.EDIT_MODE))
+                        {
+                            if (et_jobName.getText().toString().length() <= 0) {
+                                CommonService.Toast(RideJobActivity.this, "Please enter data", Toast.LENGTH_SHORT);
+                                return;
+                            }
                         }
 
-                        insertGroup(et_groupID.getText().toString(), et_name.getText().toString());
+                        switch (mode)
+                        {
+                            case GlobalConstants.ADD_MODE:
+                            {
+                                insertJob(sp_serviceCode.getSelectedItem().toString(), et_jobName.getText().toString(), et_rate.getText().toString());
+                                break;
+                            }
+                            case GlobalConstants.EDIT_MODE:
+                            {
+                                job.setJobName(et_jobName.getText().toString());
+                                job.setRate(Double.parseDouble(et_rate.getText().toString()));
+                                job.setServiceCode(tv_serviceCode.getText().toString());
+                                job.setStatus(GlobalConstants.ACTIVE_CODE);
+                                updateJob(job);
+                                break;
+                            }
+                        }
+
 
                         dialog.dismiss();
                     }
@@ -363,7 +435,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
     }
 
 
-//    private class insertGroupProgressTask extends AsyncTask<Object, Void, Void> {
+    //    private class insertGroupProgressTask extends AsyncTask<Object, Void, Void> {
 //        @Override
 //        protected void onPreExecute() {
 //            //loadingSpinner.setVisibility(View.VISIBLE);
@@ -391,7 +463,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
 //        }
 //    }
     //--------insert Ride   in the backend
-    public void insertGroup(String groupID, String name) {
+    public void insertJob(String serviceCode,String jobName, String rate) {
 
 
 
@@ -417,20 +489,21 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
             editor.apply();
 
 
-            String methodAction = "insertGroup";
+            String methodAction = "insertJob";
 
             JSONObject messageJson = new JSONObject();
 //                    messageJson.put("service", service);
-            messageJson.put("groupID", groupID);
-            messageJson.put("name", name);
             messageJson.put("riderRefNo", rider.getRiderRefNo());
             messageJson.put("riderID", rider.getRiderID());
+            messageJson.put("serviceCode", serviceCode);
+            messageJson.put("jobName", jobName);
+            messageJson.put("rate", rate);
 
 
             ConnectHost connectHost = new ConnectHost();
             responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
 
-            Log.d(TAG, "insert Group responseData: " + responseData);
+            Log.d(TAG, "insert Job responseData: " + responseData);
 
 
             if (responseData != null) {
@@ -440,21 +513,21 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
                 JSONObject jsonResponseData = new JSONObject(responseData);
 
                 // get LL json object
-                JSONObject jsonResult = jsonResponseData.optJSONObject("insertGroup");
+                JSONObject jsonResult = jsonResponseData.optJSONObject("insertJob");
 
-                JSONArray wrapperArrayObj = jsonResult.getJSONArray("groupWrapper");
+                JSONArray wrapperArrayObj = jsonResult.getJSONArray("jobWrapper");
 
                 if (jsonResponseData.getString("success") == "true") {
 
 
                     if(wrapperArrayObj!=null) {
 
-                        //Group group=null;
+                        //Job job=null;
 
                         if (wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
 
 
-                            fetchGroup();
+                            fetchRideJob();
 
                         }
 
@@ -489,10 +562,10 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
 //        });//runnable end
 //
 
-    }//insert group
+    }//insert job
 
 
-    private class updateGroupProgressTask extends AsyncTask<Object, Void, Void> {
+    private class updateJobProgressTask extends AsyncTask<Object, Void, Void> {
         @Override
         protected void onPreExecute() {
             //loadingSpinner.setVisibility(View.VISIBLE);
@@ -502,7 +575,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
         @Override
         protected Void doInBackground(Object...params ) {
 
-            updateGroup((Group)params[0]);
+            updateJob((Job)params[0]);
 
             return null;
 
@@ -520,7 +593,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
         }
     }
 
-    public void updateGroup(Group group) {
+    public void updateJob(Job job) {
 
 
 
@@ -546,19 +619,22 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
             editor.apply();
 
 
-            String methodAction = "updateGroup";
+            String methodAction = "updateJob";
 
             JSONObject messageJson = new JSONObject();
-//                    messageJson.put("service", service);
-            messageJson.put("status", group.getStatus());
-            messageJson.put("groupRefNo", group.getGroupRefNo());
+            messageJson.put("jobName", job.getJobName());
+            messageJson.put("rate", job.getRate());
+            messageJson.put("status", job.getStatus());
+            messageJson.put("riderRefNo", rider.getRiderRefNo());
             messageJson.put("riderID", rider.getRiderID());
+            messageJson.put("jobID", job.getJobID());
+            messageJson.put("serviceCode", job.getServiceCode());
 
 
             ConnectHost connectHost = new ConnectHost();
             responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
 
-            Log.d(TAG, "update Group responseData: " + responseData);
+            Log.d(TAG, "update Job responseData: " + responseData);
 
 
             if (responseData != null) {
@@ -568,9 +644,9 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
                 JSONObject jsonResponseData = new JSONObject(responseData);
 
                 // get LL json object
-                JSONObject jsonResult = jsonResponseData.optJSONObject("updateGroup");
+                JSONObject jsonResult = jsonResponseData.optJSONObject("updateJob");
 
-                JSONArray wrapperArrayObj = jsonResult.getJSONArray("groupWrapper");
+                JSONArray wrapperArrayObj = jsonResult.getJSONArray("jobWrapper");
 
                 if (jsonResponseData.getString("success") == "true") {
 
@@ -580,7 +656,7 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
 
                         if (wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
 
-                            fetchGroup();
+                            fetchRideJob();
 
 
                         }
@@ -616,5 +692,5 @@ public class GroupActivity extends AppCompatActivity implements  GroupAdapter.It
 //        });//runnable end
 //
 
-    }//update group
+    }//update job
 }

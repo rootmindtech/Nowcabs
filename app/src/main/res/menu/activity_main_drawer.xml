@@ -57,6 +57,11 @@
                     android:title="My Service" />
 
                 <item
+                    android:id="@+id/nav_job"
+                    android:icon="@drawable/money"
+                    android:title="Rate" />
+
+                <item
                     android:id="@+id/nav_group"
                     android:icon="@drawable/group"
                     android:title="Group" />
@@ -74,6 +79,11 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/logout_black_24dp"
             android:title="Logout" />
+
+        <item
+            android:id="@+id/nav_version"
+            android:title="version"
+            />
 
     </group>
 

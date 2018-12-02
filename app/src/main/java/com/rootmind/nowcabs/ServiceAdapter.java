@@ -30,17 +30,22 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
     public interface ItemClickListener {
         //void onClick(View view, int position);
         void onClickAvatarImage(View view, int position);
+
         void onClickDialImage(View view, int position);
+
         void onClickSMSImage(View view, int position);
+
         void onClickFavorite(View view, int position);
+
         void onClickRating(View view, int position);
+
         void onClickLocation(View view, int position);
 
     }
 
 
     private List<Rider> servicesList;
-    private  ItemClickListener  mClickListener;
+    private ItemClickListener mClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tv_servicerName, tv_mobileNo, tv_destination, tv_distance, tv_vacantStatus, tv_yourRating, tv_vehicleNo, tv_langauge;
@@ -68,13 +73,13 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
             //13-Sep-2018
             tv_distance = (TextView) view.findViewById(R.id.tv_distance);
-            tv_vacantStatus  = (TextView) view.findViewById(R.id.tv_vacantStatus);
+            tv_vacantStatus = (TextView) view.findViewById(R.id.tv_vacantStatus);
 
 
-            iv_vehicleImage=(ImageView) view.findViewById(R.id.iv_vehicleImage);
-            iv_avatar=(ImageView) view.findViewById(R.id.iv_avatar);
+            iv_vehicleImage = (ImageView) view.findViewById(R.id.iv_vehicleImage);
+            iv_avatar = (ImageView) view.findViewById(R.id.iv_avatar);
 
-            iv_dialImage=(ImageView) view.findViewById(R.id.iv_dialImage);
+            iv_dialImage = (ImageView) view.findViewById(R.id.iv_dialImage);
             //13-Sep-2018
             //iv_smsImage=(ImageView) view.findViewById(R.id.iv_smsImage);
 
@@ -82,15 +87,15 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
             ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
 
-            ib_rating =(ImageButton) view.findViewById(R.id.btn_rating);
+            ib_rating = (ImageButton) view.findViewById(R.id.btn_rating);
 
-            ib_location =(ImageButton) view.findViewById(R.id.btn_location);
+            ib_location = (ImageButton) view.findViewById(R.id.btn_location);
 
-            tv_yourRating =(TextView) view.findViewById(R.id.tv_yourRating);
+            tv_yourRating = (TextView) view.findViewById(R.id.tv_yourRating);
 
-            tv_vehicleNo= (TextView) view.findViewById(R.id.tv_vehicleNo);
+            tv_vehicleNo = (TextView) view.findViewById(R.id.tv_vehicleNo);
 
-            tv_langauge= (TextView) view.findViewById(R.id.tv_language);
+            tv_langauge = (TextView) view.findViewById(R.id.tv_language);
 
             cardView = (CardView) view.findViewById(R.id.card_view);
 
@@ -123,7 +128,6 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
             //------end of favroite button
 
 
-
         }
 
 
@@ -132,7 +136,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
             if (mClickListener != null) {
                 //mClickListener.onClick(view, getAdapterPosition());
 
-                Log.i(TAG, "get ID "+ view.getId());
+                Log.i(TAG, "get ID " + view.getId());
 
 
                 switch (view.getId()) {
@@ -187,15 +191,13 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
                 }
 
 
-
-
-            };
+            }
+            ;
 
         }
 
 
     }
-
 
 
     public ServiceAdapter(List<Rider> servicesList) {
@@ -210,9 +212,6 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         return new ViewHolder(itemView);
     }
-
-
-
 
 
     @Override
@@ -233,15 +232,13 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 //        ImageButton favButton = view.findViewById(R.id.btn_favorite);
 //        favButton.setBackgroundResource(R.drawable.fav_yellow);
 
-        if(rider.getFavorite().equals("N")) {
+        if (rider.getFavorite().equals("N")) {
             holder.ib_favorite.setImageResource(R.drawable.fav_outline);
-        }
-        else
-        {
+        } else {
             holder.ib_favorite.setImageResource(R.drawable.fav_yellow);
         }
 
-        holder.ratingBar.setRating((float)rider.getAvgRating());
+        holder.ratingBar.setRating((float) rider.getAvgRating());
 
         holder.tv_yourRating.setText(res.getString(R.string.you_rated) + " " + String.valueOf(rider.getYourRating()));
 
@@ -249,7 +246,6 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         holder.tv_langauge.setText(CommonService.showLocale(rider.getLocale()));
 
         setServiceImage(holder, rider);
-
 
 
         //Log.d(TAG, "riderImage Found "+riderTabs.getJSONObject(i).getString("imageFound"));
@@ -283,28 +279,20 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 //        });
 
 
-
         //don't display button if already rated
-        if(rider.getYourRating()>0.0)
-        {
+        if (rider.getYourRating() > 0.0) {
             holder.ib_rating.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
+        } else {
             holder.ib_rating.setVisibility(View.VISIBLE);
 
         }
 
-        if(rider.getYourRating()<=0.0)
-        {
+        if (rider.getYourRating() <= 0.0) {
             holder.tv_yourRating.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
+        } else {
             holder.tv_yourRating.setVisibility(View.VISIBLE);
 
         }
-
 
 
     }
@@ -316,19 +304,15 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
     }
 
 
-
     //to identify the driver position;
-    public int getItemPosition(Rider rider)
-    {
-        Rider rider1=null;
-        int position=-1;
+    public int getItemPosition(Rider rider) {
+        Rider rider1 = null;
+        int position = -1;
 
-        for(int i=0;i<=servicesList.size()-1;i++)
-        {
-            rider1=servicesList.get(i);
-            if(rider1.getRiderID()==rider.getRiderID())
-            {
-                position=i;
+        for (int i = 0; i <= servicesList.size() - 1; i++) {
+            rider1 = servicesList.get(i);
+            if (rider1.getRiderID() == rider.getRiderID()) {
+                position = i;
                 break;
             }
         }
@@ -340,8 +324,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         this.mClickListener = itemClickListener;
     }
 
-    public void setServiceImage(ViewHolder holder, Rider rider)
-    {
+    public void setServiceImage(ViewHolder holder, Rider rider) {
 
         holder.iv_vehicleImage.setAdjustViewBounds(true);
         holder.iv_avatar.setAdjustViewBounds(true);
@@ -357,156 +340,166 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         //Log.d(TAG, "setServiceImage getImageName  " + CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR));
 
-        String imageFileName= CommonService.getImageName(rider,GlobalConstants.IMAGE_AVATAR);
+        String imageFileName = CommonService.getImageName(rider, GlobalConstants.IMAGE_AVATAR);
 
         Log.d(TAG, "setServiceImage getImage ID  " + rider.getRiderID());
 
         Log.d(TAG, "setServiceImage getImageName  " + imageFileName);
 
-        if(imageFileName!=null && !imageFileName.trim().equals("")) {
+        if (imageFileName != null && !imageFileName.trim().equals("")) {
             commonService.getImage(holder.iv_avatar, imageFileName);
-        }
-        else
-        {
+        } else {
             holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
         }
 
         //------set profession image
+        CommonService.getServiceImage(holder.iv_vehicleImage, rider.getServiceCode());
+
         switch (rider.getServiceCode()) {
 
-            case GlobalConstants.SERVICE_CARPENTER:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.carpenter);
-                break;
-            }
-            case GlobalConstants.SERVICE_COURIER:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.courier);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_AUTO_DRIVER:
-            {
-
-//                switch (rider.getVehicleType()){
-//
-//                    case GlobalConstants.AUTO_CODE:
-//                    {
-//                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
-//                        break;
-//
-//                    }
-//                    case GlobalConstants.CAB_CODE:
-//                    {
-//                        holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
-//                        break;
-//
-//                    }
-//
-//
-//                }
-                holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
+            case GlobalConstants.SERVICE_AUTO_DRIVER: {
                 holder.tv_vehicleNo.setText(rider.getVehicleNo());
                 break;
             }
-            case GlobalConstants.SERVICE_CAB_DRIVER:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
+            case GlobalConstants.SERVICE_CAB_DRIVER: {
                 holder.tv_vehicleNo.setText(rider.getVehicleNo());
                 break;
             }
-            case GlobalConstants.SERVICE_ELECTRICIAN:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.electrician);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_MERCHANT:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.merchant);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_PLUMBER:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.plumber);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_TAILOR:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.tailor);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_WASHER:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.washer);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_MOVERS:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.movers);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_HOUSEKEEPER:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.housekeeper);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_COOK:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.cook);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_PAINTER:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.painter);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_FLORIST:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.florist);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_PESTICIDE:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.pesticide);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_TUTOR:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.tutor);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_LOCKSMITH:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.locksmith);
-                break;
-
-            }
-            case GlobalConstants.SERVICE_GRINDER:
-            {
-                holder.iv_vehicleImage.setImageResource(R.drawable.grinder);
-                break;
-
-            }
-
-
-
-
 
         }
-
     }
+}
+        //------set profession image
+//        switch (rider.getServiceCode()) {
+//
+//            case GlobalConstants.SERVICE_CARPENTER:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.carpenter);
+//                break;
+//            }
+//            case GlobalConstants.SERVICE_COURIER:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.courier);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_AUTO_DRIVER:
+//            {
+//
+////                switch (rider.getVehicleType()){
+////
+////                    case GlobalConstants.AUTO_CODE:
+////                    {
+////                        holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
+////                        break;
+////
+////                    }
+////                    case GlobalConstants.CAB_CODE:
+////                    {
+////                        holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
+////                        break;
+////
+////                    }
+////
+////
+////                }
+//                holder.iv_vehicleImage.setImageResource(R.drawable.auto_outline);
+//                holder.tv_vehicleNo.setText(rider.getVehicleNo());
+//                break;
+//            }
+//            case GlobalConstants.SERVICE_CAB_DRIVER:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.cab_outline);
+//                holder.tv_vehicleNo.setText(rider.getVehicleNo());
+//                break;
+//            }
+//            case GlobalConstants.SERVICE_ELECTRICIAN:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.electrician);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_MERCHANT:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.merchant);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_PLUMBER:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.plumber);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_TAILOR:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.tailor);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_WASHER:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.washer);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_MOVERS:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.movers);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_HOUSEKEEPER:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.housekeeper);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_COOK:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.cook);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_PAINTER:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.painter);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_FLORIST:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.florist);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_PESTICIDE:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.pesticide);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_TUTOR:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.tutor);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_LOCKSMITH:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.locksmith);
+//                break;
+//
+//            }
+//            case GlobalConstants.SERVICE_GRINDER:
+//            {
+//                holder.iv_vehicleImage.setImageResource(R.drawable.grinder);
+//                break;
+//
+//            }
+//
+//        }
+
 
 //    public void getDriverImage(final ImageView imageView, Driver driver)
 //    {
@@ -637,4 +630,4 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 //
 //
 //    }
-}
+

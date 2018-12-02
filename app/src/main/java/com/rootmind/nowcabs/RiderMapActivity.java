@@ -243,7 +243,7 @@ public class RiderMapActivity extends AppCompatActivity implements
     double markerLng = 0.0;
 
     public Toolbar toolbar;
-    public DrawerLayout drawer;
+    public DrawerLayout mDrawerLayout;
 
 
 
@@ -367,7 +367,10 @@ public class RiderMapActivity extends AppCompatActivity implements
 //
 //
 //
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
+
+
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 //                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.setDrawerListener(toggle);
@@ -413,16 +416,11 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         //-----------side nav image
         ImageView searchIcon = (ImageView) ((LinearLayout) autocompleteFragment.getView()).getChildAt(0);
-
-        // Set the desired icon
         searchIcon.setImageDrawable(getResources().getDrawable(R.drawable.sidenav));
-
-        // Set the desired behaviour on click
         searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(MapsActivity.this, "YOUR DESIRED BEHAVIOUR HERE", Toast.LENGTH_SHORT).show();
-                drawer.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
         //-----------end of side nav
@@ -530,6 +528,34 @@ public class RiderMapActivity extends AppCompatActivity implements
         //sidenav header
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                //Called when a drawer's position changes.
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                navigationView.getMenu().findItem(R.id.nav_version).setTitle(CommonService.getAppVersion());
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Called when a drawer has settled in a completely closed state.
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                // Called when the drawer motion state changes. The new state will be one of STATE_IDLE, STATE_DRAGGING or STATE_SETTLING.
+            }
+        });
+
+
+
+
+
 //
 //        View headerView = navigationView.getHeaderView(0);
 //        //riderImage = (ImageView) headerView.findViewById(R.id.iv_userimage);
@@ -1821,6 +1847,13 @@ public class RiderMapActivity extends AppCompatActivity implements
             }
             //-----------------
 
+
+            //stop showing red marker when vehicle marker is displayed
+            if (mCurrLocationMarker != null) {
+                mCurrLocationMarker.remove();
+            }
+
+
             //13-Sep-2018
             if (riderGeo.status.equals(GlobalConstants.ACTIVE_CODE) && riderGeo.vacantStatus.equals(GlobalConstants.VACANT_CODE)) {
 
@@ -2902,18 +2935,11 @@ public class RiderMapActivity extends AppCompatActivity implements
         //Toast.makeText(this, "The camera has stopped moving.",
         //Toast.LENGTH_SHORT).show();
 
-
-//        GoogleMapOptions options = new GoogleMapOptions();
-//        options.liteMode(true);
-//        mapFragment.newInstance(options);
-
-
         //21-Sep-2018
         createMarker(mMap.getCameraPosition().target);
 
 
         //18-Sep-2018
-        //autocompleteFragment.setText(GetAddress(mMap.getCameraPosition().target.latitude,mMap.getCameraPosition().target.longitude));
         showReverseGeocoder();
 
 
@@ -3304,6 +3330,17 @@ public class RiderMapActivity extends AppCompatActivity implements
 
             }
 
+            case R.id.nav_job: {
+
+                Intent i = new Intent(getApplicationContext(), JobActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Rider", rider);
+                i.putExtras(bundle);
+                startActivity(i);
+                break;
+
+            }
+
             case R.id.nav_myGroup: {
 
                 Intent i = new Intent(getApplicationContext(), GroupRegisterActivity.class);
@@ -3326,23 +3363,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         }
 
-
-//                else if (id == R.id.nav_camera) {
-//                // Handle the camera action
-//                } else if (id == R.id.nav_gallery) {
-//
-//                } else if (id == R.id.nav_slideshow) {
-//
-//                } else if (id == R.id.nav_manage) {
-//
-//                } else if (id == R.id.nav_share) {
-//
-//                } else if (id == R.id.nav_send) {
-//
-//                }
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
 
         hideProgressBar();
 
@@ -3351,9 +3373,9 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -4132,6 +4154,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         //move map camera
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoom));
         bottomSheetClose();
+
 
 
     }

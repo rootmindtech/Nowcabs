@@ -37,6 +37,10 @@ public  final class GlobalConstants {
     public static final String  ANY_CODE = "ANY";
     public static final String ACCESS_RESTRICTED="Access restricted";
 
+    public static final String  ADD_MODE = "ADD";
+    public static final String  EDIT_MODE = "EDIT";
+
+
     public static final String TRANSPORT_BUSINESS="TRANSPORT";
     public static final String RETAIL_BUSINESS="RETAIL";
     public static final String UTILITY_BUSINESS ="UTILITY";

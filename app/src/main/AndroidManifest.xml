@@ -64,7 +64,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
-
     <!-- windowSoftInputMode="adjustResize" -->
     <application
         android:allowBackup="true"
@@ -75,10 +74,10 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:windowSoftInputMode="adjustPan"
-        >
-
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        android:windowSoftInputMode="adjustPan">
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
             android:name=".MainActivity"
@@ -270,7 +269,9 @@
         <activity
             android:name=".GroupRegisterActivity"
             android:label="@string/title_activity_group_register"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".JobActivity" />
+        <activity android:name=".RideJobActivity"></activity>
     </application>
 
 </manifest> <!-- <?xml version="1.0" encoding="utf-8"?> --><!-- <manifest xmlns:android="http://schemas.android.com/apk/res/android" --><!-- package="com.rootmind.nowcabs"> --><!-- <application --><!-- android:allowBackup="true" --><!-- android:icon="@mipmap/ic_launcher" --><!-- android:label="@string/app_name" --><!-- android:roundIcon="@mipmap/ic_launcher_round" --><!-- android:supportsRtl="true" --><!-- android:theme="@style/AppTheme"> --><!-- <activity --><!-- android:name=".MainActivity" --><!-- android:label="@string/app_name" --><!-- android:theme="@style/AppTheme.NoActionBar"> --><!-- <intent-filter> --><!-- <action android:name="android.intent.action.MAIN" /> --><!-- <category android:name="android.intent.category.LAUNCHER" /> --><!-- </intent-filter> --><!-- </activity> --><!-- </application> --><!-- </manifest> -->

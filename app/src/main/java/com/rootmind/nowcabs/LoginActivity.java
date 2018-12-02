@@ -1038,7 +1038,7 @@ public class LoginActivity extends AppCompatActivity {
             });
 
 
-            tv_versionCode.setText("v " + BuildConfig.VERSION_NAME + "." + BuildConfig.VERSION_CODE);
+            tv_versionCode.setText(CommonService.getAppVersion());
 
         } catch (Exception ex) {
             ex.printStackTrace();

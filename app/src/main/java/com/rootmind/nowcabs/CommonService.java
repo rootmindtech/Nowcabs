@@ -43,6 +43,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -401,23 +403,36 @@ public  class CommonService {
 
                             if (wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
 
+                                Gson gson=new GsonBuilder().create();
+
                                 Calendar c = Calendar.getInstance();
                                 System.out.println("Current time => " + c.getTime());
                                 SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
                                 final String formattedDate = df.format(c.getTime());
 
 
-                                rider.setRiderRefNo(wrapperArrayObj.optJSONObject(0).optString("riderRefNo"));
-                                rider.setRiderID(wrapperArrayObj.optJSONObject(0).optString("riderID"));
-                                rider.setMobileNo(wrapperArrayObj.optJSONObject(0).optString("mobileNo"));
-                                rider.setRiderName(wrapperArrayObj.optJSONObject(0).optString("firstName"));
-                                rider.setStatus(wrapperArrayObj.optJSONObject(0).optString("status"));
-                                rider.setRecordFound(wrapperArrayObj.optJSONObject(0).optBoolean("recordFound"));
-                                rider.setCustomToken(wrapperArrayObj.optJSONObject(0).optString("customToken"));
+//                                rider.setRiderRefNo(wrapperArrayObj.optJSONObject(0).optString("riderRefNo"));
+//                                rider.setRiderID(wrapperArrayObj.optJSONObject(0).optString("riderID"));
+//                                rider.setMobileNo(wrapperArrayObj.optJSONObject(0).optString("mobileNo"));
+//                                rider.setRiderName(wrapperArrayObj.optJSONObject(0).optString("firstName"));
+//                                rider.setStatus(wrapperArrayObj.optJSONObject(0).optString("status"));
+//                                rider.setRecordFound(wrapperArrayObj.optJSONObject(0).optBoolean("recordFound"));
+//                                rider.setCustomToken(wrapperArrayObj.optJSONObject(0).optString("customToken"));
+//                                rider.setLocale(wrapperArrayObj.optJSONObject(0).optString("locale"));
+//                                rider.setDeviceID(wrapperArrayObj.optJSONObject(0).optString("deviceID"));
+
+
+                                rider = gson.fromJson(wrapperArrayObj.optJSONObject(0).toString(), Rider.class);
+
+
+                                Log.d(GlobalConstants.CommonService, " rider currency " + rider.getCurrency());
+
+
                                 rider.setDatetime(formattedDate);
                                 rider.setFcmToken(fcmToken);
-                                rider.setLocale(wrapperArrayObj.optJSONObject(0).optString("locale"));
-                                rider.setDeviceID(wrapperArrayObj.optJSONObject(0).optString("deviceID"));
+                                //if host response is success
+                                rider.setHostResponse(true);
+
 
 
                                 if(rider.getDeviceID().equals(sharedPreferences.getString("deviceID", "")))
@@ -1514,21 +1529,20 @@ public  class CommonService {
 
                         if (jsonResponseData.getString("success") == "true") {
 
+                            //Gson gson=new GsonBuilder().create();
+
 
                             if (wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
 
 
-                                //Rider rider = new Rider();
 
                                 rider.setRiderRefNo(wrapperArrayObj.optJSONObject(0).optString("riderRefNo"));
                                 rider.setRiderID(wrapperArrayObj.optJSONObject(0).optString("riderID"));
-                                //rider.setRiderMobileNo(wrapperArrayObj.optJSONObject(0).optString("mobileNo"));
                                 rider.setRiderName(wrapperArrayObj.optJSONObject(0).optString("firstName"));
                                 rider.setLocale(wrapperArrayObj.optJSONObject(0).optString("locale"));
 
-                                //rider.setVehicleNo(wrapperArrayObj.optJSONObject(0).getString("vehicleNo"));
-                                //rider.setStatus(wrapperArrayObj.optJSONObject(0).getString("status"));
-                                //rider.setVehicleType(wrapperArrayObj.optJSONObject(0).getString("vehicleType"));
+
+                                //rider = gson.fromJson(wrapperArrayObj.optJSONObject(0).toString(), Rider.class);
 
 
                                 setRider(activity,context,rider);
@@ -1937,6 +1951,145 @@ public  class CommonService {
 
     }
 
+    public static String getAppVersion()
+    {
+        return  "v " + BuildConfig.VERSION_NAME + "." + BuildConfig.VERSION_CODE;
+    }
+
+    public static void getServiceImage(ImageView imageView, String serviceCode)
+    {
+
+        //------set profession image
+        switch (serviceCode) {
+
+            case GlobalConstants.SERVICE_CARPENTER:
+            {
+                imageView.setImageResource(R.drawable.carpenter);
+                break;
+            }
+            case GlobalConstants.SERVICE_COURIER:
+            {
+                imageView.setImageResource(R.drawable.courier);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_AUTO_DRIVER:
+            {
+
+//                switch (rider.getVehicleType()){
+//
+//                    case GlobalConstants.AUTO_CODE:
+//                    {
+//                        imageView.setImageResource(R.drawable.auto_outline);
+//                        break;
+//
+//                    }
+//                    case GlobalConstants.CAB_CODE:
+//                    {
+//                        imageView.setImageResource(R.drawable.cab_outline);
+//                        break;
+//
+//                    }
+//
+//
+//                }
+                imageView.setImageResource(R.drawable.auto_outline);
+                break;
+            }
+            case GlobalConstants.SERVICE_CAB_DRIVER:
+            {
+                imageView.setImageResource(R.drawable.cab_outline);
+                break;
+            }
+            case GlobalConstants.SERVICE_ELECTRICIAN:
+            {
+                imageView.setImageResource(R.drawable.electrician);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_MERCHANT:
+            {
+                imageView.setImageResource(R.drawable.merchant);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_PLUMBER:
+            {
+                imageView.setImageResource(R.drawable.plumber);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_TAILOR:
+            {
+                imageView.setImageResource(R.drawable.tailor);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_WASHER:
+            {
+                imageView.setImageResource(R.drawable.washer);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_MOVERS:
+            {
+                imageView.setImageResource(R.drawable.movers);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_HOUSEKEEPER:
+            {
+                imageView.setImageResource(R.drawable.housekeeper);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_COOK:
+            {
+                imageView.setImageResource(R.drawable.cook);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_PAINTER:
+            {
+                imageView.setImageResource(R.drawable.painter);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_FLORIST:
+            {
+                imageView.setImageResource(R.drawable.florist);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_PESTICIDE:
+            {
+                imageView.setImageResource(R.drawable.pesticide);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_TUTOR:
+            {
+                imageView.setImageResource(R.drawable.tutor);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_LOCKSMITH:
+            {
+                imageView.setImageResource(R.drawable.locksmith);
+                break;
+
+            }
+            case GlobalConstants.SERVICE_GRINDER:
+            {
+                imageView.setImageResource(R.drawable.grinder);
+                break;
+
+            }
+
+        }
+
+
+    }
 
 
 }
