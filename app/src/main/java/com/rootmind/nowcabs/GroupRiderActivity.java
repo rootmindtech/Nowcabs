@@ -93,7 +93,7 @@ public class GroupRiderActivity extends AppCompatActivity implements  GroupRider
         //------------------
         recyclerView = (RecyclerView) findViewById(R.id.group_rider_recycler_view);
         groupRiderAdapter = new GroupRiderAdapter(groupRiderList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(groupRiderAdapter);
@@ -220,6 +220,11 @@ public class GroupRiderActivity extends AppCompatActivity implements  GroupRider
                                         groupRider.setPublicView(wrapperArrayObj.optJSONObject(i).optString("publicView"));
                                         groupRider.setStatus(wrapperArrayObj.optJSONObject(i).optString("status"));
                                         groupRider.setMakerDateTime(wrapperArrayObj.optJSONObject(i).optString("makerDateTime"));
+
+                                        //Log.d(GlobalConstants.CommonService, "groupRider groupRefNo: " + wrapperArrayObj.optJSONObject(i).optString("groupRefNo"));
+
+                                        //Log.d(GlobalConstants.CommonService, "groupRider : " + wrapperArrayObj.optJSONObject(i).optJSONObject("riderWrapper"));
+
 
                                         groupRider.setRider(gson.fromJson(wrapperArrayObj.optJSONObject(i).optJSONObject("riderWrapper").toString(), Rider.class));
 

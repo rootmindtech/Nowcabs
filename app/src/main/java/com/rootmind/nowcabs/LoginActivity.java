@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
 //        btn_telugu = (Button) findViewById(R.id.btn_telugu);
 //
 
-        //to comment
+//        to comment
 //        editor = sharedPreferences.edit();
 //        editor.clear();
 //        editor.apply();
