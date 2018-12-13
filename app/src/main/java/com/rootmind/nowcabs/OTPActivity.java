@@ -488,7 +488,7 @@ public class OTPActivity extends AppCompatActivity {
                                         if (rider.isHostResponse()) {
 
 
-                                            if (!rider.isRecordFound() || !rider.isAuthDevice()) {
+                                            if (!rider.isRecordFound() ) {
 
 
                                                 Intent i = new Intent(getApplicationContext(), RiderLoginActivity.class);

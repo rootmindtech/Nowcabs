@@ -226,18 +226,13 @@ public class LoginActivity extends AppCompatActivity {
                          // Get new Instance ID token
                          String fcmToken = task.getResult().getToken();
 
-                         String deviceID = getUUID();
-
                          editor = sharedPreferences.edit();
                          editor.putString("fcmToken", fcmToken);
                          editor.putString("deviceToken", fcmToken);
-                         editor.putString("deviceID", deviceID);
-
                          editor.apply();
 
 
                          Log.d(TAG, "fcm token " + fcmToken);
-                         Log.d(TAG, "device ID  " + deviceID);
 
                          //check for userGroup
                          //if (sharedPreferences.getString("userGroup", "").equals(GlobalConstants.RIDER_CODE)) {
@@ -270,7 +265,7 @@ public class LoginActivity extends AppCompatActivity {
                                      if (rider.isHostResponse()) {
 
 
-                                         if (!rider.isRecordFound() || !rider.isAuthDevice()) {
+                                         if (!rider.isRecordFound()) {
 
                                              setComponentView();
 
@@ -372,7 +367,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(rider.isHostResponse()) {
 
-                        if (!rider.isRecordFound() || !rider.isAuthDevice()) {
+                        if (!rider.isRecordFound() ) {
 
                             //parameter = new Parameter();
 
@@ -1125,6 +1120,7 @@ public class LoginActivity extends AppCompatActivity {
 
         locale = sharedPreferences.getString("locale", "");
 
+
         if (CommonService.isEmpty(locale)) {
 
             String[] values = getResources().getStringArray(R.array.locale_array);
@@ -1191,20 +1187,36 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private String getUUID(){
-        TelephonyManager teleManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
-        ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+        String uniqueId=null;
 
-        String tmSerial = teleManager.getSimSerialNumber();
-        String tmDeviceId  = teleManager.getDeviceId();
+        try {
+            TelephonyManager teleManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
-        String androidId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-        if (tmSerial  == null) tmSerial   = "1";
-        if (tmDeviceId== null) tmDeviceId = "1";
-        if (androidId == null) androidId  = "1";
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDeviceId.hashCode() << 32) | tmSerial.hashCode());
-        String uniqueId = deviceUuid.toString();
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+            String tmSerial = teleManager.getSimSerialNumber();
+            String tmDeviceId = teleManager.getDeviceId();
+
+            String androidId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+            if (tmSerial == null) tmSerial = "1";
+            if (tmDeviceId == null) tmDeviceId = "1";
+            if (androidId == null) androidId = "1";
+            UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDeviceId.hashCode() << 32) | tmSerial.hashCode());
+            uniqueId = deviceUuid.toString();
+
+            editor = sharedPreferences.edit();
+            editor.putString("deviceID", uniqueId);
+            editor.apply();
+
+        }
+
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
         return uniqueId;
+
     }
 
 

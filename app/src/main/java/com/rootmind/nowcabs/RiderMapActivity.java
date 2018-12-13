@@ -253,8 +253,9 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
     private List<Rider> servicesList;
-    private List<Rider> serviceSelectionList;
     private List<GroupRider> groupList;
+    private List<Service> serviceCountList;
+
 
     private RecyclerView recyclerView;
     private RecyclerView servicesRecyclerView;
@@ -353,8 +354,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         servicesList = new ArrayList<>();
-        serviceSelectionList = new ArrayList<>();
         groupList = new ArrayList<>();
+        serviceCountList = new ArrayList<>();
 
 
 
@@ -643,7 +644,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         recyclerView = (RecyclerView) findViewById(R.id.driver_recycler_view);
         tv_no_records = (TextView) findViewById(R.id.tv_no_records);
         serviceAdapter = new ServiceAdapter(servicesList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(serviceAdapter);
@@ -653,8 +654,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         //-----------recycler for list service selecton-------
         servicesRecyclerView = (RecyclerView) findViewById(R.id.services_recycler_view);
-        serviceSelectionAdapter = new ServiceSelectionAdapter(serviceSelectionList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        serviceSelectionAdapter = new ServiceSelectionAdapter(serviceCountList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
         servicesRecyclerView.setLayoutManager(layoutManager);
         servicesRecyclerView.setItemAnimator(new DefaultItemAnimator());
         servicesRecyclerView.setAdapter(serviceSelectionAdapter);
@@ -664,7 +665,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         //-----------recycler for list group selecton-------
         groupRecyclerView = (RecyclerView) findViewById(R.id.group_bottom_recycler_view);
         groupSelectionAdapter = new GroupSelectionAdapter(groupList);
-        RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
         groupRecyclerView.setLayoutManager(groupLayoutManager);
         groupRecyclerView.setItemAnimator(new DefaultItemAnimator());
         groupRecyclerView.setAdapter(groupSelectionAdapter);
@@ -888,7 +889,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         DrawableCompat.setTint(fabDr, Color.WHITE);
 
         //do not show button
-        btn_service.setVisibility(View.GONE);
+        //btn_service.setVisibility(View.GONE);
 
 
         //------rating
@@ -952,9 +953,12 @@ public class RiderMapActivity extends AppCompatActivity implements
         serviceSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
         serviceSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-        serviceSelectionList.clear();
-        serviceSelectionList.add(rider);
+        serviceCountList.clear();
+        Service service = new Service();
+        serviceCountList.add(service);
         serviceSelectionAdapter.notifyDataSetChanged();
+
+        new fetchServiceCountProgressTask().execute();
 
         if (serviceSelectionAdapter.getItemCount() > 0) {
             servicesRecyclerView.setVisibility(View.VISIBLE);
@@ -968,7 +972,6 @@ public class RiderMapActivity extends AppCompatActivity implements
     public void bottomServiceSheetClose() {
         serviceSheetBehavior.setPeekHeight(0);
         serviceSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        //clearDriverList();
 
     }
 
@@ -1899,25 +1902,6 @@ public class RiderMapActivity extends AppCompatActivity implements
                         }
                         case GlobalConstants.SERVICE_AUTO_DRIVER:
                         {
-
-//                            switch (riderGeo.getVehicleType()){
-//
-//                                case GlobalConstants.AUTO_CODE:
-//                                {
-//                                    vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.auto_outline));
-//                                    break;
-//
-//                                }
-//                                case GlobalConstants.CAB_CODE:
-//                                {
-//                                    vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.cab_outline));
-//                                    break;
-//
-//                                }
-//
-//
-//                            }
-//                            break;
 
                             vehicleMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.auto_outline));
                             break;
@@ -4513,6 +4497,133 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
     }
+
+
+    private class fetchServiceCountProgressTask extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Void doInBackground(Object...params ) {
+
+
+            fetchServiceCount();
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+        }
+    }
+    //--------fetch service Count  in the backend
+    public void fetchServiceCount() {
+
+
+        RiderMapActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                try {
+
+
+                    //Shared Preferences
+                    editor = sharedPreferences.edit();
+
+                    editor.putString("userid", rider.getRiderID());
+                    editor.putString("deviceToken", rider.getFcmToken());
+                    editor.putString("sessionid", "SESSIONID");
+
+                    editor.apply();
+
+
+                    String methodAction = "fetchServiceCount";
+
+                    JSONObject messageJson = new JSONObject();
+                    messageJson.put("currentLat", markerLat);
+                    messageJson.put("currentLng", markerLng);
+                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+                    messageJson.put("riderID", rider.getRiderID());
+
+                    ConnectHost connectHost = new ConnectHost();
+                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+
+                    Log.d(TAG, "fetch service count  responseData: " + responseData);
+
+
+                    if (responseData != null) {
+
+
+                        // Convert String to json object
+                        JSONObject jsonResponseData = new JSONObject(responseData);
+
+                        // get LL json object
+                        JSONObject jsonResult = jsonResponseData.optJSONObject("fetchServiceCount");
+
+                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("serviceWrapper");
+
+                        if (jsonResponseData.optString("success") == "true") {
+
+
+                            Service service=null;
+                            serviceCountList.clear();
+                            serviceSelectionAdapter.notifyDataSetChanged();
+
+                            if(wrapperArrayObj!=null) {
+
+                                for (int i = 0; i <= wrapperArrayObj.length() - 1; i++) {
+                                    if (wrapperArrayObj.optJSONObject(i).optString("recordFound") == "true") {
+
+                                        service = new Service();
+
+                                        service.setRiderRefNo(wrapperArrayObj.optJSONObject(i).optString("riderRefNo"));
+                                        service.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
+                                        service.setServiceCode(wrapperArrayObj.optJSONObject(i).optString("serviceCode"));
+                                        service.setServiceCount(wrapperArrayObj.optJSONObject(i).optInt("serviceCount"));
+
+
+                                        serviceCountList.add(service);
+
+                                    }
+                                }
+                                serviceSelectionAdapter.notifyDataSetChanged();
+
+                            }//null condition check
+
+                        }
+                        else
+                        {
+
+                            CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+                        }
+
+
+                    } else {
+
+                        CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    CommonService.Toast(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT);
+
+                }
+
+                //}// validation
+
+            }//run end
+
+        });//runnable end
+
+
+    }//fetch rider count update End
 
 }//class end
 

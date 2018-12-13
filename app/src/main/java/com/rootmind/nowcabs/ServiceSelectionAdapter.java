@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -41,11 +42,13 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
     }
 
 
-    private List<Rider> servicesList;
+    private List<Service> serviceCountList;
     private ServiceSelectionAdapter.ItemClickListener mClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 //        public TextView tv_servicerName, tv_mobileNo, tv_destination, tv_distance, tv_vacantStatus, tv_yourRating, tv_vehicleNo;
+            public TextView tv_carpenter_count, tv_auto_count;
+
 //        public ImageView iv_vehicleImage;
 //        public ImageView iv_avatar;
 //        public ImageView iv_dialImage;
@@ -126,8 +129,9 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
             cv_grinder.setOnClickListener(this);
 
 
-//            tv_servicerName = (TextView) view.findViewById(R.id.tv_servicerName);
-////            tv_mobileNo = (TextView) view.findViewById(R.id.tv_mobileNo);
+            tv_carpenter_count = (TextView) view.findViewById(R.id.tv_carpenter_count);
+            tv_auto_count = (TextView) view.findViewById(R.id.tv_auto_count);
+
 //            tv_destination = (TextView) view.findViewById(R.id.tv_destination);
 //
 //            //13-Sep-2018
@@ -313,8 +317,8 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
 
 
 
-    public ServiceSelectionAdapter(List<Rider> servicesList) {
-        this.servicesList = servicesList;
+    public ServiceSelectionAdapter(List<Service> serviceCountList) {
+        this.serviceCountList = serviceCountList;
     }
 
     @Override
@@ -333,12 +337,34 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
     @Override
     public void onBindViewHolder(ServiceSelectionAdapter.ViewHolder holder, int position) {
 
-        Resources res = holder.itemView.getContext().getResources();
+        //Resources res = holder.itemView.getContext().getResources();
 
-        //Rider rider = servicesList.get(position);
+        Service service=null;
+        
+        for(int i=0;i<serviceCountList.size();i++) {
+
+            service = serviceCountList.get(i);
+
+            Log.i(TAG, "Service Selection Adapter " + service.getServiceCode());
+            Log.i(TAG, "Service Selection Adapter Count " + service.getServiceCount());
 
 
-//        holder.tv_servicerName.setText("Servicer Name");
+            //        //------set count
+//                switch (service.getServiceCode()) {
+//
+//                    case GlobalConstants.SERVICE_CARPENTER: {
+//                        holder.tv_carpenter_count.setText(service.getServiceCount());
+//                        break;
+//                    }
+//                    case GlobalConstants.SERVICE_AUTO_DRIVER: {
+//                        holder.tv_auto_count.setText(service.getServiceCount());
+//                        break;
+//
+//                    }
+//
+//                }
+        }
+    //        holder.tv_servicerName.setText("Servicer Name");
 //        //holder.tv_mobileNo.setText(rider.getRiderMobileNo());
 //        holder.tv_destination.setText(rider.getRiderLocation()); //13-Sep-2018
 //
@@ -432,7 +458,7 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
 
     @Override
     public int getItemCount() {
-        return servicesList.size();
+        return serviceCountList.size();
     }
 
 
@@ -443,9 +469,9 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
 //        Rider rider1=null;
 //        int position=-1;
 //
-//        for(int i=0;i<=servicesList.size()-1;i++)
+//        for(int i=0;i<=serviceCountList.size()-1;i++)
 //        {
-//            rider1=servicesList.get(i);
+//            rider1=serviceCountList.get(i);
 //            if(rider1.getRiderID()==rider.getRiderID())
 //            {
 //                position=i;

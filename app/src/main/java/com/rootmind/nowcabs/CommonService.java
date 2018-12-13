@@ -367,7 +367,7 @@ public  class CommonService {
                     messageJson.put("fcmToken", fcmToken);
                     messageJson.put("locale", locale);
                     messageJson.put("deviceInfo", getDeviceInfo());
-                    messageJson.put("deviceID", sharedPreferences.getString("deviceID", ""));
+                    messageJson.put("deviceID",  "deviceID"); //sharedPreferences.getString("deviceID", ""));
 
 
                     ConnectHost connectHost = new ConnectHost();
@@ -435,12 +435,11 @@ public  class CommonService {
 
 
 
-                                if(rider.getDeviceID().equals(sharedPreferences.getString("deviceID", "")))
-                                {
-                                    rider.setAuthDevice(true);
-                                }
+//                                if(rider.getDeviceID()!=null && rider.getDeviceID().equals(sharedPreferences.getString("deviceID", "")))
+//                                {
+//                                    rider.setAuthDevice(true);
+//                                }
 
-                                //setRiderLogin(activity, context, rider, fcmToken);
 
                                 onCompleteListener.on(rider);
                             } else {
@@ -1959,6 +1958,7 @@ public  class CommonService {
     public static void getServiceImage(ImageView imageView, String serviceCode)
     {
 
+
         //------set profession image
         switch (serviceCode) {
 
@@ -1973,32 +1973,14 @@ public  class CommonService {
                 break;
 
             }
-            case GlobalConstants.SERVICE_AUTO_DRIVER:
-            {
-
-//                switch (rider.getVehicleType()){
-//
-//                    case GlobalConstants.AUTO_CODE:
-//                    {
-//                        imageView.setImageResource(R.drawable.auto_outline);
-//                        break;
-//
-//                    }
-//                    case GlobalConstants.CAB_CODE:
-//                    {
-//                        imageView.setImageResource(R.drawable.cab_outline);
-//                        break;
-//
-//                    }
-//
-//
-//                }
-                imageView.setImageResource(R.drawable.auto_outline);
-                break;
-            }
             case GlobalConstants.SERVICE_CAB_DRIVER:
             {
                 imageView.setImageResource(R.drawable.cab_outline);
+                break;
+            }
+            case GlobalConstants.SERVICE_AUTO_DRIVER:
+            {
+                imageView.setImageResource(R.drawable.auto);
                 break;
             }
             case GlobalConstants.SERVICE_ELECTRICIAN:

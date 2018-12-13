@@ -8,10 +8,19 @@ import org.json.JSONObject;
 
 import java.util.*;
 import java.net.URLEncoder;
+import java.util.concurrent.TimeUnit;
 
 import android.content.SharedPreferences;
 
-//import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Headers;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 
 
 /**
@@ -23,129 +32,141 @@ public   class ConnectHost {
 
     public static final String TAG = "ConnectHost";
 
+    OkHttpClient okHttpClient=null;
+    public static final MediaType JSON  = MediaType.parse("application/json; charset=utf-8");
+
+    public ConnectHost()
+    {
+
+        okHttpClient = OkHttpSingleton.getInstance().getClient();
+
+    }
+
+    public String excuteConnectHost(String methodAction,String message, SharedPreferences sharedPreferences) throws IOException {
+
+        String httpResponse=null;
+        try {
+
+            JSONObject messageJson = new JSONObject();
+
+            messageJson.put("userid", sharedPreferences.getString("userid", ""));
+            messageJson.put("deviceToken", sharedPreferences.getString("deviceToken", ""));
+            messageJson.put("sessionid", sharedPreferences.getString("sessionid", ""));
+
+            messageJson.putOpt("methodAction", methodAction);
+            messageJson.putOpt("message", message);
+
+
+            Log.d(TAG, "messageJson... : "+ messageJson.toString());
+
+
+            RequestBody body = RequestBody.create(JSON, messageJson.toString());
+            Request request = new Request.Builder()
+                    .url(GlobalConstants.HOST_URL)
+                    .post(body)
+                    .build();
+
+            Response response = okHttpClient.newCall(request).execute();
+
+            httpResponse = response.body().string();
 
 
 
-
-    public  String excuteConnectHost(String methodAction,String message, SharedPreferences sharedPreferences) {
-
-        //performPostCall(String requestURL, HashMap<String, String> postDataParams)
-        URL url;
-        String response = "";
-        try
+        }
+        catch (Exception ex)
         {
-            Log.d(TAG, "URL : "+GlobalConstants.HOST_URL);
-
-            url = new URL(GlobalConstants.HOST_URL); //http://rootmindtech.ddns.net:8084/NowcabsWeb/Nowcabs
-
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("POST");
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-
-            //JSONObject jsonData   = new JSONObject();
-
-           JSONObject userProfileJson   = new JSONObject();
-//            userProfileJson.put("userid" , "ram");
-//            userProfileJson.put("deviceToken","DEV1243");
-//            userProfileJson.put("sessionid" , "SESS123");
-
-
-            userProfileJson.put("userid" , sharedPreferences.getString("userid",""));
-            userProfileJson.put("deviceToken",sharedPreferences.getString("deviceToken",""));
-            userProfileJson.put("sessionid" , sharedPreferences.getString("sessionid",""));
-
-
-//            JSONObject messageJson   = new JSONObject();
-//            messageJson.put("mobileNo" , "0404040404");
-//            messageJson.put("firstName","AnddroidPost");
-
-
-
-            HashMap<String, String> map = new HashMap<>();
-            map.put("userProfile",userProfileJson.toString());
-//            map.put("methodAction", "insertRider");
-//            map.put("message", messageJson.toString());
-            map.put("methodAction", methodAction);
-            map.put("message", message);
-
-
-
-            Log.d(TAG, "map: "+map);
-
-            conn.connect();
-
-
-            OutputStream os = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-
-            writer.write(getPostDataString(map));
-
-            writer.flush();
-            writer.close();
-            os.close();
-
-            int responseCode=conn.getResponseCode();
-
-
-            Log.d(TAG, "responseCode: " +responseCode);
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                String line;
-                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                while ((line=br.readLine()) != null) {
-                    response+=line;
-                }
-            }
-            else {
-                response="";
-
-            }
-
-//            Log.d(TAG, "ConnectHost response: " +response);
-//
-//            // Convert String to json object
-//            JSONObject json = new JSONObject(response);
-//
-//            // get LL json object
-//            JSONObject json_LL = json.getJSONObject("insertRider");
-//
-//            Log.d(TAG, "resData insertRider: " +json_LL);
-//
-//            // get value from LL Json Object
-//            String str_value=json_LL.getString("riderWrapper"); //<< get value here
-//
-//            Log.d(TAG, "ConnectHost resData: riderWrapper " +str_value);
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
+            ex.printStackTrace();
         }
-
-        return response;
+        return httpResponse;
     }
 
-    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
-            if (first)
-                first = false;
-            else
-                result.append("&");
 
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            result.append("=");
-            //result.append(URLEncoder.encode(entry.toString(), "UTF-8"));
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-        }
-
-        return result.toString();
-    }
+//    public  String excuteConnectHost(String methodAction,String message, SharedPreferences sharedPreferences) {
+//
+//        URL url;
+//        String response = "";
+//        try
+//        {
+//            Log.d(TAG, "URL : "+GlobalConstants.HOST_URL);
+//
+//            url = new URL(GlobalConstants.HOST_URL); //http://rootmindtech.ddns.net:8084/NowcabsWeb/Nowcabs
+//
+//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            conn.setReadTimeout(15000);
+//            conn.setConnectTimeout(15000);
+//            conn.setRequestMethod("POST");
+//            conn.setDoInput(true);
+//            conn.setDoOutput(true);
+//
+//            JSONObject userProfileJson   = new JSONObject();
+//
+//            userProfileJson.put("userid" , sharedPreferences.getString("userid",""));
+//            userProfileJson.put("deviceToken",sharedPreferences.getString("deviceToken",""));
+//            userProfileJson.put("sessionid" , sharedPreferences.getString("sessionid",""));
+//
+//            HashMap<String, String> map = new HashMap<>();
+//            map.put("userProfile",userProfileJson.toString());
+//            map.put("methodAction", methodAction);
+//            map.put("message", message);
+//
+//
+//
+//            Log.d(TAG, "map: "+map);
+//
+//            conn.connect();
+//
+//
+//            OutputStream os = conn.getOutputStream();
+//            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+//
+//            writer.write(getPostDataString(map));
+//
+//            writer.flush();
+//            writer.close();
+//            os.close();
+//
+//            int responseCode=conn.getResponseCode();
+//
+//
+//            Log.d(TAG, "responseCode: " +responseCode);
+//
+//            if (responseCode == HttpURLConnection.HTTP_OK) {
+//                String line;
+//                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//                while ((line=br.readLine()) != null) {
+//                    response+=line;
+//                }
+//            }
+//            else {
+//                response="";
+//
+//            }
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//
+//        }
+//
+//        return response;
+//    }
+//
+//    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException{
+//        StringBuilder result = new StringBuilder();
+//        boolean first = true;
+//        for(Map.Entry<String, String> entry : params.entrySet()){
+//            if (first)
+//                first = false;
+//            else
+//                result.append("&");
+//
+//            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+//            result.append("=");
+//            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+//        }
+//
+//        return result.toString();
+//    }
 
 
 

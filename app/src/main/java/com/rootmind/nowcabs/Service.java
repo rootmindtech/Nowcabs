@@ -10,7 +10,15 @@ public class Service implements Serializable {
     private String serviceCode  =null;
     private String status  =null;
 
+    private int serviceCount=0;
 
+    public int getServiceCount() {
+        return serviceCount;
+    }
+
+    public void setServiceCount(int serviceCount) {
+        this.serviceCount = serviceCount;
+    }
 
     public String getRiderRefNo() {
         return riderRefNo;
