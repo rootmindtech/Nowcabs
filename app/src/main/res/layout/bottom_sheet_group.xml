@@ -11,13 +11,21 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
+    <!--<Button-->
+        <!--android:layout_width="20dp"-->
+        <!--android:layout_height="5dp"-->
+        <!--android:layout_gravity="center_horizontal|top"-->
+        <!--android:background="@color/colorGrey"-->
+        <!--android:foreground="?attr/selectableItemBackground"-->
+        <!--android:textColor="#fff" />-->
+
     <Button
-        android:layout_width="20dp"
-        android:layout_height="5dp"
-        android:layout_gravity="center_horizontal|top"
-        android:background="@color/colorGrey"
-        android:foreground="?attr/selectableItemBackground"
-        android:textColor="#fff" />
+        android:id="@+id/btn_group_close"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_gravity="left|top"
+        android:background="@drawable/close_18px"
+        />
 
 
     <androidx.recyclerview.widget.RecyclerView

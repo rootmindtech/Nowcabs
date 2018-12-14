@@ -19,7 +19,6 @@
         android:foreground="?attr/selectableItemBackground"
         android:textColor="#fff" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/services_recycler_view"
         android:layout_width="match_parent"

@@ -16,6 +16,14 @@
         android:title="Group"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_share"
+        android:enabled="true"
+        android:icon="@drawable/share"
+        android:title="Share"
+        app:showAsAction="ifRoom" />
+
+
     <!--<item-->
         <!--android:id="@+id/action_auto"-->
         <!--android:enabled="true"-->

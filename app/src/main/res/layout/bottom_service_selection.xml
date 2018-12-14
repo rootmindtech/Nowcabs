@@ -6,14 +6,14 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/bottom_service_selection"
+        android:id="@+id/bottom_service_selection_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
         android:focusable="true"
         android:orientation="vertical"
         android:paddingLeft="0dp"
-        android:paddingTop="0dp"
+        android:paddingTop="10dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
         android:weightSum="10">
@@ -73,9 +73,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
                         android:text="0"
                         android:textAlignment="center"
-                        android:textColor="@android:color/holo_blue_dark"
+                        android:textColor="@color/colorWhite"
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
@@ -126,16 +127,16 @@
                         android:textStyle="normal" />
 
                     <TextView
-                        android:id="@+id/tv_auto_count"
+                        android:id="@+id/tv_autodriver_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
                         android:text="0"
                         android:textAlignment="center"
-                        android:textColor="@android:color/holo_blue_dark"
+                        android:textColor="@color/colorWhite"
                         android:textSize="12sp"
                         android:textStyle="normal" />
-
 
                 </LinearLayout>
 
@@ -180,7 +181,32 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+
+                    <TextView
+                        android:id="@+id/tv_cabdriver_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|top"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+                    <!---->
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_distance"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="12.00 km"-->
+                        <!--android:textSize="8sp" />-->
+
+
                 </LinearLayout>
+
+
 
 
             </androidx.cardview.widget.CardView>
@@ -224,6 +250,19 @@
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
                         android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_electrician_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
 
                 </LinearLayout>
 
@@ -269,6 +308,19 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+                    <TextView
+                        android:id="@+id/tv_plumber_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+
                 </LinearLayout>
 
 
@@ -312,6 +364,19 @@
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
                         android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_tailor_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
 
                 </LinearLayout>
 
@@ -358,6 +423,19 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+                    <TextView
+                        android:id="@+id/tv_washer_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+
                 </LinearLayout>
 
 
@@ -401,6 +479,19 @@
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
                         android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_courier_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
 
                 </LinearLayout>
 
@@ -447,6 +538,19 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+                    <TextView
+                        android:id="@+id/tv_merchant_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+
                 </LinearLayout>
 
 
@@ -491,6 +595,19 @@
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
                         android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_movers_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
 
                 </LinearLayout>
 
@@ -537,6 +654,19 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+                    <TextView
+                        android:id="@+id/tv_housekeeper_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+
                 </LinearLayout>
 
 
@@ -582,6 +712,19 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+                    <TextView
+                        android:id="@+id/tv_cook_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+
                 </LinearLayout>
 
 
@@ -624,6 +767,19 @@
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
                         android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_painter_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
 
                 </LinearLayout>
 
@@ -668,6 +824,19 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+                    <TextView
+                        android:id="@+id/tv_florist_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -709,6 +878,19 @@
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
                         android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_pesticide_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
 
                 </LinearLayout>
 
@@ -752,6 +934,19 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+                    <TextView
+                        android:id="@+id/tv_tutor_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -794,6 +989,19 @@
                         android:textSize="12sp"
                         android:textStyle="normal" />
 
+                    <TextView
+                        android:id="@+id/tv_locksmith_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -835,6 +1043,19 @@
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
                         android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_grinder_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/rounded_textview"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
 
                 </LinearLayout>
 

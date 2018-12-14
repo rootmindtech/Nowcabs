@@ -6,177 +6,138 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.rootmind.nowcabs.RiderMapActivity"
-    tools:showIn="@layout/app_bar_ridermap"
-    >
-
-    <!--tools:showIn="@layout/app_bar_main"-->
-
-    <!--<TextView-->
-    <!---->
-    <!---->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Hello World!"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintRight_toRightOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent" />-->
+    tools:showIn="@layout/app_bar_ridermap">
 
 
-
-    <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:orientation="vertical"
+        android:weightSum="5">
 
 
-
-        <!--21-Sep-2018-->
-        <!--android:layout_marginBottom="100dp"-->
-
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="com.rootmind.nowcabs.RiderMapActivity"
-            >
+            android:layout_height="0dp"
+            android:layout_weight="1.1"
+            android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view"
-                android:layout_gravity="top"
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                card_view:cardCornerRadius="5dp"
-                card_view:cardElevation="5dp">
+                android:layout_height="match_parent"
+                tools:context="com.rootmind.nowcabs.RiderMapActivity">
 
-                <fragment
-                    android:id="@+id/place_autocomplete_fragment"
+                <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_view"
                     android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_gravity="top"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    card_view:cardCornerRadius="5dp"
+                    card_view:cardElevation="5dp">
+
+                    <fragment
+                        android:id="@+id/place_autocomplete_fragment"
+                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginBottom="0dp" />
+
+                </androidx.cardview.widget.CardView>
+
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btn_service"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="0dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="0dp"
-                    android:layout_marginBottom="0dp"
-                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                    android:layout_gravity="right|top"
+                    android:layout_marginTop="80dp"
+                    android:layout_marginRight="10dp"
+                    android:backgroundTint="@color/colorVividBlue"
+                    android:src="@drawable/auto_outline"
+                    android:visibility="invisible"
+                    app:borderWidth="0dp"
+                    app:elevation="6dp"
+                    app:fabSize="normal"
+
                     />
 
-            </androidx.cardview.widget.CardView>
+            </fragment>
 
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_service"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:layout_marginTop="80dp"
-                android:layout_marginRight="10dp"
-                android:backgroundTint="@color/colorVividBlue"
-                android:src="@drawable/auto_outline"
-                android:visibility="invisible"
-                app:borderWidth="0dp"
-                app:elevation="6dp"
-                app:fabSize="normal"
-
-                />
-
-        </fragment>
-
-        <!--<ImageView-->
-            <!--android:id="@+id/centerImage"-->
-            <!--android:layout_width="40dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:src="@drawable/marker" />-->
-
-        <!--<HorizontalScrollView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--&gt;-->
-
-            <!--<LinearLayout-->
-                <!--android:id="@+id/list_driverInfo"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="70dp"-->
-                <!--android:gravity="bottom"-->
-                <!--android:orientation="horizontal"-->
-                <!--android:divider="@drawable/divider_blue"-->
-                <!--android:showDividers="middle">-->
-
-            <!--</LinearLayout>-->
-        <!--</HorizontalScrollView>-->
+        </LinearLayout>
 
 
-
-
-        <!--21-Sep-2018-->
-        <!--android:layout_alignParentBottom="true"-->
-
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/driver_recycler_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:scrollbars="horizontal"-->
-            <!--app:itemBackground="@color/colorBlack" />-->
-
-
-        <!--26-Sep-2018-->
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:layout_margin="10dp" />-->
-
-
-        <TextView
-            android:id="@+id/tv_searchService"
-            android:layout_above="@id/bottom_navigation"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="Searching services....."
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:textAllCaps="false"
-            android:textStyle="italic"
-            android:background="@color/colorWhite"
-            android:gravity="center"
-            />
+            android:layout_height="0dp"
+            android:layout_weight="3.5"
+            android:orientation="vertical">
 
+            <include layout="@layout/bottom_service_selection"/>
 
-        <!--22-Sep-2018-->
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom"
-            android:background="@color/colorWhite"
-            app:itemBackground="@android:color/white"
-            app:itemIconTint="@drawable/bottom_nav_foreground"
-            app:itemTextColor="@drawable/bottom_nav_foreground"
-            app:menu="@menu/bottom_navigation_main"
-            app:elevation="8dp"
-            />
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:background="@android:color/white"
+                app:elevation="16dp"
+                app:itemIconTint="@drawable/bottom_nav_foreground"
+                app:itemTextColor="@drawable/bottom_nav_foreground"
+                app:menu="@menu/bottom_navigation_main" />
+        </LinearLayout>
+
+        <!--app:itemBackground="@android:color/white"-->
 
 
-
-    </RelativeLayout>
+    </LinearLayout>
 
 
     <include layout="@layout/progress_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--tools:showIn="@layout/app_bar_main"-->
+
+    <!--<TextView--><!----><!----><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:text="Hello World!"--><!--app:layout_constraintBottom_toBottomOf="parent"--><!--app:layout_constraintLeft_toLeftOf="parent"--><!--app:layout_constraintRight_toRightOf="parent"--><!--app:layout_constraintTop_toTopOf="parent" />-->
+
+
+    <!--<ImageView--><!--android:id="@+id/centerImage"--><!--android:layout_width="40dp"--><!--android:layout_height="40dp"--><!--android:layout_centerHorizontal="true"--><!--android:layout_centerVertical="true"--><!--android:src="@drawable/marker" />-->
+
+    <!--<HorizontalScrollView--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentBottom="true"--><!--android:layout_gravity="bottom"--><!--&gt;-->
+
+    <!--<LinearLayout--><!--android:id="@+id/list_driverInfo"--><!--android:layout_width="wrap_content"--><!--android:layout_height="70dp"--><!--android:gravity="bottom"--><!--android:orientation="horizontal"--><!--android:divider="@drawable/divider_blue"--><!--android:showDividers="middle">-->
+
+    <!--</LinearLayout>--><!--</HorizontalScrollView>-->
+
+
+    <!--21-Sep-2018--><!--android:layout_alignParentBottom="true"-->
+
+    <!--<android.support.v7.widget.RecyclerView--><!--android:id="@+id/driver_recycler_view"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="bottom"--><!--android:scrollbars="horizontal"--><!--app:itemBackground="@color/colorBlack" />-->
+
+
+    <!--26-Sep-2018--><!--<android.support.design.widget.FloatingActionButton--><!--android:id="@+id/fab"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentBottom="true"--><!--android:layout_centerHorizontal="true"--><!--android:layout_gravity="bottom"--><!--android:layout_margin="10dp" />-->
+
+

@@ -1,5 +1,6 @@
 package com.rootmind.nowcabs;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
@@ -24,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
@@ -35,6 +38,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -103,6 +107,7 @@ import android.content.Intent;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.w3c.dom.Text;
 
 //import  android.graphics.*;
 
@@ -157,12 +162,13 @@ public class RiderMapActivity extends AppCompatActivity implements
         ServiceAdapter.ItemClickListener,
         ServiceSelectionAdapter.ItemClickListener,
         GroupSelectionAdapter.ItemClickListener,
-        OnInfoWindowClickListener
+        OnInfoWindowClickListener, View.OnClickListener
 
 {
 
     private static final String TAG = "RiderMapActivity";
-
+    private static final long INTERVAL = 1000 * 10;
+    private static final long FASTEST_INTERVAL = 1000 * 5;
 
     private GoogleMap mMap;
 
@@ -263,9 +269,10 @@ public class RiderMapActivity extends AppCompatActivity implements
     BottomNavigationView bottomNavigationView;
 
     private TextView tv_no_records;
+    private Button btn_close;
+    private Button btn_group_close;
 
 
-    TextView tv_searchService;
 
     Configuration config;
 
@@ -275,6 +282,51 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     public LinearLayout loadingSpinner;
     FirebaseFirestore firebaseFirestore;
+
+
+    public CardView cv_carpenter;
+    public CardView cv_autoDriver;
+    public CardView cv_cabDriver;
+    public CardView cv_electrician;
+    public CardView cv_plumber;
+    public CardView cv_tailor;
+    public CardView cv_washer;
+    public CardView cv_courier;
+    public CardView cv_merchant;
+
+    public CardView cv_movers;
+    public CardView cv_housekeeper;
+    public CardView cv_cook;
+    public CardView cv_painter;
+    public CardView cv_florist;
+    public CardView cv_pesticide;
+    public CardView cv_tutor;
+    public CardView cv_locksmith;
+    public CardView cv_grinder;
+
+
+
+    public TextView tv_carpenter_count;
+    public TextView tv_autodriver_count;
+    public TextView tv_cabdriver_count;
+    public TextView tv_electrician_count;
+    public TextView tv_plumber_count;
+    public TextView tv_tailor_count;
+    public TextView tv_washer_count;
+    public TextView tv_courier_count;
+    public TextView tv_merchant_count;
+
+    public TextView tv_movers_count;
+    public TextView tv_housekeeper_count;
+    public TextView tv_cook_count;
+    public TextView tv_painter_count;
+    public TextView tv_florist_count;
+    public TextView tv_pesticide_count;
+    public TextView tv_tutor_count;
+    public TextView tv_locksmith_count;
+    public TextView tv_grinder_count;
+
+
 
     MyLocation myLocation = new MyLocation();
 
@@ -313,6 +365,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        setServicesView();
 
         if (firebaseFirestore == null)
         {
@@ -334,8 +387,6 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         driverData = new HashMap<>();
 
-        tv_searchService = (TextView) findViewById(R.id.tv_searchService);
-        tv_searchService.setVisibility(View.GONE);
 
 
         rider = (Rider) getIntent().getSerializableExtra("Rider");
@@ -484,6 +535,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         //------------------
         recyclerView = (RecyclerView) findViewById(R.id.driver_recycler_view);
         tv_no_records = (TextView) findViewById(R.id.tv_no_records);
+        btn_close = (Button) findViewById(R.id.btn_close);
         serviceAdapter = new ServiceAdapter(servicesList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -491,7 +543,6 @@ public class RiderMapActivity extends AppCompatActivity implements
         recyclerView.setAdapter(serviceAdapter);
         serviceAdapter.setClickListener(this);
         //----------------
-
 
         //-----------recycler for list service selecton-------
         servicesRecyclerView = (RecyclerView) findViewById(R.id.services_recycler_view);
@@ -505,6 +556,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         //-----------recycler for list group selecton-------
         groupRecyclerView = (RecyclerView) findViewById(R.id.group_bottom_recycler_view);
+        btn_group_close = (Button) findViewById(R.id.btn_group_close);
         groupSelectionAdapter = new GroupSelectionAdapter(groupList);
         RecyclerView.LayoutManager groupLayoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
         groupRecyclerView.setLayoutManager(groupLayoutManager);
@@ -513,6 +565,20 @@ public class RiderMapActivity extends AppCompatActivity implements
         groupSelectionAdapter.setClickListener(this);
         //----------------
 
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetClose();
+            }
+        });
+
+        btn_group_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomGroupSheetClose();
+            }
+        });
 
 
 
@@ -563,7 +629,6 @@ public class RiderMapActivity extends AppCompatActivity implements
 
             }
         });
-
         bottomSheetClose();
 
         //---------end of bottom sheet
@@ -600,8 +665,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
             }
         });
-
-        bottomServiceSheetOpen();
+        bottomServiceSheetClose();
+        //bottomServiceSheetOpen();
 
         //---------end of bottom sheet
 
@@ -658,7 +723,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                                 item.setChecked(true);
 
-                                bottomServiceSheetOpen();
+                                //bottomServiceSheetOpen();
 
 
                                 break;
@@ -672,6 +737,15 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
                                 break;
+
+                            case R.id.action_share:
+
+
+
+                                //performShare();
+
+                                break;
+
 
                         }
                         return false;
@@ -698,6 +772,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
 
+
     }//------end of create
 
 
@@ -705,7 +780,6 @@ public class RiderMapActivity extends AppCompatActivity implements
 
         @Override
         public void gotLocation(Location location) {
-            // TODO Auto-generated method stub
 
             riderLat = location.getLatitude();
             riderLng = location.getLongitude();
@@ -716,16 +790,13 @@ public class RiderMapActivity extends AppCompatActivity implements
             new RiderMapActivity.updateRiderLocation().execute(new Object[]{null, null, false});
 
 
-//            Toast.makeText(getApplicationContext(), "Got Location",
-//                    Toast.LENGTH_LONG).show();
-
         }
     };
 
 
     public void bottomSheetOpen() {
         sheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         if (serviceAdapter.getItemCount() > 0) {
             recyclerView.setVisibility(View.VISIBLE);
@@ -755,7 +826,6 @@ public class RiderMapActivity extends AppCompatActivity implements
         serviceCountList.add(service);
         serviceSelectionAdapter.notifyDataSetChanged();
 
-        new fetchServiceCountProgressTask().execute();
 
         if (serviceSelectionAdapter.getItemCount() > 0) {
             servicesRecyclerView.setVisibility(View.VISIBLE);
@@ -778,7 +848,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         if (groupSelectionAdapter.getItemCount() > 0) {
 
             groupSheetBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-            groupSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            groupSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             groupRecyclerView.setVisibility(View.VISIBLE);
 
         } else {
@@ -1083,7 +1153,7 @@ public class RiderMapActivity extends AppCompatActivity implements
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         //to move google logo and current location logo
-        mMap.setPadding(0, 0, 0, 200);
+        //mMap.setPadding(0, 0, 0, 200);
 
 
         // Set a listener for info window events.
@@ -1122,6 +1192,14 @@ public class RiderMapActivity extends AppCompatActivity implements
                 rider.setRiderLng(riderLng);
 
                 new RiderMapActivity.updateRiderLocation().execute(new Object[]{null, null, false});
+
+
+                //-------to get initial location details
+                markerLat = location.getLatitude();
+                markerLng = location.getLongitude();
+
+                new fetchServiceCountProgressTask().execute();
+                //-------------
 
 
                 Log.i(TAG, "Tower Zoom ");
@@ -1173,8 +1251,8 @@ public class RiderMapActivity extends AppCompatActivity implements
         mLocationRequest = new LocationRequest();
         // Use high accuracy
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         //mLocationRequest.setSmallestDisplacement(10);
 
         mLocationCallback = new LocationCallback() {
@@ -2036,6 +2114,9 @@ public class RiderMapActivity extends AppCompatActivity implements
         showReverseGeocoder();
 
 
+        new fetchServiceCountProgressTask().execute();
+
+
     }
 
 
@@ -2069,13 +2150,12 @@ public class RiderMapActivity extends AppCompatActivity implements
 //                .fillColor(Color.parseColor("0x8800CCFF")));
 //                //.clickable(true));
 
-        //21-Sep-2018
-        //Place current location marker
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+//        //Place current location marker
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("Current Position");
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+//        mCurrLocationMarker = mMap.addMarker(markerOptions);
 
 
     }
@@ -2818,7 +2898,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                                             bottomGroupSheetOpen();
                                         }
                                         else {
-                                            bottomServiceSheetOpen();
+                                            //bottomServiceSheetOpen();
                                         }
                                     }
                                 }
@@ -3616,7 +3696,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                             Service service=null;
                             serviceCountList.clear();
-                            serviceSelectionAdapter.notifyDataSetChanged();
+                            //serviceSelectionAdapter.notifyDataSetChanged();
 
                             if(wrapperArrayObj!=null) {
 
@@ -3629,13 +3709,16 @@ public class RiderMapActivity extends AppCompatActivity implements
                                         service.setRiderID(wrapperArrayObj.optJSONObject(i).optString("riderID"));
                                         service.setServiceCode(wrapperArrayObj.optJSONObject(i).optString("serviceCode"));
                                         service.setServiceCount(wrapperArrayObj.optJSONObject(i).optInt("serviceCount"));
+                                        service.setDistance(wrapperArrayObj.optJSONObject(i).optDouble("distance"));
 
+                                        Log.d(TAG, "fetch service count serviceCode: " + service.getServiceCode() + " " + service.getServiceCount());
 
                                         serviceCountList.add(service);
 
                                     }
                                 }
-                                serviceSelectionAdapter.notifyDataSetChanged();
+                                //serviceSelectionAdapter.notifyDataSetChanged();
+                                showServiceCount();
 
                             }//null condition check
 
@@ -3669,7 +3752,270 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     }//fetch rider count update End
 
+
+    public void setServicesView()
+    {
+
+
+        cv_carpenter = (CardView) findViewById(R.id.carpenter_cardView);
+        cv_autoDriver = (CardView) findViewById(R.id.auto_driver_cardView);
+        cv_cabDriver = (CardView) findViewById(R.id.cab_driver_cardView);
+        cv_electrician = (CardView) findViewById(R.id.electrician_cardView);
+        cv_plumber = (CardView) findViewById(R.id.plumber_cardView);
+        cv_tailor = (CardView) findViewById(R.id.tailor_cardView);
+        cv_washer = (CardView) findViewById(R.id.washer_cardView);
+        cv_courier = (CardView) findViewById(R.id.courier_cardView);
+        cv_merchant = (CardView) findViewById(R.id.merchant_cardView);
+
+        cv_movers = (CardView) findViewById(R.id.movers_cardView);
+        cv_housekeeper = (CardView) findViewById(R.id.housekeeper_cardView);
+        cv_cook = (CardView) findViewById(R.id.cook_cardView);
+        cv_painter = (CardView) findViewById(R.id.painter_cardView);
+        cv_florist = (CardView) findViewById(R.id.florist_cardView);
+        cv_pesticide = (CardView) findViewById(R.id.pesticide_cardView);
+        cv_tutor = (CardView) findViewById(R.id.tutor_cardView);
+        cv_locksmith = (CardView) findViewById(R.id.locksmith_cardView);
+        cv_grinder = (CardView) findViewById(R.id.grinder_cardView);
+
+
+        cv_carpenter.setOnClickListener(this);
+        cv_autoDriver.setOnClickListener(this);
+        cv_cabDriver.setOnClickListener(this);
+        cv_electrician.setOnClickListener(this);
+        cv_plumber.setOnClickListener(this);
+        cv_tailor.setOnClickListener(this);
+        cv_washer.setOnClickListener(this);
+        cv_courier.setOnClickListener(this);
+        cv_merchant.setOnClickListener(this);
+
+        cv_movers.setOnClickListener(this);
+        cv_housekeeper.setOnClickListener(this);
+        cv_cook.setOnClickListener(this);
+        cv_painter.setOnClickListener(this);
+        cv_florist.setOnClickListener(this);
+        cv_pesticide.setOnClickListener(this);
+        cv_tutor.setOnClickListener(this);
+        cv_locksmith.setOnClickListener(this);
+        cv_grinder.setOnClickListener(this);
+
+        cv_carpenter.setTag(GlobalConstants.SERVICE_CARPENTER);
+        cv_autoDriver.setTag(GlobalConstants.SERVICE_AUTO_DRIVER);;
+        cv_cabDriver.setTag(GlobalConstants.SERVICE_CAB_DRIVER);;
+        cv_electrician.setTag(GlobalConstants.SERVICE_ELECTRICIAN);;
+        cv_plumber.setTag(GlobalConstants.SERVICE_PLUMBER);;
+        cv_tailor.setTag(GlobalConstants.SERVICE_TAILOR);;
+        cv_washer.setTag(GlobalConstants.SERVICE_WASHER);;
+        cv_courier.setTag(GlobalConstants.SERVICE_COURIER);;
+        cv_merchant.setTag(GlobalConstants.SERVICE_MERCHANT);;
+
+        cv_movers.setTag(GlobalConstants.SERVICE_MOVERS);;
+        cv_housekeeper.setTag(GlobalConstants.SERVICE_HOUSEKEEPER);;
+        cv_cook.setTag(GlobalConstants.SERVICE_COOK);;
+        cv_painter.setTag(GlobalConstants.SERVICE_PAINTER);;
+        cv_florist.setTag(GlobalConstants.SERVICE_FLORIST);;
+        cv_pesticide.setTag(GlobalConstants.SERVICE_PESTICIDE);;
+        cv_tutor.setTag(GlobalConstants.SERVICE_TUTOR);;
+        cv_locksmith.setTag(GlobalConstants.SERVICE_LOCKSMITH);;
+        cv_grinder.setTag(GlobalConstants.SERVICE_GRINDER);;
+
+
+        tv_carpenter_count= (TextView)findViewById(R.id.tv_carpenter_count);
+        tv_autodriver_count= (TextView)findViewById(R.id.tv_autodriver_count);
+        tv_cabdriver_count= (TextView)findViewById(R.id.tv_cabdriver_count);
+        tv_electrician_count= (TextView)findViewById(R.id.tv_electrician_count);
+        tv_plumber_count= (TextView)findViewById(R.id.tv_plumber_count);
+        tv_tailor_count= (TextView)findViewById(R.id.tv_tailor_count);
+        tv_washer_count= (TextView)findViewById(R.id.tv_washer_count);
+        tv_courier_count= (TextView)findViewById(R.id.tv_courier_count);
+        tv_merchant_count= (TextView)findViewById(R.id.tv_merchant_count);
+
+        tv_movers_count= (TextView)findViewById(R.id.tv_movers_count);
+        tv_housekeeper_count= (TextView)findViewById(R.id.tv_housekeeper_count);
+        tv_cook_count= (TextView)findViewById(R.id.tv_cook_count);
+        tv_painter_count= (TextView)findViewById(R.id.tv_painter_count);
+        tv_florist_count= (TextView)findViewById(R.id.tv_florist_count);
+        tv_pesticide_count= (TextView)findViewById(R.id.tv_pesticide_count);
+        tv_tutor_count= (TextView)findViewById(R.id.tv_tutor_count);
+        tv_locksmith_count= (TextView)findViewById(R.id.tv_locksmith_count);
+        tv_grinder_count= (TextView)findViewById(R.id.tv_grinder_count);
+
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        new RiderMapActivity.fetchServiceLocationProgressTask().execute(new Object[]{view.getTag(), null, false,null});
+
+    }
+
+    public void showServiceCount()
+    {
+        try{
+
+
+            Service service=null;
+            tv_carpenter_count.setText( "0");
+            tv_courier_count.setText( "0");
+            tv_cabdriver_count.setText( "0");
+            tv_autodriver_count.setText( "0");
+            tv_electrician_count.setText( "0");
+            tv_merchant_count.setText( "0");
+            tv_plumber_count.setText( "0");
+            tv_tailor_count.setText( "0");
+            tv_washer_count.setText( "0");
+            tv_movers_count.setText( "0");
+            tv_housekeeper_count.setText( "0");
+            tv_cook_count.setText( "0");
+            tv_painter_count.setText( "0");
+            tv_florist_count.setText( "0");
+            tv_pesticide_count.setText( "0");
+            tv_tutor_count.setText( "0");
+            tv_locksmith_count.setText( "0");
+            tv_grinder_count.setText( "0");
+
+
+            for(int i=0;i<serviceCountList.size();i++) {
+
+                service = serviceCountList.get(i);
+
+                Log.i(TAG, "Service Selection  " + service.getServiceCode());
+                Log.i(TAG, "Service Selection Count " + service.getServiceCount());
+
+                //------set service count
+                switch (service.getServiceCode()) {
+
+                    case GlobalConstants.SERVICE_CARPENTER: {
+
+                        tv_carpenter_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+                    }
+                    case GlobalConstants.SERVICE_COURIER: {
+
+                        tv_courier_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_CAB_DRIVER: {
+
+                        tv_cabdriver_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+                    }
+                    case GlobalConstants.SERVICE_AUTO_DRIVER: {
+
+                        tv_autodriver_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+                    }
+                    case GlobalConstants.SERVICE_ELECTRICIAN: {
+
+                        tv_electrician_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_MERCHANT: {
+
+                        tv_merchant_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_PLUMBER: {
+
+                        tv_plumber_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_TAILOR: {
+
+                        tv_tailor_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_WASHER: {
+
+                        tv_washer_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_MOVERS: {
+
+                        tv_movers_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_HOUSEKEEPER: {
+
+                        tv_housekeeper_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_COOK: {
+
+                        tv_cook_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_PAINTER: {
+
+                        tv_painter_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_FLORIST: {
+
+                        tv_florist_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_PESTICIDE: {
+
+                        tv_pesticide_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_TUTOR: {
+
+                        tv_tutor_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_LOCKSMITH: {
+
+                        tv_locksmith_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+                    case GlobalConstants.SERVICE_GRINDER: {
+
+                        tv_grinder_count.setText( String.valueOf(service.getServiceCount()));
+                        break;
+
+                    }
+
+
+                } //switch
+
+            }//for loop
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+    }
+
+//    private void onInviteClicked() {
+//        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+//                .setMessage(getString(R.string.invitation_message))
+//                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+//                .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+//                .setCallToActionText(getString(R.string.invitation_cta))
+//                .build();
+//        startActivityForResult(intent, REQUEST_INVITE);
+//    }
+
+
 }//class end
+
 
 
 

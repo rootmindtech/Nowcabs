@@ -130,7 +130,8 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
 
 
             tv_carpenter_count = (TextView) view.findViewById(R.id.tv_carpenter_count);
-            tv_auto_count = (TextView) view.findViewById(R.id.tv_auto_count);
+            tv_auto_count = (TextView) view.findViewById(R.id.tv_autodriver_count);
+
 
 //            tv_destination = (TextView) view.findViewById(R.id.tv_destination);
 //
@@ -335,12 +336,13 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
 
 
     @Override
-    public void onBindViewHolder(ServiceSelectionAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
 
         //Resources res = holder.itemView.getContext().getResources();
 
+
         Service service=null;
-        
+
         for(int i=0;i<serviceCountList.size();i++) {
 
             service = serviceCountList.get(i);
@@ -348,22 +350,91 @@ public class ServiceSelectionAdapter extends RecyclerView.Adapter<ServiceSelecti
             Log.i(TAG, "Service Selection Adapter " + service.getServiceCode());
             Log.i(TAG, "Service Selection Adapter Count " + service.getServiceCount());
 
+            switch (service.getServiceCode()) {
 
-            //        //------set count
-//                switch (service.getServiceCode()) {
-//
-//                    case GlobalConstants.SERVICE_CARPENTER: {
-//                        holder.tv_carpenter_count.setText(service.getServiceCount());
-//                        break;
-//                    }
-//                    case GlobalConstants.SERVICE_AUTO_DRIVER: {
-//                        holder.tv_auto_count.setText(service.getServiceCount());
-//                        break;
-//
-//                    }
-//
-//                }
-        }
+                case GlobalConstants.SERVICE_CARPENTER: {
+                    holder.tv_carpenter_count.setText(String.valueOf(service.getServiceCount()));
+                    Log.i(TAG, "Service Selection Countcarp " + service.getServiceCount());
+                    break;
+                }
+                case GlobalConstants.SERVICE_COURIER: {
+
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_CAB_DRIVER: {
+                    break;
+                }
+                case GlobalConstants.SERVICE_AUTO_DRIVER: {
+
+                   holder.tv_auto_count.setText(String.valueOf(service.getServiceCount()));
+                    Log.i(TAG, "Service Selection auto " + service.getServiceCount());
+
+                    break;
+                }
+                case GlobalConstants.SERVICE_ELECTRICIAN: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_MERCHANT: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_PLUMBER: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_TAILOR: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_WASHER: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_MOVERS: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_HOUSEKEEPER: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_COOK: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_PAINTER: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_FLORIST: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_PESTICIDE: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_TUTOR: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_LOCKSMITH: {
+                    break;
+
+                }
+                case GlobalConstants.SERVICE_GRINDER: {
+                    break;
+
+                }
+
+
+            } //switch
+
+
+        } //for loop
+
     //        holder.tv_servicerName.setText("Servicer Name");
 //        //holder.tv_mobileNo.setText(rider.getRiderMobileNo());
 //        holder.tv_destination.setText(rider.getRiderLocation()); //13-Sep-2018

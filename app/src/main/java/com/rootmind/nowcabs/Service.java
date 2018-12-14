@@ -12,6 +12,18 @@ public class Service implements Serializable {
 
     private int serviceCount=0;
 
+    public double distance;
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+
+
     public int getServiceCount() {
         return serviceCount;
     }
