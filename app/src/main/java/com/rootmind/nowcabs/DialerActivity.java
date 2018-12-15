@@ -153,7 +153,7 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
             tv_driverName.setText(serviceGeo.getRiderName());
             tv_serviceName.setText(serviceGeo.getServiceCode());
             ratingBar.setRating((float) serviceGeo.getAvgRating());
-            icon.setImageResource(R.drawable.avatar_outline48);
+            icon.setImageResource(R.drawable.avatar);
 
 
             if(serviceGeo.imageWrappers!=null && serviceGeo.imageWrappers.length>0)
@@ -165,7 +165,7 @@ public class DialerActivity extends  AppCompatActivity implements DatePickerDial
                 }
                 else
                 {
-                    icon.setImageResource(R.drawable.avatar_outline48);
+                    icon.setImageResource(R.drawable.avatar);
                 }
 
             }

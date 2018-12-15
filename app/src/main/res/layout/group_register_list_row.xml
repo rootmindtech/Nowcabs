@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:maxHeight="48dp"
                 android:maxWidth="48dp"
-                android:src="@drawable/avatar_outline48"
+                android:src="@drawable/avatar"
                 android:layout_gravity="center_vertical"
                 />
 

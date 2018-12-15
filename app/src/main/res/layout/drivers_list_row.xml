@@ -41,7 +41,7 @@
                 android:gravity="start"
                 android:maxHeight="48dp"
                 android:maxWidth="48dp"
-                android:src="@drawable/driver" />
+                android:src="@drawable/avatar" />
 
 
             <!--<TextView-->
@@ -230,7 +230,7 @@
             android:layout_marginTop="110dp"
             android:layout_below="@id/btn_rating"
             android:background="@null"
-            android:src="@drawable/location_outline" />
+            android:src="@drawable/location" />
 
 
 

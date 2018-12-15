@@ -38,7 +38,7 @@
 
     <item
         android:id="@+id/menu_morevert"
-        android:icon="@drawable/morevert_24dp"
+        android:icon="@drawable/dots"
         android:title="action_notification"
         app:showAsAction="always">
         <menu>
@@ -50,25 +50,25 @@
 
             <item
                 android:id="@+id/menu_name"
-                android:icon="@drawable/avatar_outline48"
+                android:icon="@drawable/avatar"
                 android:orderInCategory="100"
                 android:title="Name" />
 
             <item
                 android:id="@+id/menu_driverID"
-                android:icon="@drawable/avatar_outline48"
+                android:icon="@drawable/avatar"
                 android:orderInCategory="100"
                 android:title="DriverID" />
 
             <item
                 android:id="@+id/menu_vehicleNo"
-                android:icon="@drawable/avatar_outline48"
+                android:icon="@drawable/avatar"
                 android:orderInCategory="100"
                 android:title="DriverID" />
 
             <item
                 android:id="@+id/menu_vehicleType"
-                android:icon="@drawable/avatar_outline48"
+                android:icon="@drawable/avatar"
                 android:orderInCategory="100"
                 android:title="DriverID" />
 

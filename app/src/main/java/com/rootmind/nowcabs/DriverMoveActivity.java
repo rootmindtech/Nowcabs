@@ -1079,7 +1079,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
             }
             else {
 
-                iv_driverImage.setImageResource(R.drawable.avatar_outline48);
+                iv_driverImage.setImageResource(R.drawable.avatar);
 
             }
 
@@ -1425,7 +1425,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
 
             } else {
 
-                driverImage.setImageResource(R.drawable.avatar_outline48);
+                driverImage.setImageResource(R.drawable.avatar);
 
             }
 
@@ -1451,7 +1451,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
         try {
 
 
-            dialImage.setImageResource(R.drawable.dialer_icon48x48);
+            dialImage.setImageResource(R.drawable.dial_blue48px);
 
             dialImage.setTag(driverGeo.getDriverMobileNo());
 
@@ -1536,7 +1536,7 @@ public class DriverMoveActivity extends AppCompatActivity implements OnMapReadyC
 
         try {
 
-            smsImage.setImageResource(R.drawable.sms_icon48x48);
+            smsImage.setImageResource(R.drawable.dial_blue48px);
             //smsImage.setPadding(10, 10, 10, 10);
 
             final String riderMobileNo = rider.getMobileNo();

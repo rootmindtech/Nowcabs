@@ -1,6 +1,5 @@
 package com.rootmind.nowcabs;
 
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
@@ -717,16 +716,17 @@ public class RiderMapActivity extends AppCompatActivity implements
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.action_public:
-
-                                item.setCheckable(true);
-
-                                item.setChecked(true);
-
-                                //bottomServiceSheetOpen();
+                            case R.id.action_profile:
 
 
+                                Intent i = new Intent(getApplicationContext(), RiderProfileActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("Rider", rider);
+                                bundle.putSerializable("RegisterFlag", false);
+                                i.putExtras(bundle);
+                                startActivity(i);
                                 break;
+
                             case R.id.action_group:
 
                                 item.setCheckable(true);
@@ -741,8 +741,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                             case R.id.action_share:
 
 
-
-                                //performShare();
+                                shareOnWhatsApp();
 
                                 break;
 
@@ -1188,8 +1187,16 @@ public class RiderMapActivity extends AppCompatActivity implements
                 riderLat = location.getLatitude();
                 riderLng = location.getLongitude();
 
+                //---get address
+                geocoder = new Geocoder(this, Locale.getDefault()); //Locale.ENGLISH
+                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                Address returnAddress = addresses.get(0);
+                riderLocation = returnAddress.getLocality();
+
+
                 rider.setRiderLat(riderLat);
                 rider.setRiderLng(riderLng);
+                rider.setRiderLocation(riderLocation);
 
                 new RiderMapActivity.updateRiderLocation().execute(new Object[]{null, null, false});
 
@@ -1424,12 +1431,10 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
         try {
+            //---get address
             geocoder = new Geocoder(this, Locale.getDefault()); //Locale.ENGLISH
             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             Address returnAddress = addresses.get(0);
-
-            //String localityString = returnAddress.getLocality();
-
             riderLocation = returnAddress.getLocality();
 
             riderLat = location.getLatitude();
@@ -4003,15 +4008,29 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     }
 
-//    private void onInviteClicked() {
-//        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-//                .setMessage(getString(R.string.invitation_message))
-//                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-//                .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
-//                .setCallToActionText(getString(R.string.invitation_cta))
-//                .build();
-//        startActivityForResult(intent, REQUEST_INVITE);
-//    }
+    //to share app on what's app
+    private void shareOnWhatsApp() {
+
+        //String smsNumber = rider.getMobileNo();
+        try {
+
+            final String appPackageName = getPackageName();
+
+            Intent sendIntent = new Intent("android.intent.action.MAIN");
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id="+appPackageName);
+            //sendIntent.putExtra("jid", smsNumber + "@s.whatsapp.net"); //phone number without "+" prefix
+            sendIntent.setPackage("com.whatsapp");
+            startActivity(sendIntent);
+        } catch(Exception e) {
+
+            CommonService.Toast(this,"WhatsApp is not installed",Toast.LENGTH_SHORT);
+            //Toast.makeText(this, "Error/n:" + e.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 
 
 }//class end
@@ -5189,7 +5208,7 @@ public class RiderMapActivity extends AppCompatActivity implements
 //
 //            } else {
 //
-//                driverImage.setImageResource(R.drawable.avatar_outline48);
+//                driverImage.setImageResource(R.drawable.avatar);
 //
 //            }
 //

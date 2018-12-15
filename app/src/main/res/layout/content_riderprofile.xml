@@ -41,7 +41,7 @@
             android:layout_height="80dp"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="40dp"
-            android:src="@drawable/avatar_outline48"
+            android:src="@drawable/avatar"
             app:srcCompat="@android:drawable/sym_def_app_icon"/>
 
 
@@ -93,7 +93,7 @@
             android:nextFocusForward="@+id/txt_name"
             />
 
-        <!--android:drawableLeft="@drawable/avatar_outline48"-->
+        <!--android:drawableLeft="@drawable/avatar"-->
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

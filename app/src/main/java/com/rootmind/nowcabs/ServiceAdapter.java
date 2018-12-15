@@ -8,12 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import android.view.View;
 
@@ -48,7 +52,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
     private ItemClickListener mClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView tv_servicerName, tv_mobileNo, tv_destination, tv_distance, tv_vacantStatus, tv_yourRating, tv_vehicleNo, tv_langauge;
+        public TextView tv_servicerName, tv_mobileNo, tv_destination, tv_distance,  tv_yourRating, tv_vehicleNo, tv_langauge; //tv_vacantStatus,
         public ImageView iv_vehicleImage;
         public ImageView iv_avatar;
         public ImageView iv_dialImage;
@@ -56,8 +60,10 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         public ImageButton ib_favorite;
         public RatingBar ratingBar;
         public ImageButton ib_rating;
-        public ImageButton ib_location;
+        public ImageButton ib_location, ib_dots;
         public CardView cardView;
+
+
 
         private String mItem;
         private TextView mTextView;
@@ -73,7 +79,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
             //13-Sep-2018
             tv_distance = (TextView) view.findViewById(R.id.tv_distance);
-            tv_vacantStatus = (TextView) view.findViewById(R.id.tv_vacantStatus);
+            //tv_vacantStatus = (TextView) view.findViewById(R.id.tv_vacantStatus);
 
 
             iv_vehicleImage = (ImageView) view.findViewById(R.id.iv_vehicleImage);
@@ -99,6 +105,9 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
             cardView = (CardView) view.findViewById(R.id.card_view);
 
+            ib_dots= (ImageButton) view.findViewById(R.id.ib_dots);
+
+
             //view.setTag(iv_avatar);
 
             iv_avatar.setOnClickListener(this);
@@ -115,11 +124,14 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
             cardView.setOnClickListener(this);
 
+            ib_dots.setOnClickListener(this);
+
+
             tv_destination.setTextColor(Color.GRAY);
 //            tv_mobileNo.setTextColor(Color.rgb(34, 139, 34)); //FOREST GREEN
 
             //tv_vacantStatus.setTextColor(Color.rgb(34, 139, 34)); //FOREST GREEN
-            tv_vacantStatus.setTextColor(Color.GRAY);
+            //tv_vacantStatus.setTextColor(Color.GRAY);
 
             tv_yourRating.setTextColor(Color.GRAY);
 
@@ -187,6 +199,12 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
                         break;
                     }
 
+                    case R.id.ib_dots: {
+
+                        showPopupMenu(view,getAdapterPosition());
+                        break;
+                    }
+
 
                 }
 
@@ -226,7 +244,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         holder.tv_distance.setText((String.valueOf(rider.getDistance())) + " " + res.getString(R.string.km)); //13-Sep-2018
         //holder.tv_vacantStatus.setText(rider.getVacantStatus()); //13-Sep-2018
-        holder.tv_vacantStatus.setText("");
+        //holder.tv_vacantStatus.setText("");
 
 //        //favorite button
 //        ImageButton favButton = view.findViewById(R.id.btn_favorite);
@@ -295,6 +313,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         }
 
 
+
     }
 
 
@@ -349,7 +368,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         if (imageFileName != null && !imageFileName.trim().equals("")) {
             commonService.getImage(holder.iv_avatar, imageFileName);
         } else {
-            holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
+            holder.iv_avatar.setImageResource(R.drawable.avatar);
         }
 
         //------set profession image
@@ -368,7 +387,48 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
         }
     }
+
+    private void showPopupMenu(View view,int position) {
+        // inflate menu
+        PopupMenu popup = new PopupMenu(view.getContext(),view );
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_popup, popup.getMenu());
+        try {
+            Method method = popup.getMenu().getClass().getDeclaredMethod("setOptionalIconsVisible", boolean.class);
+            method.setAccessible(true);
+            method.invoke(popup.getMenu(), true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                switch (menuItem.getItemId())
+                {
+                    case R.id.menu_favorite:
+                    {
+                        mClickListener.onClickFavorite(view, position);
+                        return true;
+                    }
+                    case R.id.menu_rating:
+                    {
+                        mClickListener.onClickRating(view,position);
+
+                        return true;
+                    }
+                    default:
+                }
+
+
+                return false;
+            }
+        });
+        popup.show();
+    }
+
 }
+
         //------set profession image
 //        switch (rider.getServiceCode()) {
 //

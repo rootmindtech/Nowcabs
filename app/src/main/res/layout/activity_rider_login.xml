@@ -147,14 +147,16 @@
         />
 
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        android:layout_centerInParent="true"
-        />
+    <include layout="@layout/progress_bar" />
+
+    <!--<ProgressBar-->
+        <!--style="?android:attr/progressBarStyleLarge"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/progressBar"-->
+        <!--android:progressDrawable="@drawable/circular_progress_bar"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--/>-->
 
 
 </RelativeLayout>

@@ -165,7 +165,7 @@ public class GroupRegisterAdapter extends RecyclerView.Adapter<GroupRegisterAdap
 //        }
 //        else
 //        {
-//            holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
+//            holder.iv_avatar.setImageResource(R.drawable.avatar);
 //        }
 
 
@@ -216,7 +216,7 @@ public class GroupRegisterAdapter extends RecyclerView.Adapter<GroupRegisterAdap
 ////        }
 ////        else
 ////        {
-////            holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
+////            holder.iv_avatar.setImageResource(R.drawable.avatar);
 ////        }
 //
 //        //------set profession image

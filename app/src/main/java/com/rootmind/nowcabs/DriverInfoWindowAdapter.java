@@ -84,7 +84,7 @@ class DriverInfoWindowAdapter implements InfoWindowAdapter {
 
                 tv_serviceName.setText(rider.getServiceCode());
                 ratingBar.setRating((float) rider.getAvgRating());
-                icon.setImageResource(R.drawable.avatar_outline48);
+                icon.setImageResource(R.drawable.avatar);
 
 
                 if(rider.imageWrappers!=null && rider.imageWrappers.length>0)
@@ -96,7 +96,7 @@ class DriverInfoWindowAdapter implements InfoWindowAdapter {
                     }
                     else
                     {
-                        icon.setImageResource(R.drawable.avatar_outline48);
+                        icon.setImageResource(R.drawable.avatar);
                     }
 
                 }

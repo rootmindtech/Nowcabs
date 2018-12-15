@@ -162,7 +162,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
 ////        }
 ////        else
 ////        {
-////            holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
+////            holder.iv_avatar.setImageResource(R.drawable.avatar);
 ////        }
 //
 //        //------set profession image

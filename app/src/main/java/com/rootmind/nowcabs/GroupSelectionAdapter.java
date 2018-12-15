@@ -160,7 +160,7 @@ public class GroupSelectionAdapter extends RecyclerView.Adapter<GroupSelectionAd
 ////        }
 ////        else
 ////        {
-////            holder.iv_avatar.setImageResource(R.drawable.avatar_outline48);
+////            holder.iv_avatar.setImageResource(R.drawable.avatar);
 ////        }
 //
 //        //------set profession image

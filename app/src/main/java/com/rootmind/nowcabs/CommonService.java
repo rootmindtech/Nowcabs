@@ -1046,7 +1046,7 @@ public  class CommonService {
 
                             Picasso.get()
                                     .load(uri)
-                                    .placeholder(R.drawable.avatar_outline48)
+                                    .placeholder(R.drawable.avatar)
                                     .into(imageView, new MarkerCallback(marker));
                         }
 
@@ -1980,7 +1980,7 @@ public  class CommonService {
             }
             case GlobalConstants.SERVICE_AUTO_DRIVER:
             {
-                imageView.setImageResource(R.drawable.auto);
+                imageView.setImageResource(R.drawable.auto); //due to image issue used duplicate image
                 break;
             }
             case GlobalConstants.SERVICE_ELECTRICIAN:

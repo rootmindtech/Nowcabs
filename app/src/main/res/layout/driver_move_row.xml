@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:src="@drawable/vehicle_24px"
+                android:src="@drawable/cab_outline"
                 android:layout_weight="1"
                 android:layout_gravity="left"
                 android:adjustViewBounds="true"
@@ -65,7 +65,7 @@
                 android:maxHeight="48dp"
                 android:maxWidth="48dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/avatar_outline48"
+                android:src="@drawable/avatar"
                 android:layout_weight="1"
                 android:layout_gravity="right"
                 />
@@ -134,7 +134,7 @@
                 android:maxHeight="48dp"
                 android:maxWidth="48dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/dialer_icon48x48" />
+                android:src="@drawable/dial_blue48px" />
 
             <!--<ImageView-->
                 <!--android:id="@+id/iv_smsImage"-->

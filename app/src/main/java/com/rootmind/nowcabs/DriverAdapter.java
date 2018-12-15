@@ -373,7 +373,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.ViewHolder
                 public void onFailure(@NonNull Exception exception) {
                     // Handle any errors
                     //Toast.makeText(RiderMapActivity.this, "Image download failed", Toast.LENGTH_SHORT).show();
-                    imageView.setImageResource(R.drawable.driver);
+                    imageView.setImageResource(R.drawable.avatar);
 
 
                 }
