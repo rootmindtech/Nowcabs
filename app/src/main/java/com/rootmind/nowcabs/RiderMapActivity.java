@@ -866,12 +866,23 @@ public class RiderMapActivity extends AppCompatActivity implements
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        //Toast.makeText(this, "Info window clicked",Toast.LENGTH_SHORT).show();
 
-        Rider serviceGeo = (Rider) marker.getTag();
-
-        //setDialImage(driverGeo);
-        callDialer(serviceGeo);
+//        try {
+//
+//
+//            //self activity not allowed
+//            if (serviceGeo.getRiderRefNo().equals(rider.getRiderRefNo())) {
+//                Toast.makeText(getApplicationContext(), R.string.activity_not_allowed, Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//
+//            //setDialImage(driverGeo);
+//            callDialer(serviceGeo);
+//        }
+//        catch (Exception ex)
+//        {
+//            ex.printStackTrace();
+//        }
 
     }
 
@@ -879,10 +890,26 @@ public class RiderMapActivity extends AppCompatActivity implements
     @Override
     public void onClickAvatarImage(View view, int position) {
 
+        try {
 
-        Rider serviceGeo = servicesList.get(position);
+            if (servicesList != null && position <= servicesList.size()) {
 
-        callDialer(serviceGeo);
+
+                Rider serviceGeo = servicesList.get(position);
+
+                //self activity not allowed
+                if (serviceGeo.getRiderRefNo().equals(rider.getRiderRefNo())) {
+                    Toast.makeText(getApplicationContext(), R.string.activity_not_allowed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                callDialer(serviceGeo);
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
 
 
 
@@ -891,15 +918,31 @@ public class RiderMapActivity extends AppCompatActivity implements
     @Override
     public void onClickDialImage(View view, int position) {
 
+        try {
 
-        Rider serviceGeo = servicesList.get(position);
+            if (servicesList != null && position <= servicesList.size()) {
 
-        Log.i(TAG, "serviceGeo servicecode " + serviceGeo.getServiceCode());
 
-        //this opens the ringer tone
-        callDialer(serviceGeo);
+                Rider serviceGeo = servicesList.get(position);
 
-        //setDialImage(rider);
+                Log.i(TAG, "serviceGeo servicecode " + serviceGeo.getServiceCode());
+
+                //self activity not allowed
+                if (serviceGeo.getRiderRefNo().equals(rider.getRiderRefNo())) {
+                    Toast.makeText(getApplicationContext(), R.string.activity_not_allowed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //this opens the ringer tone
+                callDialer(serviceGeo);
+                //setDialImage(rider);
+
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
 
 
     }
@@ -908,39 +951,97 @@ public class RiderMapActivity extends AppCompatActivity implements
     public void onClickSMSImage(View view, int position) {
 
 
-        Rider rider = servicesList.get(position);
+        try {
 
-        setSMSImage(rider);
+            if (servicesList != null && position <= servicesList.size()) {
+
+
+                Rider serviceGeo = servicesList.get(position);
+
+                //self activity not allowed
+                if (serviceGeo.getRiderRefNo().equals(rider.getRiderRefNo())) {
+                    Toast.makeText(getApplicationContext(), R.string.activity_not_allowed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                setSMSImage(serviceGeo);
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
 
 
     }
 
     @Override
     public void onClickFavorite(View view, int position) {
+        try {
 
+            if (servicesList != null && position <= servicesList.size()) {
+                Resources res = view.getContext().getResources();
 
-        Resources res = view.getContext().getResources();
+                Rider serviceGeo = servicesList.get(position);
 
-        Rider rider = servicesList.get(position);
+                //self activity not allowed
+                if (serviceGeo.getRiderRefNo().equals(rider.getRiderRefNo())) {
+                    Toast.makeText(getApplicationContext(), R.string.activity_not_allowed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-        insertFavoriteRating(position, rider, GlobalConstants.FAVORITE);
+                if(serviceGeo.getFavorite().equals(GlobalConstants.FAVORITE_NO))
+                {
+                    serviceGeo.setFavorite(GlobalConstants.FAVORITE_YES);
+                }
+                else if(serviceGeo.getFavorite().equals(GlobalConstants.FAVORITE_YES))
+                {
+                    serviceGeo.setFavorite(GlobalConstants.FAVORITE_NO);
+                }
+                servicesList.set(position, serviceGeo);
+                serviceAdapter.notifyDataSetChanged();
 
-        if (rider.getFavorite().equals("F")) {
-            Toast.makeText(getApplicationContext(), rider.getRiderName() + " " + res.getString(R.string.favorite_added), Toast.LENGTH_SHORT).show();
-        } else if (rider.getFavorite().equals("N")) {
-            Toast.makeText(getApplicationContext(), rider.getRiderName() + " " + res.getString(R.string.favorite_removed), Toast.LENGTH_SHORT).show();
+                insertFavoriteRating(position, serviceGeo, GlobalConstants.FAVORITE);
+
+//        if (serviceGeo.getFavorite().equals("F")) {
+//            Toast.makeText(getApplicationContext(), serviceGeo.getRiderName() + " " + res.getString(R.string.favorite_added), Toast.LENGTH_SHORT).show();
+//        } else if (serviceGeo.getFavorite().equals("N")) {
+//            Toast.makeText(getApplicationContext(), serviceGeo.getRiderName() + " " + res.getString(R.string.favorite_removed), Toast.LENGTH_SHORT).show();
+//        }
+            }
         }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
 
     }
 
     @Override
     public void onClickRating(View view, int position) {
 
+        try {
 
-        Rider rider = servicesList.get(position);
+            if (servicesList != null && position <= servicesList.size()) {
 
-        showRatingDialog(position, rider);
 
+                Rider serviceGeo = servicesList.get(position);
+
+                //self activity not allowed
+                if (serviceGeo.getRiderRefNo().equals(rider.getRiderRefNo())) {
+                    Toast.makeText(getApplicationContext(), R.string.activity_not_allowed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                showRatingDialog(position, serviceGeo);
+
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
         //Toast.makeText(getApplicationContext(),  driver.getDriverName()+ " rating is selected!", Toast.LENGTH_SHORT).show();
 
     }
@@ -949,11 +1050,17 @@ public class RiderMapActivity extends AppCompatActivity implements
     public void onClickLocation(View view, int position) {
 
 
-        Rider rider = servicesList.get(position);
+//        Rider serviceGeo = servicesList.get(position);
+//
+//        //self activity not allowed
+//        if(serviceGeo.getRiderRefNo().equals(rider.getRiderRefNo()))
+//        {
+//            Toast.makeText(getApplicationContext(), R.string.activity_not_allowed, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        showServiceLocation(serviceGeo);
 
-        showServiceLocation(rider);
-
-        //showRatingDialog(position, driver);
 
 
     }
@@ -3005,16 +3112,12 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
 
-
         RiderMapActivity.this.runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
 
                 try {
-
-
-                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
 
 
                     //Shared Preferences
@@ -3054,7 +3157,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                     {
                         case GlobalConstants.FAVORITE:
                         {
-                            messageJson.put("favorite", (serviceGeo.getFavorite().equals("N")?"F":"N"));
+                            messageJson.put("favorite", serviceGeo.getFavorite());
                             break;
                         }
                         case GlobalConstants.RATING:
@@ -3067,92 +3170,87 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 
                     ConnectHost connectHost = new ConnectHost();
-                    responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
 
-                    Log.d(TAG, "insertFavoriteRating responseData: " + responseData);
+                    connectHost.excuteAsyncConnectHost(methodAction, messageJson.toString(), sharedPreferences, new GenericCallback<String>() {
+                        @Override
+                        public void onValue(String responseData) {
 
+                            try{
 
-                    if (responseData != null) {
+                                    Log.d(TAG, "insertFavoriteRating responseData: " + responseData);
+                                    if (responseData != null) {
 
+                                        JSONObject jsonResponseData = new JSONObject(responseData);
+                                        JSONObject jsonResult = null;
 
-                        // Convert String to json object
-                        JSONObject jsonResponseData = new JSONObject(responseData);
+                                        switch (actionType) {
+                                            case GlobalConstants.FAVORITE: {
+                                                jsonResult = jsonResponseData.optJSONObject("insertFavorite");
+                                                break;
+                                            }
+                                            case GlobalConstants.RATING: {
+                                                jsonResult = jsonResponseData.optJSONObject("insertRating");
+                                                break;
+                                            }
 
-                        // get LL json object
-                        JSONObject jsonResult = null;
-
-                        switch (actionType)
-                        {
-                            case GlobalConstants.FAVORITE:
-                            {
-                                jsonResult = jsonResponseData.optJSONObject("insertFavorite");
-                                break;
-                            }
-                            case GlobalConstants.RATING:
-                            {
-                                jsonResult = jsonResponseData.optJSONObject("insertRating");
-                                break;
-                            }
-
-                        }
-
-                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("favoriteWrapper");
-
-//                            Log.d(TAG, "wrapperArrayObj: " + wrapperArrayObj);
-//
-//                            Log.d(TAG, "wrapperArrayObj[0] recordFound " + wrapperArrayObj.optJSONObject(0).optString("recordFound"));
-
-                        if (jsonResponseData.getString("success") == "true")
-                        {
-
-                                if(wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
-
-
-//                                    String favoriteRefNo = wrapperArrayObj.optJSONObject(0).getString("favoriteRefNo");
-//                                    String favoriteID = wrapperArrayObj.optJSONObject(0).getString("favoriteID");
-//        //                            wrapperArrayObj.optJSONObject(0).getString("mobileNo");
-//
-//
-//                                    Log.d(TAG, "Driver Info: " + favoriteRefNo + " " + favoriteID);
-
-                                    switch (actionType)
-                                    {
-                                        case GlobalConstants.FAVORITE:
-                                        {
-                                            serviceGeo.setFavorite(wrapperArrayObj.optJSONObject(0).optString("favorite"));
-                                            break;
-                                        }
-                                        case GlobalConstants.RATING:
-                                        {
-                                            serviceGeo.setAvgRating(wrapperArrayObj.optJSONObject(0).optDouble("avgRating"));
-                                            serviceGeo.setYourRating(wrapperArrayObj.optJSONObject(0).optDouble("rating"));
-                                            break;
                                         }
 
+                                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("favoriteWrapper");
+
+                                        if (jsonResponseData.getString("success") == "true") {
+
+                                            if (wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
+
+
+                                                switch (actionType) {
+                                                    case GlobalConstants.FAVORITE: {
+                                                        serviceGeo.setFavorite(wrapperArrayObj.optJSONObject(0).optString("favorite"));
+                                                        break;
+                                                    }
+                                                    case GlobalConstants.RATING: {
+                                                        serviceGeo.setAvgRating(wrapperArrayObj.optJSONObject(0).optDouble("avgRating"));
+                                                        serviceGeo.setYourRating(wrapperArrayObj.optJSONObject(0).optDouble("rating"));
+                                                        break;
+                                                    }
+
+                                                }
+                                                servicesList.set(position, serviceGeo);
+                                                serviceAdapter.notifyDataSetChanged();
+
+
+
+                                            }
+
+
+                                        } else {
+
+                                            //Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+
+                                        }
+
+
+                                    } else {
+
+                                        //Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
                                     }
-                                    servicesList.set(position, serviceGeo);
-                                    serviceAdapter.notifyDataSetChanged();
+
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    //Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
 
                                 }
 
 
-                        }
-                        else
-                        {
+                            } //onValue end
+                    });
 
-                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    //responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
 
-                        }
-
-
-                    } else {
-
-                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
-                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -3261,12 +3359,12 @@ public class RiderMapActivity extends AppCompatActivity implements
 
 //        Log.d(TAG, "showServiceLocation: " + serviceGeo.getRiderLat() + " : " + serviceGeo.getRiderLng());
 
+        bottomSheetClose();
         setServiceLocation(0,serviceGeo);
 
         LatLng latLng = new LatLng(serviceGeo.getRiderLat(), serviceGeo.getRiderLng());
         //move map camera
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, mapZoom));
-        bottomSheetClose();
 
 
 
@@ -5575,3 +5673,175 @@ public class RiderMapActivity extends AppCompatActivity implements
 //        return smsImage;
 //
 //    }//end of set SMSImage
+
+
+//    //-------- insertFavorite  udpate in the backend
+//    public void insertFavoriteRating(final int position, final Rider serviceGeo, final String actionType) {
+//
+//
+//
+//
+//        RiderMapActivity.this.runOnUiThread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                try {
+//
+//
+//                    //Log.d(TAG, "mobileNo: " + mobileNo + " " + name);
+//
+//
+//                    //Shared Preferences
+//                    editor = sharedPreferences.edit();
+//
+//                    editor.putString("userid", rider.getRiderID());
+//                    editor.putString("deviceToken", rider.getFcmToken());
+//                    editor.putString("sessionid", "SESSIONID");
+//
+//                    editor.apply();
+//
+//
+//                    String methodAction = null;
+//
+//                    switch (actionType)
+//                    {
+//                        case GlobalConstants.FAVORITE:
+//                        {
+//                            methodAction = "insertFavorite";
+//                            break;
+//                        }
+//                        case GlobalConstants.RATING:
+//                        {
+//                            methodAction = "insertRating";
+//                            break;
+//                        }
+//
+//                    }
+//
+//                    JSONObject messageJson = new JSONObject();
+//                    messageJson.put("favoriteRefNo", serviceGeo.getRiderRefNo());
+//                    messageJson.put("favoriteID", serviceGeo.getRiderID());
+//                    messageJson.put("riderRefNo", rider.getRiderRefNo());
+//                    messageJson.put("riderID", rider.getRiderID());
+//
+//                    switch (actionType)
+//                    {
+//                        case GlobalConstants.FAVORITE:
+//                        {
+//                            messageJson.put("favorite", (serviceGeo.getFavorite().equals("N")?"F":"N"));
+//                            break;
+//                        }
+//                        case GlobalConstants.RATING:
+//                        {
+//                            messageJson.put("rating", serviceGeo.getYourRating());
+//                            break;
+//                        }
+//
+//                    }
+//
+//
+//                    ConnectHost connectHost = new ConnectHost();
+//
+//                    connectHost.excuteAsyncConnectHost(methodAction, messageJson.toString(), sharedPreferences, new GenericCallback() {
+//                        @Override
+//                        public void onValue(Object value) {
+//
+//
+//
+//
+//                        }
+//                    });
+//
+//                    //responseData = connectHost.excuteConnectHost(methodAction, messageJson.toString(), sharedPreferences);
+//
+//
+//
+//
+//
+//
+//                    Log.d(TAG, "insertFavoriteRating responseData: " + responseData);
+//
+//
+//                    if (responseData != null) {
+//
+//
+//                        // Convert String to json object
+//                        JSONObject jsonResponseData = new JSONObject(responseData);
+//
+//                        // get LL json object
+//                        JSONObject jsonResult = null;
+//
+//                        switch (actionType)
+//                        {
+//                            case GlobalConstants.FAVORITE:
+//                            {
+//                                jsonResult = jsonResponseData.optJSONObject("insertFavorite");
+//                                break;
+//                            }
+//                            case GlobalConstants.RATING:
+//                            {
+//                                jsonResult = jsonResponseData.optJSONObject("insertRating");
+//                                break;
+//                            }
+//
+//                        }
+//
+//                        JSONArray wrapperArrayObj = jsonResult.getJSONArray("favoriteWrapper");
+//
+//                        if (jsonResponseData.getString("success") == "true")
+//                        {
+//
+//                            if(wrapperArrayObj.optJSONObject(0).getString("recordFound") == "true") {
+//
+//
+//
+//                                switch (actionType)
+//                                {
+//                                    case GlobalConstants.FAVORITE:
+//                                    {
+//                                        serviceGeo.setFavorite(wrapperArrayObj.optJSONObject(0).optString("favorite"));
+//                                        break;
+//                                    }
+//                                    case GlobalConstants.RATING:
+//                                    {
+//                                        serviceGeo.setAvgRating(wrapperArrayObj.optJSONObject(0).optDouble("avgRating"));
+//                                        serviceGeo.setYourRating(wrapperArrayObj.optJSONObject(0).optDouble("rating"));
+//                                        break;
+//                                    }
+//
+//                                }
+//                                servicesList.set(position, serviceGeo);
+//                                serviceAdapter.notifyDataSetChanged();
+//
+//                            }
+//
+//
+//                        }
+//                        else
+//                        {
+//
+//                            Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//                        }
+//
+//
+//                    } else {
+//
+//                        Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(RiderMapActivity.this, GlobalConstants.SYSTEM_ERROR, Toast.LENGTH_SHORT).show();
+//
+//                }
+//
+//                //}// validation
+//
+//            }//run end
+//
+//        });//runnable end
+//
+//
+//    }//insertfavorite update End

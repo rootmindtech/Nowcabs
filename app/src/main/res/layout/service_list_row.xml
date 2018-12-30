@@ -169,7 +169,7 @@
                 android:layout_marginStart="150dp"
                 android:textColor="#212121"/>
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/btn_location"
                 android:layout_width="@dimen/service_icon_width"
                 android:layout_height="@dimen/service_icon_height"
@@ -178,9 +178,20 @@
                 android:layout_marginTop="5dp"
                 android:layout_below="@id/tv_destination"
                 android:background="@null"
-                android:src="@drawable/location" />
+                android:src="@drawable/location"
+                />
 
-
+            <!--13-Sep-2018-->
+            <TextView
+                android:id="@+id/tv_vacantStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_distance"
+                android:layout_marginTop="5dp"
+                android:gravity="start"
+                android:text="@string/vacant"
+                android:textSize="12sp"
+                android:visibility="gone"/>
 
 
 
@@ -298,17 +309,6 @@
     <!--android:layout_gravity="center_vertical|center_horizontal"-->
     <!--android:layout_marginTop="@dimen/activity_margin">-->
 
-    <!--13-Sep-2018-->
-    <!--<TextView-->
-    <!--android:id="@+id/tv_vacantStatus"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@id/tv_distance"-->
-    <!--android:layout_marginTop="5dp"-->
-    <!--android:gravity="start"-->
-    <!--android:text="@string/vacant"-->
-    <!--android:textSize="12sp"-->
-    <!--android:visibility="gone"/>-->
 
 
 

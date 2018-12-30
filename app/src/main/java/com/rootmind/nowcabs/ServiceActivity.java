@@ -46,28 +46,6 @@ public class ServiceActivity extends AppCompatActivity implements NavigationView
     SharedPreferences.Editor editor;
 
 
-    public TextView tv_carpenter_count;
-    public TextView tv_autodriver_count;
-    public TextView tv_cabdriver_count;
-    public TextView tv_electrician_count;
-    public TextView tv_plumber_count;
-    public TextView tv_tailor_count;
-    public TextView tv_washer_count;
-    public TextView tv_courier_count;
-    public TextView tv_merchant_count;
-
-    public TextView tv_movers_count;
-    public TextView tv_housekeeper_count;
-    public TextView tv_cook_count;
-    public TextView tv_painter_count;
-    public TextView tv_florist_count;
-    public TextView tv_pesticide_count;
-    public TextView tv_tutor_count;
-    public TextView tv_locksmith_count;
-    public TextView tv_grinder_count;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +63,7 @@ public class ServiceActivity extends AppCompatActivity implements NavigationView
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setTitle(R.string.profile_and_settings);
+        //toolbar.setTitle(R.string.profile_and_settings);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -129,45 +107,6 @@ public class ServiceActivity extends AppCompatActivity implements NavigationView
         });
 
 
-        tv_carpenter_count= (TextView)findViewById(R.id.tv_carpenter_count);
-        tv_autodriver_count= (TextView)findViewById(R.id.tv_autodriver_count);
-        tv_cabdriver_count= (TextView)findViewById(R.id.tv_cabdriver_count);
-        tv_electrician_count= (TextView)findViewById(R.id.tv_electrician_count);
-        tv_plumber_count= (TextView)findViewById(R.id.tv_plumber_count);
-        tv_tailor_count= (TextView)findViewById(R.id.tv_tailor_count);
-        tv_washer_count= (TextView)findViewById(R.id.tv_washer_count);
-        tv_courier_count= (TextView)findViewById(R.id.tv_courier_count);
-        tv_merchant_count= (TextView)findViewById(R.id.tv_merchant_count);
-
-        tv_movers_count= (TextView)findViewById(R.id.tv_movers_count);
-        tv_housekeeper_count= (TextView)findViewById(R.id.tv_housekeeper_count);
-        tv_cook_count= (TextView)findViewById(R.id.tv_cook_count);
-        tv_painter_count= (TextView)findViewById(R.id.tv_painter_count);
-        tv_florist_count= (TextView)findViewById(R.id.tv_florist_count);
-        tv_pesticide_count= (TextView)findViewById(R.id.tv_pesticide_count);
-        tv_tutor_count= (TextView)findViewById(R.id.tv_tutor_count);
-        tv_locksmith_count= (TextView)findViewById(R.id.tv_locksmith_count);
-        tv_grinder_count= (TextView)findViewById(R.id.tv_grinder_count);
-
-        tv_carpenter_count.setVisibility(View.GONE);
-        tv_autodriver_count.setVisibility(View.GONE);
-        tv_cabdriver_count.setVisibility(View.GONE);
-        tv_electrician_count.setVisibility(View.GONE);
-        tv_plumber_count.setVisibility(View.GONE);
-        tv_tailor_count.setVisibility(View.GONE);
-        tv_washer_count.setVisibility(View.GONE);
-        tv_courier_count.setVisibility(View.GONE);
-        tv_merchant_count.setVisibility(View.GONE);
-
-        tv_movers_count.setVisibility(View.GONE);
-        tv_housekeeper_count.setVisibility(View.GONE);
-        tv_cook_count.setVisibility(View.GONE);
-        tv_painter_count.setVisibility(View.GONE);
-        tv_florist_count.setVisibility(View.GONE);
-        tv_pesticide_count.setVisibility(View.GONE);
-        tv_tutor_count.setVisibility(View.GONE);
-        tv_locksmith_count.setVisibility(View.GONE);
-        tv_grinder_count.setVisibility(View.GONE);
 
     }
 

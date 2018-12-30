@@ -53,14 +53,15 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tv_servicerName, tv_mobileNo, tv_destination, tv_distance,  tv_yourRating, tv_vehicleNo, tv_langauge; //tv_vacantStatus,
-        public ImageView iv_vehicleImage;
+        public ImageView iv_vehicleImage, ib_location;
         public ImageView iv_avatar;
         public ImageView iv_dialImage;
         public ImageView iv_smsImage;
         public ImageButton ib_favorite;
         public RatingBar ratingBar;
         public ImageButton ib_rating;
-        public ImageButton ib_location, ib_dots;
+        public ImageButton  ib_dots;
+
         public CardView cardView;
 
 
@@ -95,7 +96,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 
             ib_rating = (ImageButton) view.findViewById(R.id.btn_rating);
 
-            ib_location = (ImageButton) view.findViewById(R.id.btn_location);
+            ib_location = (ImageView) view.findViewById(R.id.btn_location);
 
             tv_yourRating = (TextView) view.findViewById(R.id.tv_yourRating);
 
@@ -250,7 +251,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
 //        ImageButton favButton = view.findViewById(R.id.btn_favorite);
 //        favButton.setBackgroundResource(R.drawable.fav_yellow);
 
-        if (rider.getFavorite().equals("N")) {
+        if (rider.getFavorite().equals(GlobalConstants.FAVORITE_NO)) {
             holder.ib_favorite.setImageResource(R.drawable.fav_outline);
         } else {
             holder.ib_favorite.setImageResource(R.drawable.fav_yellow);
@@ -377,15 +378,22 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ViewHold
         switch (rider.getServiceCode()) {
 
             case GlobalConstants.SERVICE_AUTO_DRIVER: {
-                holder.tv_vehicleNo.setText(rider.getVehicleNo());
+                if(rider.getVehicleNo()!=null) {
+                    holder.tv_vehicleNo.setText(rider.getVehicleNo());
+                }
                 break;
             }
             case GlobalConstants.SERVICE_CAB_DRIVER: {
-                holder.tv_vehicleNo.setText(rider.getVehicleNo());
+                if(rider.getVehicleNo()!=null) {
+                    holder.tv_vehicleNo.setText(rider.getVehicleNo());
+                }
                 break;
             }
 
         }
+
+
+
     }
 
     private void showPopupMenu(View view,int position) {

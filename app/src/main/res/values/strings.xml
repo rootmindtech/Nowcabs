@@ -78,6 +78,8 @@
 
     <string name="no_driver_near_by">No service found near to your location!!!</string>
 
+    <string name="activity_not_allowed">Activity not allowed</string>
+
     <string name="invalid_mobile">Invalid mobile number!!!</string>
 
     <string name="selfie">Selfie</string>
@@ -87,6 +89,8 @@
     <string name="title_activity_group_rider">GroupRiderActivity</string>
     <string name="title_activity_group_register">GroupRegisterActivity</string>
 
+    <string name="default_notification_channel_id">Default</string>
+    <string name="fcm_message">NOW</string>
 
     <string-array name="servicecode_array">
         <item>CARPENTER</item>

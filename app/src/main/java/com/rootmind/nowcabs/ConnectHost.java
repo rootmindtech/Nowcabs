@@ -1,18 +1,13 @@
 package com.rootmind.nowcabs;
 import android.util.Log;
 
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.*;
 import org.json.JSONObject;
 
-import java.util.*;
-import java.net.URLEncoder;
-import java.util.concurrent.TimeUnit;
 
 import android.content.SharedPreferences;
 
 import com.squareup.okhttp.Call;
+
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
@@ -22,12 +17,14 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
+import java.io.IOException;
+
 
 /**
  * Created by rootmindtechsoftprivatelimited on 21/06/17.
  */
 
-public   class ConnectHost {
+public class ConnectHost {
 
 
     public static final String TAG = "ConnectHost";
@@ -79,6 +76,76 @@ public   class ConnectHost {
         }
         return httpResponse;
     }
+
+
+    public void excuteAsyncConnectHost(String methodAction,String message, SharedPreferences sharedPreferences, GenericCallback genericCallback) throws IOException {
+
+        String httpResponse=null;
+        try {
+
+            JSONObject messageJson = new JSONObject();
+
+            messageJson.put("userid", sharedPreferences.getString("userid", ""));
+            messageJson.put("deviceToken", sharedPreferences.getString("deviceToken", ""));
+            messageJson.put("sessionid", sharedPreferences.getString("sessionid", ""));
+
+            messageJson.putOpt("methodAction", methodAction);
+            messageJson.putOpt("message", message);
+
+
+            Log.d(TAG, "messageJson... : "+ messageJson.toString());
+
+
+            RequestBody body = RequestBody.create(JSON, messageJson.toString());
+            Request request = new Request.Builder()
+                    .url(GlobalConstants.HOST_URL)
+                    .post(body)
+                    .build();
+
+            Response response = okHttpClient.newCall(request).execute();
+
+            httpResponse = response.body().string();
+
+
+            okHttpClient.newCall(request)
+                    .enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(Response response) throws IOException {
+
+                            String res = response.body().string();
+                            genericCallback.onValue(res);
+
+                        }
+//                        @Override
+//                        public void onFailure(final Call call, IOException e) {
+//                            // Error
+//
+//                        }
+//
+//                        @Override
+//                        public void onResponse(Call call, final Response response) throws IOException {
+//                            String res = response.body().string();
+//                            genericCallback.onValue(res);
+//
+//
+//                        }
+                    });
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
 
 
 //    public  String excuteConnectHost(String methodAction,String message, SharedPreferences sharedPreferences) {
