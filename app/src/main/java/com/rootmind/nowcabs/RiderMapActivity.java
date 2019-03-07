@@ -3814,7 +3814,7 @@ public class RiderMapActivity extends AppCompatActivity implements
                                         service.setServiceCount(wrapperArrayObj.optJSONObject(i).optInt("serviceCount"));
                                         service.setDistance(wrapperArrayObj.optJSONObject(i).optDouble("distance"));
 
-                                        Log.d(TAG, "fetch service count serviceCode: " + service.getServiceCode() + " " + service.getServiceCount());
+                                        //Log.d(TAG, "fetch service count serviceCode: " + service.getServiceCode() + " " + service.getServiceCount());
 
                                         serviceCountList.add(service);
 
@@ -3981,8 +3981,8 @@ public class RiderMapActivity extends AppCompatActivity implements
 
                 service = serviceCountList.get(i);
 
-                Log.i(TAG, "Service Selection  " + service.getServiceCode());
-                Log.i(TAG, "Service Selection Count " + service.getServiceCount());
+                //Log.i(TAG, "Service Selection  " + service.getServiceCode());
+                //Log.i(TAG, "Service Selection Count " + service.getServiceCount());
 
                 //------set service count
                 switch (service.getServiceCode()) {

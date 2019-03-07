@@ -37,6 +37,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.hbb20.CountryCodePicker;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -270,7 +273,12 @@ public class LoginActivity extends AppCompatActivity {
                                              setComponentView();
 
                                          } else {
-                                             firebaseCustomTokenAuth(rider);
+
+
+                                             new LoginActivity.getFirebaseToken().execute(new Object[]{rider, null, false});
+                                             setRiderLogin(rider);
+                                             //firebaseCustomTokenAuth(rider);
+
                                          }
                                      } else {
                                          setComponentView();
@@ -380,8 +388,15 @@ public class LoginActivity extends AppCompatActivity {
                             i.putExtras(bundle);
                             startActivity(i);
 
+
                         } else {
-                            firebaseCustomTokenAuth(rider);
+
+
+                            new LoginActivity.getFirebaseToken().execute(new Object[]{rider, null, false});
+                            setRiderLogin(rider);
+                            //firebaseCustomTokenAuth(rider);
+
+
                         }
                     }
 
@@ -395,7 +410,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-
 
             hideProgressBar();
 
@@ -452,6 +466,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
+
     }
 
     public void firebaseCustomTokenAuth(final Rider rider) {
@@ -464,18 +479,11 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                //Log.d(TAG, "signInWithCustomToken:success");
-                                //FirebaseUser user = mAuth.getCurrentUser();
-                                //updateUI(user);
 
-                                setRiderLogin(rider);
+                                //setRiderLogin(rider);
 
                             } else {
-                                // If sign in fails, display a message to the user.
-                                //Log.w(TAG, "signInWithCustomToken:failure", task.getException());
                                 Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                                //updateUI(null);
                             }
                         }
                     });
@@ -1219,6 +1227,29 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private class getFirebaseToken extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Void doInBackground(Object... params) {
+
+
+            firebaseCustomTokenAuth((Rider)params[0]);
+
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+
+        }
+
+    }
 
 
 }
