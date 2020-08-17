@@ -13,9 +13,10 @@ public  final class GlobalConstants {
     public static final String  FIREBASE_LOG_PATH = "cabs/log/";
     public static final String  FIREBASE_RIDES_PATH = "cabs/rides/";
     public static final String  FIREBASE_DRIVER_ALERT_PATH = "cabs/driver/alert";
-    public static final String  HOST_URL = "https://nowcabs-dot-maabadi-219919.appspot.com/NowcabsWeb/Nowcabs";
+    //public static final String  HOST_URL = "https://nowcabs-dot-school-30cc4.appspot.com";
+    //public static final String  HOST_URL = "https://nowcabs-dot-maabadi-219919.appspot.com/NowcabsWeb/Nowcabs";
     //public static final String  HOST_URL = "https://api.nowcabs.rootmindtech.com";
-    //public static final String  HOST_URL = "https://rootmindtech.ddns.net/NowcabsWeb/Nowcabs";
+    public static final String  HOST_URL = "https://emirateshost.rootmindtech.com/NowcabsWeb/Nowcabs"; //dubai house
     //public static final String  HOST_URL = "http://192.168.1.110:8084/NowcabsWeb/Nowcabs";
     public static final String SYSTEM_ERROR="Network unavailable, please try again";
 

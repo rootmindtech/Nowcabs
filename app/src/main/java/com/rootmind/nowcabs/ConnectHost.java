@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import com.squareup.okhttp.Call;
 
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.ConnectionSpec;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -18,6 +19,7 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 
 /**
@@ -54,7 +56,7 @@ public class ConnectHost {
             messageJson.putOpt("message", message);
 
 
-            Log.d(TAG, "messageJson... : "+ messageJson.toString());
+            Log.d(TAG, "excuteConnectHost messageJson... : "+ messageJson.toString());
 
 
             RequestBody body = RequestBody.create(JSON, messageJson.toString());
@@ -93,7 +95,7 @@ public class ConnectHost {
             messageJson.putOpt("message", message);
 
 
-            Log.d(TAG, "messageJson... : "+ messageJson.toString());
+            Log.d(TAG, "excuteAsyncConnectHost messageJson... : "+ messageJson.toString());
 
 
             RequestBody body = RequestBody.create(JSON, messageJson.toString());
@@ -104,7 +106,7 @@ public class ConnectHost {
 
             Response response = okHttpClient.newCall(request).execute();
 
-            httpResponse = response.body().string();
+            //httpResponse = response.body().string();
 
 
             okHttpClient.newCall(request)
