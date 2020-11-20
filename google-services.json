@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "130955796594",
+    "firebase_url": "https://nowcabs.firebaseio.com",
+    "project_id": "nowcabs",
+    "storage_bucket": "nowcabs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130955796594:android:e41ed4a5059de655",
+        "android_client_info": {
+          "package_name": "com.rootmind.nowcabs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130955796594-oj8497a9caij8hr615otamgjqv6qpv72.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtP9LTlpYKh1cLeJ8krT5ubQ_F52kaqvM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
