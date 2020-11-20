@@ -19,6 +19,7 @@ public  final class GlobalConstants {
     //public static final String  HOST_URL = "https://emirateshost.rootmindtech.com/NowcabsWeb/Nowcabs"; //dubai house
     //20-NOV-2020
     public static final String  HOST_URL = "http://rootmind.ddns.net:8089/NowcabsWeb/Nowcabs"; //dubai house
+    //-----------
     //public static final String  HOST_URL = "http://192.168.1.110:8084/NowcabsWeb/Nowcabs";
     public static final String SYSTEM_ERROR="Network unavailable, please try again";
 
